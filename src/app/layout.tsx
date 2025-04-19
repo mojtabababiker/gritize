@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Genos, Orbitron } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/base/Header";
+import Footer from "@/components/base/Footer";
 
 const body = Genos({
   variable: "--font-body",
@@ -25,7 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${body.variable} ${heading.variable} antialiased`}>
+        {/* header */}
+        <Header />
         {children}
+        {/* footer */}
+        <Footer />
       </body>
     </html>
   );
