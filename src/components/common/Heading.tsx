@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React, { HtmlHTMLAttributes } from "react";
 
 type Props = HtmlHTMLAttributes<HTMLHeadingElement> & {
-  as?: "h1" | "h2" | "h3" | "h4";
+  as?: "h1" | "h2" | "h3" | "h4" | "span";
   className?: string;
   size?: "sm" | "md" | "lg" | "title";
   children: React.ReactNode;

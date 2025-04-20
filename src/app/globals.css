@@ -145,6 +145,15 @@ body {
   );
 }
 
+.profile-container {
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-bg) 0%,
+    #1d2216 38%,
+    #313d24 100%
+  );
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

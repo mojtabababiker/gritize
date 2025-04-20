@@ -26,12 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${body.variable} ${heading.variable} antialiased`}>
-        {/* header */}
-        <Header />
+      <body
+        className={`${body.variable} ${heading.variable} antialiased relative`}
+      >
         {children}
-        {/* footer */}
-        <Footer />
       </body>
     </html>
   );
