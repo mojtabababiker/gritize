@@ -153,7 +153,23 @@ body {
     #313d24 100%
   );
 }
+.auth-popup {
+  background-image: linear-gradient(
+    to bottom right,
+    #0b0a0a 0%,
+    #0b0a0a04 100%,
+    var(--color-fg) 100%
+  );
+}
 
+.auth-popup-revers {
+  background-image: linear-gradient(
+    to bottom right,
+    #0b0a0a04 0%,
+    var(--color-primary) 20%,
+    #0b0a0a 100%
+  );
+}
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

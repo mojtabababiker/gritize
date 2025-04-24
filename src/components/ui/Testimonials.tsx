@@ -1,53 +1,53 @@
-import React from "react";
 import Bounded from "../common/Bounded";
 import Heading from "../common/Heading";
 import TestimonialCard from "../cards/TestimonialCard";
 import Button from "../common/Button";
+import { TestimonialsContainer } from "./TestimonialsContainer";
 
 const TESTIMONIALS = [
   {
-    userImageUrl: "/images/users/user1.png",
-    userTitle: "Software Engineer",
-    userName: "John Doe",
+    avatar: "/images/users/user1.png",
+    title: "Software Engineer",
+    name: "John Doe",
     stars: 4,
-    testimonial:
+    review:
       "Gritize has streamlined our development workflow significantly. The integration capabilities are excellent, and support is responsive.",
   },
   {
-    userImageUrl: "/images/users/user2.png",
-    userTitle: "Project Manager",
-    userName: "Sarah Wilson",
+    avatar: "/images/users/user2.png",
+    title: "Project Manager",
+    name: "Sarah Wilson",
     stars: 5,
-    testimonial:
+    review:
       "As a project manager, Gritize has made tracking team progress incredibly simple. The visualization tools are outstanding!",
   },
   {
-    userImageUrl: "/images/users/user3.png",
-    userTitle: "UX Designer",
-    userName: "Mike Chen",
+    avatar: "/images/users/user3.png",
+    title: "UX Designer",
+    name: "Mike Chen",
     stars: 3,
-    testimonial:
+    review:
       "The interface is clean and user-friendly. There's room for improvement in the design tools, but overall it's a solid platform.",
   },
   {
-    userImageUrl: "/images/users/user4.png",
-    userTitle: "Product Owner",
-    userName: "Emily Rodriguez",
+    avatar: "/images/users/user4.png",
+    title: "Product Owner",
+    name: "Emily Rodriguez",
     stars: 2,
-    testimonial:
+    review:
       "While the basic features work well, we've experienced some limitations with larger team collaborations. Looking forward to future updates.",
   },
   {
-    userImageUrl: "/images/users/user5.png",
-    userTitle: "Tech Lead",
-    userName: "Alex Thompson",
+    avatar: "/images/users/user5.png",
+    title: "Tech Lead",
+    name: "Alex Thompson",
     stars: 5,
-    testimonial:
+    review:
       "Gritize has streamlined our development workflow significantly. The integration capabilities are excellent, and support is responsive.",
   },
 ];
 
-function Testimonials() {
+async function Testimonials() {
   return (
     <Bounded className="bg-primary relative pt-24 pb-10">
       {/* title */}
@@ -65,26 +65,7 @@ function Testimonials() {
       </div>
 
       {/* testimonials */}
-      <div className="flex flex-wrap items-center justify-center gap-4">
-        {TESTIMONIALS.map((testimonial, index) => (
-          <TestimonialCard
-            key={`testimonial-${index}`}
-            userImageUrl={testimonial.userImageUrl}
-            userName={testimonial.userName}
-            userTitle={testimonial.userTitle}
-            stars={testimonial.stars}
-            testimonial={testimonial.testimonial}
-            className="flex-1 self-stretch min-w-[340px]"
-          />
-        ))}
-      </div>
-
-      {/* CTA */}
-      <div className="flex w-full items-center justify-center py-2 mt-6">
-        <Button variant="accent" size="md">
-          Try it yourself
-        </Button>
-      </div>
+      <TestimonialsContainer testimonials={TESTIMONIALS} />
     </Bounded>
   );
 }
