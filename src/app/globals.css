@@ -170,6 +170,16 @@ body {
     #0b0a0a 100%
   );
 }
+
+.quiz-popup {
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-surface) 36%,
+    #eaf6f1 63%,
+    var(--color-fg) 100%
+  );
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

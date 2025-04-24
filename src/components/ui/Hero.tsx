@@ -7,8 +7,10 @@ import Heading from "../common/Heading";
 import Paragraph from "../common/Paragraph";
 import { useState } from "react";
 import AuthDialog from "../auth/AuthDialog";
+import QuizRunner from "../quiz/QuizRunner";
 
 function Hero() {
+  const [startQuiz, setStartQuiz] = useState(false);
   const [requireLogin, setRequireLogin] = useState(false);
   return (
     // Hero section
@@ -55,7 +57,7 @@ function Hero() {
               <Button
                 variant="accent"
                 size="lg"
-                onClick={() => setRequireLogin(true)}
+                onClick={() => setStartQuiz(true)}
               >
                 Try Gritize
               </Button>
@@ -145,7 +147,21 @@ function Hero() {
       </Bounded>
 
       {/* login dialog */}
-      {requireLogin && <AuthDialog onClose={() => setRequireLogin(false)} />}
+      {requireLogin && (
+        <AuthDialog
+          message="Excellent work! now please signup to save your progress"
+          onClose={() => setRequireLogin(false)}
+        />
+      )}
+
+      {startQuiz && (
+        <QuizRunner
+          onFinish={() => {
+            setStartQuiz(false);
+            setRequireLogin(true);
+          }}
+        />
+      )}
     </>
   );
 }
