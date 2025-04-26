@@ -1,17 +1,5 @@
 import { SkillLevel } from "../types/indext";
 
-export interface UserSchema {
-  id?: string;
-  name: string;
-  email: string;
-  skillLevel: SkillLevel;
-  avatar?: string;
-  onboarding?: boolean;
-  totalSolvedProblems?: number;
-  generalAlgorithms?: Record<string, UserProblemSchema>;
-  codingPatterns?: Record<string, CodingPatternSchema>;
-}
-
 export interface TechnicalProblemSchema {
   id: string;
   type: "algorithm" | "coding-pattern";
@@ -19,6 +7,19 @@ export interface TechnicalProblemSchema {
   difficulty: "easy" | "mid" | "advanced";
   description: string;
   hint?: string;
+}
+
+export interface UserSchema {
+  id?: string;
+  name: string;
+  email: string;
+  skillLevel: SkillLevel;
+  avatar?: string;
+  onboarding?: boolean;
+  isNewUser?: boolean;
+  totalSolvedProblems?: number;
+  generalAlgorithms?: Record<string, UserProblemSchema>;
+  codingPatterns?: Record<string, CodingPatternSchema>;
 }
 
 export interface UserProblemSchema {

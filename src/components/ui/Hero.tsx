@@ -5,8 +5,16 @@ import Button from "@/components/common/Button";
 import Bounded from "@/components/common/Bounded";
 import Heading from "../common/Heading";
 import Paragraph from "../common/Paragraph";
+import { useAuth } from "@/context/AuthProvider";
+import { useEffect } from "react";
 
 function Hero() {
+  const { isLoggedIn, user } = useAuth();
+
+  useEffect(() => {
+    console.log("User status checked:", isLoggedIn, user);
+  }, [isLoggedIn, user]);
+
   return (
     // Hero section
     <Bounded className="bg-surface overflow-hidden pt-40 md:pt-32 pb-8 ">

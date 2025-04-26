@@ -11,13 +11,16 @@ import {
 } from "react";
 
 const anonymousUser = User.fromJson({
-  id: "anonymous",
+  id: undefined,
   name: "Anonymous",
   email: "",
   skillLevel: "mid-level",
   avatar: "",
   onboarding: false,
+  isNewUser: false,
   totalSolvedProblems: 0,
+  generalAlgorithms: [],
+  codingPatterns: [],
 });
 
 type AuthContextType = {

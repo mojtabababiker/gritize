@@ -1,8 +1,13 @@
 import { redirect } from "next/navigation";
 import { SkillLevel } from "./types/indext";
 import { CodingPatternSchema, UserProblemSchema, UserSchema } from "./schemas";
-import { loginUser, logoutUser } from "@/utils/appwrite/auth-action";
-import { getUserById } from "@/utils/appwrite/database-action";
+import {
+  loginUser,
+  logoutUser,
+  registerUser,
+} from "@/utils/appwrite/auth-action";
+import { createUser, getUserById } from "@/utils/appwrite/database-action";
+import { UserDTO } from "./dto/user-dto";
 
 /**
  * User class
@@ -118,23 +123,42 @@ export class User {
    * @throws {Error} when the user already exists
    * @returns {Promise<User>} the user information
    */
-  static async register(email: string, password: string): Promise<User> {
+  async register(
+    email: string,
+    password: string,
+    username: string
+  ): Promise<User> {
     // call the backend register service action
-    return new User({
-      id: "123",
-      name: "John Doe",
+    const { data: userId, error: authError } = await registerUser(
       email,
-      skillLevel: "junior",
-      avatar: "https://example.com/avatar.jpg",
-    });
+      password,
+      username
+    );
+
+    if (authError) {
+      console.error("Registration failed", authError);
+      throw authError;
+    }
+
+    this.id = userId ?? undefined;
+    this.name = username;
+
+    const { data: user, error: dbError } = await createUser(this.json);
+
+    if (dbError) {
+      console.error("Database error during user registration", dbError);
+      throw new Error("User registration failed.");
+    }
+
+    return User.fromJson(user);
   }
 
   /**
    * Create a new User instance from the user information json object.
-   * @param {UserSchema} data - the user information
+   * @param {UserDTO} data - the user information
    * @returns {User} the User instance
    */
-  static fromJson(data: UserSchema): User {
+  static fromJson(data: UserDTO): User {
     const user = new User({
       id: data.id,
       name: data.name,
@@ -144,9 +168,29 @@ export class User {
       onboarding: data.onboarding || false,
       totalSolvedProblems: data.totalSolvedProblems || 0,
     });
-    user.algorithmProblems = data.generalAlgorithms || {};
-    user.codingPatterns = data.codingPatterns || {};
+    user.algorithmProblems = {};
+    data.generalAlgorithms?.forEach((problem) => {
+      user.generalAlgorithms[problem.id] = problem;
+    });
+    user.codingPatterns = {};
+    data.codingPatterns?.forEach((cp) => {
+      user.codingPatterns[cp.id] = cp;
+    });
     return user;
+  }
+
+  get json(): UserDTO {
+    return {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      skillLevel: this.skillLevel,
+      avatar: this.avatar,
+      onboarding: this.onboarding,
+      totalSolvedProblems: this.totalSolvedProblems,
+      generalAlgorithms: Object.values(this.generalAlgorithms),
+      codingPatterns: Object.values(this.codingPatterns),
+    };
   }
 
   public get algorithmProblems(): UserProblemSchema[] {
