@@ -3,6 +3,7 @@ import { Genos, Orbitron } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/base/Header";
 import Footer from "@/components/base/Footer";
+import { AuthProvider } from "@/context/AuthProvider";
 
 const body = Genos({
   variable: "--font-body",
@@ -29,7 +30,7 @@ export default function RootLayout({
       <body
         className={`${body.variable} ${heading.variable} antialiased relative`}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

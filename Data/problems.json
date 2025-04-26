@@ -1,0 +1,491 @@
+{
+  "algorithms": [
+    {
+      "title": "Edit Distance",
+      "description": "Given two strings word1 and word2, find the minimum number of operations required to convert word1 to word2. You have the following three operations permitted on a word: Insert a character, Delete a character, Replace a character.",
+      "startingPoint": "Consider a dynamic programming approach. Let dp[i][j] be the minimum number of operations to convert the first i characters of word1 to the first j characters of word2. Think about the recurrence relation based on the last characters word1[i-1] and word2[j-1]."
+    },
+    {
+      "title": "Regular Expression Matching",
+      "description": "Given an input string (s) and a pattern (p), implement regular expression matching with support for '.' and '*'. '.' Matches any single character. '*' Matches zero or more of the preceding element. The matching should cover the entire input string (not partial).",
+      "startingPoint": "This is a classic dynamic programming problem. Let dp[i][j] be true if the first i characters of s match the first j characters of p. Consider the cases for p[j-1] being '.' or '*' and how they affect the transition from previous states."
+    },
+    {
+      "title": "Word Break II",
+      "description": "Given a string s and a dictionary of strings wordDict, add spaces in s to construct a sentence where each word is a valid dictionary word. Return all such possible sentences. Note that the same word in the dictionary may be reused multiple times in the segmentation.",
+      "startingPoint": "This problem combines dynamic programming (to check if a string *can* be segmented) with backtracking (to find all possible segmentations). First, use DP to determine if `s` is breakable. Then, use backtracking with memoization to build the sentences."
+    },
+    {
+      "title": "Burst Balloons",
+      "description": "Given n balloons, indexed from 0 to n-1. Each balloon is painted with a number on it represented by an array arr. You are asked to burst all the balloons. If you burst balloon i you will get arr[left] * arr[i] * arr[right] coins. Here left and right are adjacent indices of i. After the burst, the left and right then become adjacent. Find the maximum coins you can collect by bursting the balloons wisely.",
+      "startingPoint": "This problem is tricky because bursting a balloon changes its neighbors. Instead of thinking about which balloon to burst *now*, think about which balloon is the *last* to be burst in a subarray. This structure lends itself to a dynamic programming approach on intervals."
+    },
+    {
+      "title": "Longest Palindromic Substring",
+      "description": "Given a string s, return the longest palindromic substring in s.",
+      "startingPoint": "Multiple approaches exist: expanding around center, dynamic programming. For DP, let dp[i][j] be true if the substring s[i...j] is a palindrome. For expanding around center, iterate through each character as a potential center (and between characters) and expand outwards."
+    },
+    {
+      "title": "Minimum Cost to Cut a Stick",
+      "description": "Given a wooden stick of length n and a list of cuts.cuts where cuts[i] is the position where you need to perform a cut. The cost of cutting a stick is the length of the stick being cut. Your goal is to minimize the total cost of the cuts. The cuts are performed in any order you want.",
+      "startingPoint": "This problem can be framed as a dynamic programming problem on intervals. Add 0 and n to the `cuts` array and sort it. Let dp[i][j] be the minimum cost to cut the stick segment from cuts[i] to cuts[j]. The cost depends on where the *last* cut in this segment is made."
+    },
+    {
+      "title": "Coin Change II",
+      "description": "You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money. Return the number of combinations that make up that amount. If that amount of money cannot be made up by any combination of the coins, return 0. Assume that you have an infinite number of each kind of coin.",
+      "startingPoint": "This is an unbounded knapsack-like DP problem. Let dp[i][j] be the number of ways to make amount j using the first i coin denominations. A more optimized space approach uses dp[j] representing the number of ways to make amount j, iterating through coins first, then amounts."
+    },
+    {
+      "title": "Integer Break",
+      "description": "Given an integer n, break it into the sum of k positive integers, where k >= 2, and maximize the product of those integers. Return the maximum product you can get.",
+      "startingPoint": "Consider breaking down the problem for smaller n. This suggests a dynamic programming approach. Let dp[i] be the maximum product you can get by breaking integer i. To calculate dp[i], consider all possible first breaks j (1 <= j < i) and the remaining part (i-j). The product will be max(j * (i-j), j * dp[i-j])."
+    },
+    {
+      "title": "Validate Binary Search Tree",
+      "description": "Given the root of a binary tree, determine if it is a valid binary search tree (BST). A valid BST is defined as follows: The left subtree of a node contains only nodes with keys less than the node's key. The right subtree of a node contains only nodes with keys greater than the node's key. Both the left and right subtrees must also be binary search trees.",
+      "startingPoint": "A common mistake is to only check adjacent nodes. You need to maintain a valid range (min and max bounds) for the node values as you traverse the tree, passing these bounds recursively. Start with bounds (-infinity, +infinity) for the root."
+    },
+    {
+      "title": "Serialize and Deserialize Binary Tree",
+      "description": "Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.\nDesign an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work. You just need to be able to serialize a binary tree to a string and deserialize the string to the original tree structure.",
+      "startingPoint": "Choose a traversal method (e.g., pre-order, level-order) to serialize the tree. You'll need a way to represent null nodes to correctly reconstruct the tree during deserialization. Use a marker value (like '#') for nulls and a separator (like ',') between node values."
+    },
+    {
+      "title": "Lowest Common Ancestor of a Binary Tree",
+      "description": "Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.",
+      "startingPoint": "Recursively search for the two nodes (p and q) in the left and right subtrees. If both nodes are found in different subtrees of the current node, the current node is the LCA. If one node is found and the other is not, the found node (if it's also an ancestor) is the LCA. If neither is found, return null."
+    },
+    {
+      "title": "Binary Tree Right Side View",
+      "description": "Given the root of a binary tree, imagine yourself standing on the right side of it, return the values of the nodes you can see ordered from top to bottom.",
+      "startingPoint": "This can be solved using Level Order Traversal (BFS). For each level, the last node visited is the one visible from the right side. Alternatively, use a modified DFS where you prioritize visiting the right child first and keep track of the current level to add the first node encountered at each level."
+    },
+    {
+      "title": "Count of Smaller Numbers After Self",
+      "description": "You are given an integer array nums. You need to build a new array counts such that counts[i] is the number of elements to the right of nums[i] that are smaller than nums[i].",
+      "startingPoint": "A naive O(n^2) approach is too slow. This problem can be solved efficiently using a modified Merge Sort or a Fenwick tree/Segment tree after coordinate compression, or a Binary Indexed Tree. The key is to count inversions while sorting."
+    },
+    {
+      "title": "Construct Binary Tree from Preorder and Inorder Traversal",
+      "description": "Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and inorder is the inorder traversal of the same tree, construct and return the binary tree.",
+      "startingPoint": "In a preorder traversal, the first element is always the root. In an inorder traversal, the elements to the left of the root are in the left subtree, and elements to the right are in the right subtree. Use recursion: find the root in preorder, locate it in inorder to find the split point for left/right subtrees, and recursively build the subtrees."
+    },
+    {
+      "title": "Convert Binary Search Tree to Sorted Doubly Linked List",
+      "description": "Convert a Binary Search Tree to a sorted Circular Doubly-Linked List in-place. The left and right pointers of a tree node should be used to represent the previous and next pointers of a doubly linked list. The order of nodes in the doubly linked list should be the same as in an in-order traversal of the BST. The generated doubly linked list should be circular, meaning the end of the list should connect to the beginning and vice versa.",
+      "startingPoint": "Perform an in-order traversal. Maintain pointers to the `previous` node visited. As you visit a node, link it to the `previous` node. Special handling is needed for the first and last nodes to make the list circular."
+    },
+    {
+      "title": "Binary Tree Level Order Traversal",
+      "description": "Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).",
+      "startingPoint": "Use a queue. Add the root to the queue. While the queue is not empty, process all nodes at the current level, add their children to the queue, and collect the values for the current level before moving to the next."
+    },
+    {
+      "title": "Clone Graph",
+      "description": "Given a reference of a node in a connected undirected graph. Return a deep copy (clone) of the graph. Each node in the graph contains a value (int) and a list (List[Node]) of its neighbors.",
+      "startingPoint": "This is a graph traversal problem combined with copying. Use BFS or DFS. You'll need a way to keep track of visited nodes and their corresponding clones to avoid infinite loops and to correctly link neighbors. A HashMap mapping original nodes to cloned nodes is useful."
+    },
+    {
+      "title": "Graph Valid Tree",
+      "description": "You have a graph of n nodes labeled from 0 to n - 1 with a given list of edges. Return true if the graph is a valid tree, and false otherwise. A valid tree is a connected graph with no cycles.",
+      "startingPoint": "A graph is a valid tree if and only if it has exactly n-1 edges and is connected (reachable from a single source) AND has no cycles. You can check connectivity using BFS or DFS. You can check for cycles during the traversal or using a Union-Find data structure. If using Union-Find, adding an edge between two nodes already in the same set indicates a cycle."
+    },
+    {
+      "title": "Alien Dictionary",
+      "description": "There is a new alien language which uses the latin alphabet. However, the order among letters are unknown to you. You receive a list of non-empty words from the dictionary, where words are sorted lexicographically by the rules of this new language. Derive the order of letters in this language. If the order is invalid, return an empty string. If there are multiple valid orders, return any of them.",
+      "startingPoint": "This problem can be modeled as a graph problem where characters are nodes and a directed edge u -> v exists if character u comes before character v in the alien alphabet. Build this graph by comparing adjacent words. Then, find a topological sort of the graph. If a topological sort is not possible (due to a cycle), the order is invalid."
+    },
+    {
+      "title": "Network Delay Time",
+      "description": "You are given a network of n nodes, labeled from 1 to n. You are also given times, a list of travel times as directed edges times[i] = (ui, vi, wi), where ui is the source node, vi is the target node, and wi is the time it takes for a signal to travel from source to target. We will send a signal from a given node k. Return the minimum time it takes for all the n nodes to receive the signal. If it is impossible for all the n nodes to receive the signal, return -1.",
+      "startingPoint": "This is a shortest path problem on a weighted directed graph from a single source. Dijkstra's algorithm is suitable here. Use a priority queue to efficiently extract the node with the minimum distance found so far."
+    },
+    {
+      "title": "Find the Town Judge",
+      "description": "In a town, there are n people labeled from 1 to n. There is a rumor that one of these people is secretly the town judge. If the town judge exists, then: The town judge trusts nobody. Everybody (except for the town judge himself) trusts the town judge. There is exactly one person that satisfies properties 1 and 2.\nYou are given an array trust, where trust[i] = [ai, bi] representing that the person labeled ai trusts the person labeled bi. Return the label of the town judge if the town judge exists and can be identified, or return -1 otherwise.",
+      "startingPoint": "This can be solved by tracking the 'in-degree' and 'out-degree' of each person (node in a directed graph). The town judge would have an out-degree of 0 and an in-degree of n-1. Iterate through the trust relationships to populate degree counts and then check for a person meeting these criteria."
+    },
+    {
+      "title": "Shortest Path with Alternating Colors",
+      "description": "You are given a directed graph, where each edge is either red or blue. There could be self-loops and parallel edges. You are given two arrays, redEdges and blueEdges, where redEdges[i] = [ui, vi] denotes a directed red edge from node ui to node vi, and similarly for blueEdges.\nReturn an array answer of length n, where answer[x] is the length of the shortest path from node 0 to node x such that the edge colors alternate along the path. If such a path does not exist, return -1.",
+      "startingPoint": "This is a variation of BFS. The state in your BFS should not just be the node, but also the color of the *last* edge used to reach this node. This prevents using two edges of the same color consecutively. You'll need to keep track of the minimum distance to reach a node using a red edge and using a blue edge separately."
+    },
+    {
+      "title": "Cheapest Flights Within K Stops",
+      "description": "There are n cities connected by some number of flights. You are given an array flights where flights[i] = [fromi, toi, pricei] indicates that there is a flight from city fromi to city toi with cost pricei.\nYou are also given three integers src, dst, and k. Return the cheapest price from src to dst with at most k stops. If there is no such route, return -1.",
+      "startingPoint": "This problem can be solved using BFS or a dynamic programming approach similar to Bellman-Ford, but constrained by the number of stops. Use BFS where the queue stores (current_city, current_cost, current_stops). Be careful to handle visiting nodes multiple times if a cheaper path with fewer stops is found later."
+    },
+    {
+      "title": "Critical Connections in a Network",
+      "description": "There are n servers numbered from 0 to n - 1 connected by undirected bridges. You are given a connections array where connections[i] = [ai, bi] represents a connection between servers ai and bi.\nA connection is critical if removing it will make some servers unable to reach some other servers that they could reach previously. Return a list of all critical connections.",
+      "startingPoint": "This is a graph problem to find bridges. A bridge is an edge whose removal increases the number of connected components. Tarjan's algorithm or an algorithm using DFS and discovery/low-link times is suitable. Maintain discovery times (when a node is first visited) and lowest back-edge times (the earliest visited ancestor reachable from the current subtree)."
+    },
+    {
+      "title": "Design LRU Cache",
+      "description": "Design a data structure that follows the constraints of a Least Recently Used (LRU) cache. Implement the LRUCache class: LRUCache(int capacity) Initializes the LRU cache with positive size capacity. int get(int key) Return the value of the key if the key exists, otherwise return -1. void put(int key, int value) Update the value of the key if the key exists. Otherwise, add the key-value pair to the cache. If the number of keys exceeds the capacity from this operation, evict the least recently used key.",
+      "startingPoint": "An LRU cache needs O(1) lookup, insertion, and deletion. A combination of a Doubly Linked List and a HashMap is a standard solution. The Doubly Linked List maintains the order of usage (most recently used at one end, least recently used at the other). The HashMap maps keys to the nodes in the Doubly Linked List for O(1) access."
+    },
+    {
+      "title": "Design Min Stack",
+      "description": "Design a stack that supports push, pop, top, and retrieving the minimum element in constant time. Implement the MinStack class: MinStack() initializes the stack object. void push(int val) pushes the element val onto the stack. void pop() removes the element on top of the stack. int top() gets the top element of the stack. int getMin() retrieves the minimum element in the stack in constant time.",
+      "startingPoint": "To get the minimum in O(1), you can't just use a single stack. Consider using an auxiliary stack to keep track of the minimum element seen so far at each level of the main stack. When pushing, if the new element is less than or equal to the current minimum, push it onto the min stack. When popping, if the popped element is the current minimum, also pop from the min stack."
+    },
+    {
+      "title": "Design Underground System",
+      "description": "Implement the UndergroundSystem class: void checkIn(int id, string stationName, int t) A customer with a card ID is in stationName at time t. A customer can only be checked into one place at a time.\nvoid checkOut(int id, string stationName, int t) A customer with a card ID is at stationName at time t. double getAverageTime(string startStation, string endStation) Returns the average time it takes to travel from startStation to endStation. The average time is computed from all the previous traversals from startStation to endStation that happened up to the moment the averageTime is called. Average time computation should be accurate to within 10^-5.",
+      "startingPoint": "You need to store check-in information per customer and aggregate travel times between station pairs. Use a map to store check-in details (customer ID -> {start_station, start_time}). Use another map to store travel times per route (start_station + '->' + end_station -> {total_time, count}). Update these maps on check-out and calculate the average on demand."
+    },
+    {
+      "title": "Design Twitter",
+      "description": "Design a simplified version of Twitter where users can post tweets, follow/unfollow other users, and see a news feed composed of tweets from themselves and their followed users. Implement the Twitter class: postTweet(userId, tweetId): Compose a new tweet. getNewsFeed(userId): Retrieve the 10 most recent tweet IDs in the user's news feed. A news feed consists of tweets from users that the user follows (including themselves). The tweets should be ordered from most recent to least recent. follow(followerId, followeeId): The user with ID followerId started following the user with ID followeeId. unfollow(followerId, followeeId): The user with ID followerId stopped following the user with ID followeeId.",
+      "startingPoint": "You'll need data structures to store users, their tweets (perhaps with timestamps), and who follows whom. A HashMap for users mapping to their tweets (e.g., List of tweet IDs with timestamps) and another HashMap for follow relationships (follower ID -> Set of followee IDs) are good starting points. Generating the news feed efficiently requires merging tweets from multiple sources and retrieving the most recent ones (consider using a priority queue or merging sorted lists)."
+    },
+    {
+      "title": "Implement Trie (Prefix Tree)",
+      "description": "Implement a Trie (Prefix Tree) with insert, search, and startsWith methods.",
+      "startingPoint": "A Trie is a tree-like data structure where each node represents a character. Each node has children representing the next possible characters. Mark nodes that represent the end of a word. For insertion, traverse the Trie and add nodes as needed. For search and startsWith, traverse the Trie following the characters of the target string."
+    },
+    {
+      "title": "Design Search Autocomplete System",
+      "description": "Design a search autocomplete system for a search engine. Users type sequence of characters, and the system returns a list of popular sentences that start with the prefix. Implement the AutocompleteSystem class: AutocompleteSystem(String[] sentences, int[] times) Initializes the system with the input sentences and their corresponding times (frequency). List<String> input(char c) When the user types a character c, the system should return 3 most hot sentences that have the current input string as prefix. If the input character is '#', it means the user finishes typing the current sentence, and the system should record the sentence and its frequency. The output sentences should be sorted by hotness (frequency) in descending order. If two sentences have the same hotness, they should be sorted alphabetically.",
+      "startingPoint": "Combine a Trie with frequency information. Each node in the Trie should store information about sentences that pass through it and their frequencies. When a user types a character, traverse the Trie. From the current Trie node, collect all sentences in its subtree and their frequencies, then sort and return the top 3. When '#' is typed, update the frequency of the completed sentence in the Trie."
+    },
+    {
+      "title": "Design File System",
+      "description": "Design a file system that supports the following operations: createPath(path, value): Creates a new path and associates a value with it. Returns true if the path was successfully created, false otherwise (e.g., parent path doesn't exist). get(path): Returns the value associated with the path, or -1 if the path doesn't exist.",
+      "startingPoint": "Represent the file system as a tree where nodes are directories/files. Use a HashMap to store paths and their corresponding values. To implement `createPath`, traverse the path components, ensuring each parent exists before creating the child. To implement `get`, simply look up the path in the HashMap."
+    },
+    {
+      "title": "Design In-Memory File System",
+      "description": "Design a text file system that supports the following operations: `ls` (list directories/files), `mkdir` (create directory), `addContentToFile` (add content to file), `readContentFromFile` (read content from file). Assume paths are absolute paths starting with '/'.",
+      "startingPoint": "This is a more complex version of the File System design. Again, use a tree structure. Each node can represent a directory or a file. Directory nodes should store a map of their children (name -> node). File nodes should store their content. Implement the operations by traversing the tree based on the path components."
+    },
+    {
+      "title": "Combination Sum II",
+      "description": "Given a collection of candidate numbers (candidates) and a target number (target), find all unique combinations in candidates where the candidate numbers sum to target. Each number in candidates may only be used once in the combination. Note: The solution set must not contain duplicate combinations.",
+      "startingPoint": "This is a backtracking problem. Sort the candidates first to easily handle duplicates. In the recursive step, for each number, you have two choices: include it or not. If you include it, move to the next element. If you don't include it, move to the next element. Skip duplicates by only considering the first occurrence of a number in a block of duplicates at each decision point."
+    },
+    {
+      "title": "Permutations II",
+      "description": "Given a collection of numbers, nums, that might contain duplicates, return all possible unique permutations in any order.",
+      "startingPoint": "This is a backtracking problem with duplicates. Similar to Combination Sum II, sort the input array first. Use a boolean array or similar mechanism to track which elements have been used in the current permutation. To avoid duplicate permutations, when exploring choices at a certain position, skip elements that are the same as the previous element if the previous element hasn't been used in the current permutation yet."
+    },
+    {
+      "title": "Subsets II",
+      "description": "Given an integer array nums that may contain duplicates, return all possible subsets (the power set). The solution set must not contain duplicate subsets. Return the solution in any order.",
+      "startingPoint": "This is a backtracking problem with duplicates. Sort the input array. The recursive step involves deciding whether to include the current element or not. To avoid duplicate subsets, if the current element is the same as the previous one, and the previous one was *not* included in the previous recursive call, then do not include the current element either (to avoid generating the same subset twice)."
+    },
+    {
+      "title": "N-Queens",
+      "description": "The n-queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other. Given an integer n, return all distinct solutions to the n-queens puzzle. Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space, respectively.",
+      "startingPoint": "This is a classic backtracking problem. Use recursion to place queens column by column or row by row. At each step, check if placing a queen at the current position is valid (doesn't attack previously placed queens). If valid, place the queen and recurse for the next column/row. If invalid or after exploring all possibilities from the current position, backtrack (remove the queen and try the next position)."
+    },
+    {
+      "title": "Sudoku Solver",
+      "description": "Write a program to solve a Sudoku puzzle by filling the empty cells. A sudoku solution must satisfy all of the following rules: Each of the digits 1-9 must occur exactly once in each row. Each of the digits 1-9 must occur exactly once in each column. Each of the digits 1-9 must occur exactly once in each of the nine 3x3 subboxes of the grid.\nThe empty cells are indicated by '.'",
+      "startingPoint": "This is a backtracking problem. Find an empty cell. Try placing digits 1-9 in that cell. For each digit, check if it is valid according to Sudoku rules (row, column, 3x3 box). If valid, place the digit and recursively try to solve the rest of the puzzle. If the recursive call returns true (puzzle solved), return true. If not, backtrack (remove the digit) and try the next digit. If no digit works, return false."
+    },
+    {
+      "title": "Jump Game II",
+      "description": "You are given a 0-indexed array of integers nums of length n. You are initially located at index 0. Each element nums[i] represents the maximum length of a forward jump from index i. Return the minimum number of jumps to reach the last index. The test cases are generated such that you can always reach the last index.",
+      "startingPoint": "This can be solved using a greedy approach or BFS. With greedy, iterate through the array and keep track of the maximum reach from the current position and the maximum reach from the previous jump. Increment the jump count when you need to make a new jump to extend your reach."
+    },
+    {
+      "title": "Merge Intervals",
+      "description": "Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.",
+      "startingPoint": "Sort the intervals based on their start times. Iterate through the sorted intervals, merging the current interval with the previous one if they overlap. If they don't overlap, add the previous merged interval to the result and start a new merged interval with the current one."
+    },
+    {
+      "title": "Meeting Rooms II",
+      "description": "Given an array of meeting time intervals consisting of start and end times [[s1,e1],[s2,e2],...] (si < ei), find the minimum number of conference rooms required.",
+      "startingPoint": "Sort the intervals by start times. Use a min-heap (priority queue) to keep track of the end times of meetings currently in progress. For each meeting, if its start time is greater than or equal to the earliest end time in the heap, a room is freed, so pop from the heap. Always push the current meeting's end time onto the heap. The size of the heap at the end is the minimum number of rooms required."
+    },
+    {
+      "title": "Assign Cookies",
+      "description": "Assume you are an awesome parent and want to give your children some cookies. You have a list of childs' greed factors and a list of cookies' sizes. A cookie of size s satisfies a child with greed factor g if s >= g. You want to maximize the number of your satisfied children and output the maximum number. Note: You may assume the greed factors and cookie sizes are non-negative and will not exceed a 32-bit signed integer. A child can only be satisfied with at most one cookie. A cookie can only be used for at most one child.",
+      "startingPoint": "Use a greedy approach. Sort both the children's greed factors and the cookie sizes. Iterate through the cookies (or children) and greedily assign the smallest cookie that can satisfy the smallest greed factor child (or vice versa, assign the smallest child the smallest possible cookie). Since both are sorted, this greedy choice is optimal."
+    },
+    {
+      "title": "Largest Number",
+      "description": "Given a list of non-negative integers nums, arrange them such that they form the largest number and return it as a string. Since the result may be very large, so you need to return a string instead of an integer.",
+      "startingPoint": "This is a greedy sorting problem with a custom comparison. Convert the numbers to strings. Sort these strings using a custom comparator that decides which of two strings 'a' and 'b' should come first by comparing 'a' + 'b' and 'b' + 'a'. Concatenate the sorted strings. Handle the edge case where the largest number is 0 (input is all zeros)."
+    },
+    {
+      "title": "Merge Sort Implementation",
+      "description": "Implement the Merge Sort algorithm for sorting an array of integers. The implementation should be recursive and include the merge step.",
+      "startingPoint": "Merge Sort is a divide and conquer algorithm. Recursively divide the array into two halves until you reach subarrays of size 1 (base case). Then, merge the sorted subarrays back together. The merge step is crucial: take two sorted subarrays and combine them into a single sorted array."
+    },
+    {
+      "title": "Count of Smaller Numbers After Self (Divide and Conquer)",
+      "description": "You are given an integer array nums. You need to build a new array counts such that counts[i] is the number of elements to the right of nums[i] that are smaller than nums[i]. Implement this using a Divide and Conquer approach, specifically modifying Merge Sort.",
+      "startingPoint": "Modify the merge step of Merge Sort. When merging two sorted subarrays (left and right), if an element from the left subarray is being placed into the merged array, any elements remaining in the right subarray that are smaller than this left element contribute to the count of smaller numbers for the original position of this left element. Keep track of the original indices of the numbers as you sort pairs of (value, original_index)."
+    },
+    {
+      "title": "Majority Element",
+      "description": "Given an array nums of size n, return the majority element. The majority element is the element that appears more than n / 2 times. You may assume that the majority element always exists in the array.",
+      "startingPoint": "While a HashMap or sorting works, a more efficient Divide and Conquer approach (or the Moore's Voting Algorithm, which is related) is possible. The D&C approach recursively finds the majority element in the left and right halves. If they are the same, that's the majority. If different, count occurrences of both candidates in the full array."
+    },
+    {
+      "title": "Different Ways to Add Parentheses",
+      "description": "Given a string expression of numbers and operators, return all possible results from computing all the different possible ways to group numbers and operators. You may return the answer in any order.",
+      "startingPoint": "This problem can be solved using Divide and Conquer with memoization. For a given expression, iterate through all operators. For each operator, recursively compute all possible results for the left and right sides of the operator. Then, combine these results based on the operator. Use a HashMap to store results for subexpressions to avoid redundant calculations."
+    },
+    {
+      "title": "Pow(x, n)",
+      "description": "Implement pow(x, n), which computes x raised to the power n (i.e., x^n).",
+      "startingPoint": "A naive iterative solution is O(n). A more efficient approach uses Divide and Conquer (or binary exponentiation). x^n = (x^(n/2))^2 if n is even, and x^n = x * (x^(n/2))^2 if n is odd. Handle negative exponents (x^-n = 1 / x^n) and the base cases (n=0, n=1)."
+    },
+    {
+      "title": "Single Number III",
+      "description": "Given an integer array nums, in which exactly two elements appear only once and all the other elements appear exactly twice. Find the two elements that appear only once. You can return the answer in any order.",
+      "startingPoint": "First, XOR all numbers in the array. The result is the XOR of the two unique numbers (let's call them A and B). Since A and B are different, their XOR will have at least one set bit. Find any set bit in the XOR result. This bit will be different for A and B. Use this bit to partition the original array into two groups: one where this bit is set, and one where it's not. A and B will fall into different groups. XOR all numbers in each group separately to find A and B."
+    },
+    {
+      "title": "Counting Bits",
+      "description": "Given an integer n, return an array ans of length n + 1 such that for each i (0 <= i <= n), ans[i] is the number of ones in the binary representation of i.",
+      "startingPoint": "A naive approach counts bits for each number individually (O(n log n)). A dynamic programming or bit manipulation approach can achieve O(n). Observe the pattern: the number of set bits in i can often be derived from numbers smaller than i. For example, i has the same number of set bits as i >> 1 plus 1 if the last bit of i is 1. Another relation is using the property `i & (i - 1)` removes the lowest set bit."
+    },
+    {
+      "title": "Reverse Bits",
+      "description": "Reverse bits of a given 32-bit unsigned integer.",
+      "startingPoint": "Iterate through the 32 bits. For each bit, check if it's set. If it is, set the corresponding bit in the result (starting from the least significant bit). You can use bitwise operations: right shift the original number and left shift the result."
+    },
+    {
+      "title": "Power of Two / Three / Four",
+      "description": "Given an integer n, return true if it is a power of two (or three, or four). An integer n is a power of two if there exists an integer x such that n == 2^x.",
+      "startingPoint": "For power of two: positive numbers that are powers of two have only one bit set in their binary representation. This can be checked using `n > 0 && (n & (n - 1)) == 0`. For power of three/four: repeatedly divide n by the base (3 or 4) until it's 1. If at any point it's not divisible or becomes something other than 1, it's not a power of that base. Alternatively, use logarithmic properties or check if n is a divisor of the largest power of the base within the integer range."
+    },
+    {
+      "title": "Maximum XOR of Two Numbers in an Array",
+      "description": "Given an integer array nums, return the maximum result of nums[i] XOR nums[j], where 0 <= i <= j < n.",
+      "startingPoint": "A naive O(n^2) approach is too slow. This can be solved efficiently using a Trie (Prefix Tree) on the binary representations of the numbers. Insert all numbers into the Trie. Then, for each number, traverse the Trie trying to find a number that maximizes the XOR. At each bit position, try to take the opposite bit of the current number to maximize the XOR sum."
+    },
+    {
+      "title": "Course Schedule II",
+      "description": "There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai. Return the topological order you should follow to finish all courses. If it is impossible to finish all courses, return an empty array.",
+      "startingPoint": "This is a classic Topological Sort problem. Build a directed graph where an edge exists from bi to ai if bi is a prerequisite for ai. Calculate the in-degree (number of prerequisites) for each course. Use a queue for Kahn's algorithm: add all nodes with an in-degree of 0 to the queue. While the queue is not empty, dequeue a node, add it to the result, and decrement the in-degree of its neighbors. If a neighbor's in-degree becomes 0, enqueue it. If the number of nodes in the result equals numCourses, return the result; otherwise, there's a cycle, return an empty array."
+    },
+    {
+      "title": "Minimum Height Trees",
+      "description": "A tree is an undirected graph in which any two nodes are connected by exactly one path. In other words, it is a connected graph without cycles. Given a tree of n nodes labeled from 0 to n - 1, and an array of n - 1 edges where edges[i] = [ai, bi] indicates that there is an undirected edge between the two nodes ai and bi. Find the roots of the minimum height trees (MHTs) and return a list of all their roots. A minimum height tree is a tree rooted at a node such that the tree has the minimum possible height.",
+      "startingPoint": "Think of peeling layers from the outside of the tree. Leaves have an in-degree of 1 (in an undirected graph representation, degree 1 nodes are leaves). Remove all leaves and their edges. The new leaves are the next layer. Repeat this process. The last one or two nodes remaining in the center are the roots of the MHTs. This is similar to a reverse topological sort."
+    },
+    {
+      "title": "Sequence Reconstruction",
+      "description": "You are given a sequence org that is a permutation of the integers from 1 to n. You are also given an array of sequences, seqs. Determine if org is the only unique supersequence of seqs. A supersequence is a sequence that contains all seqs as subsequences. org is the only unique supersequence if and only if org is a supersequence of all seqs and there is no other supersequence of seqs that is also a permutation of [1, n].",
+      "startingPoint": "This can be framed as a topological sort problem. Build a graph where an edge u -> v exists if u appears immediately before v in any sequence in `seqs`. Calculate in-degrees. Perform a topological sort. If at any point during the topological sort, there is more than one node with an in-degree of 0 ready to be processed, or if the resulting topological sort is not identical to `org`, then `org` is not the *only* unique supersequence. A valid unique supersequence implies a unique topological sort, which requires that at each step, only one node has an in-degree of 0."
+    },
+    {
+      "title": "Parallel Courses",
+      "description": "You are given an integer n, which indicates that there are n courses labeled from 1 to n. You are also given an array relations where relations[i] = [prevCourse, nextCourse] indicates that course prevCourse has to be completed before course nextCourse. In one semester, you can take any number of courses as long as you have completed the prerequisites for the courses you are taking. Return the minimum number of semesters to take all courses. If it is impossible to take all courses, return -1.",
+      "startingPoint": "This is a graph problem that can be solved using topological sort and tracking the 'semester' or depth. Build a directed graph based on the relations. Calculate in-degrees. Use a queue for topological sort. Maintain an array or map `semesters[course]` representing the minimum semester the course can be taken. When processing a node, its neighbors can be taken in the next semester. Update their minimum semesters and enqueue them if their prerequisites are met. The maximum value in the `semesters` array is the minimum number of semesters needed."
+    },
+    {
+      "title": "Code Refactoring for Optimal Performance",
+      "description": "You are given a suboptimal code snippet that solves a common algorithmic problem (e.g., finding a pair with a specific sum, finding a subarray). The current implementation uses nested loops resulting in O(n^2) time complexity. Analyze the code, identify the performance bottleneck, and refactor it to an optimal solution using appropriate data structures or algorithms (e.g., Hash Map, Two Pointers, Sliding Window) to achieve a better time complexity (ideally O(n) or O(n log n)). Document the original and refactored code, explaining the performance improvement and the chosen approach.",
+      "startingPoint": "Examine the provided code snippet. Understand the problem it's trying to solve. Analyze its time and space complexity using Big O notation. Identify where the most expensive operations occur (likely nested loops). Consider alternative data structures or algorithms that could reduce the number of operations (e.g., converting lookups from O(n) to O(1) with a hash map, or using two pointers/sliding window on a sorted array). Implement the refactored solution, ensuring correctness and testing it with edge cases. Document the process and explain the complexity differences."
+    },
+    {
+      "title": "Deep Dive into Algorithm Complexity Analysis",
+      "description": "Choose one of the complex algorithms covered (e.g., Dijkstra's algorithm, a complex DP problem like Edit Distance, a graph algorithm like Critical Connections). Provide a detailed analysis of its time and space complexity. Consider worst-case scenarios for the input data. If applicable, discuss average-case complexity and how data structure choices impact performance. Explain the memory usage patterns and any potential memory bottlenecks. Write down the derivation of the Big O notation.",
+      "startingPoint": "Select an algorithm. Break down the algorithm into its core steps (e.g., graph traversal, priority queue operations, DP state calculations). Analyze the time complexity of each step in terms of the input size (e.g., number of nodes V, number of edges E, input string length n). Sum up the complexities of the steps to get the overall time complexity. Do the same for space complexity, considering auxiliary data structures used (e.g., visited arrays, distance arrays, DP table size, stack space for recursion). Clearly state your assumptions about the data structures used (e.g., using a Fibonacci heap vs. a binary heap for Dijkstra). Write a clear explanation of your analysis."
+    },
+    {
+      "title": "Designing for Robustness - Handling Edge Cases and Errors",
+      "description": "Consider a problem that involves handling various edge cases and potential errors (e.g., graph problems with disconnected components or invalid inputs, tree problems with null nodes, array problems with empty or single-element inputs, invalid numerical inputs). Design and implement a solution that is robust and handles these scenarios gracefully. Your implementation should include explicit checks for edge cases and error conditions. Provide examples of the edge cases you considered and how your code handles them. Discuss potential error scenarios and strategies for validation and error reporting.",
+      "startingPoint": "Choose a problem known for edge cases (e.g., graph traversals on disconnected graphs, tree algorithms on empty or single-node trees, problems involving division or square roots where input can be zero or negative). Brainstorm a comprehensive list of potential edge cases and invalid inputs for this problem. Modify your algorithm design to explicitly account for these cases. Implement the solution, adding checks (e.g., null checks, boundary checks, input validation). Consider using exceptions or specific return values to signal errors. Write test cases specifically targeting these edge cases to verify robustness. Document the edge cases handled and the error handling strategy."
+    },
+    {
+      "title": "Improving Code Readability and Maintainability in Practice",
+      "description": "Given a functional but poorly structured or documented code snippet (e.g., a long function doing multiple things, cryptic variable names, lack of comments, tight coupling), refactor it to improve readability, maintainability, and modularity. Break down the code into smaller, well-named functions with single responsibilities. Use descriptive variable names. Add comments where necessary to explain complex logic or design choices. Discuss the principles you applied (e.g., Single Responsibility Principle, Don't Repeat Yourself). Explain why the refactored code is easier to understand, test, and modify.",
+      "startingPoint": "Obtain a code snippet that needs refactoring. Read through the original code to understand its functionality and identify areas for improvement (e.g., long methods, redundant code, hard-to-understand logic). Apply refactoring techniques: extract methods/functions, rename variables and functions to be more descriptive, introduce constants for magic numbers, add comments explaining the 'why' not just the 'what', potentially introduce classes or data structures to group related data and behavior if the problem complexity warrants it. After refactoring, compare the original and new code, highlighting the improvements in a written explanation, referencing principles of clean code and software design."
+    }
+  ],
+  "coodingPatterns": [
+    {
+      "patternName": "Sliding Window",
+      "totalProblems": 6,
+      "info": "A technique used on arrays or lists to process a contiguous subarray or sublist of a fixed or variable size. It helps reduce the time complexity, often from O(n^2) to O(n), by avoiding redundant calculations on overlapping segments.",
+      "problems": [
+        {
+          "title": "Longest Substring with At Most K Distinct Characters",
+          "description": "Given a string s and an integer k, return the length of the longest substring of s that contains at most k distinct characters.",
+          "startingPoint": "Use a sliding window [left, right]. Maintain a frequency map (or HashMap) of characters within the window. Expand the window by moving 'right'. If the number of distinct characters exceeds k, shrink the window from the 'left' until the distinct count is within k. Keep track of the maximum window size encountered."
+        },
+        {
+          "title": "Minimum Window Substring",
+          "description": "Given two strings s and t of lengths m and n respectively, return the minimum window substring of s such that every character in t (including duplicates) is included in the window. If there is no such substring, return the empty string ''. The testcases will be generated such that the answer is always unique.",
+          "startingPoint": "Use a sliding window [left, right]. Maintain two frequency maps: one for characters needed from t, and one for characters currently in the window. Use a counter for the number of characters in t that are matched in the window. Expand the window with 'right'. When all characters in t are matched, try to shrink the window from the 'left' while maintaining the matched condition and track the minimum window size."
+        },
+        {
+          "title": "Sliding Window Maximum",
+          "description": "You are given an array of integers nums, there is a sliding window of size k which is moving from the very left of the array to the very right. You can only see the k numbers in the window. Each time the sliding window moves right by one position. Return the max sliding window.",
+          "startingPoint": "A naive approach is O(nk). Use a deque (double-ended queue) to store indices of elements in the current window. The deque should store indices in decreasing order of their corresponding values. When moving the window, remove indices outside the window from the front of the deque. Before adding a new index, remove indices from the back of the deque whose values are less than the new element. The maximum element in the window is always at the front of the deque."
+        },
+        {
+          "title": "Permutation in String",
+          "description": "Given two strings s1 and s2, return true if s2 contains a permutation of s1, or false otherwise. In other words, return true if one of s1's permutations is the substring of s2.",
+          "startingPoint": "This is a sliding window problem. The window size is fixed to the length of s1. Maintain frequency maps (or arrays) for s1 and the current window in s2. Slide the window across s2. At each step, compare the frequency map of the window with the frequency map of s1. If they match, a permutation is found. You can optimize the comparison by tracking the number of character counts that match."
+        },
+        {
+          "title": "Find All Anagrams in a String",
+          "description": "Given two strings s and p, return an array of all the start indices of p's anagrams in s. You may return the answer in any order. An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.",
+          "startingPoint": "Similar to Permutation in String. Use a sliding window of size equal to the length of p. Maintain frequency maps for p and the current window. Slide the window. When the frequency map of the window matches that of p, record the starting index of the window."
+        },
+        {
+          "title": "Smallest Subarray With a Greater Sum",
+          "description": "Given an array of positive numbers and a positive number S, find the length of the smallest contiguous subarray whose sum is greater than or equal to S. Return 0 if no such subarray exists.",
+          "startingPoint": "Use a sliding window. Initialize a window from the beginning. Expand the window by adding elements to the right end and keeping track of the current window sum. If the window sum is greater than or equal to S, update the minimum length found so far. Then, shrink the window from the left end while the sum remains >= S, updating the minimum length at each step. Continue expanding with the right end."
+        }
+      ]
+    },
+    {
+      "patternName": "Two Pointers",
+      "totalProblems": 6,
+      "info": "A technique that uses two pointers to iterate through an array or list. The pointers can move in the same direction or opposite directions, often meeting in the middle. It's useful for problems involving sorted arrays, finding pairs, or partitioning.",
+      "problems": [
+        {
+          "title": "3Sum",
+          "description": "Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0. Notice that the solution set must not contain duplicate triplets.",
+          "startingPoint": "Sort the array. Iterate through the array with one pointer (say, `i`). For each `nums[i]`, use two pointers (`left` and `right`) initialized at `i + 1` and the end of the array respectively. Move `left` and `right` inwards to find pairs that sum to `-nums[i]`. Be careful to skip duplicate values for `nums[i]`, `nums[left]`, and `nums[right]` to avoid duplicate triplets."
+        },
+        {
+          "title": "Container With Most Water",
+          "description": "You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the i-th line are (i, 0) and (i, height[i]). Find two such lines that together with the x-axis form a container, such that the container contains the most water. Return the maximum amount of water a container can store. Notice that you may not slant the container.",
+          "startingPoint": "Use two pointers, one at the beginning (`left`) and one at the end (`right`) of the height array. The area is determined by the minimum of the two heights multiplied by the distance between them. To maximize the area, intuitively, you want to keep the taller line and move the shorter line inwards, as moving the taller line would only decrease or keep the width the same while potentially decreasing the minimum height. Move the pointer pointing to the shorter line inwards."
+        },
+        {
+          "title": "Trapping Rain Water",
+          "description": "Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.",
+          "startingPoint": "This can be solved with dynamic programming, two pointers, or a stack. With two pointers: use left and right pointers starting at the ends. Maintain `max_left` and `max_right` as the maximum heights encountered so far from the left and right respectively. If `height[left] < height[right]`, the water trapped at `left` depends on `max_left`. Move `left` inwards. Otherwise, water trapped at `right` depends on `max_right`. Move `right` inwards."
+        },
+        {
+          "title": "Sort Colors",
+          "description": "Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white, and blue. We will use the integers 0, 1, and 2 to represent the color red, white, and blue, respectively. You must solve this problem without using the library's sort function.",
+          "startingPoint": "This is the Dutch National Flag problem, solvable with three pointers: `low`, `mid`, and `high`. `low` points to the end of the 0s section, `high` points to the beginning of the 2s section, and `mid` iterates through the array. If `nums[mid]` is 0, swap with `nums[low]` and increment both `low` and `mid`. If `nums[mid]` is 2, swap with `nums[high]` and decrement `high`. If `nums[mid]` is 1, just increment `mid`."
+        },
+        {
+          "title": "Two Sum II - Input Array Is Sorted",
+          "description": "Given a 1-indexed array of integers numbers that is already sorted in non-decreasing order, find two numbers such that they add up to a specific target number. Return the indices of the two numbers added by one as an integer array [index1, index2] of length 2. The tests are generated such that there is exactly one solution. You may not use the same element twice. Your solution must use only constant extra space.",
+          "startingPoint": "Since the array is sorted, use two pointers, one at the beginning (`left`) and one at the end (`right`). If the sum `numbers[left] + numbers[right]` equals the target, you found the solution. If the sum is less than the target, increment `left` to increase the sum. If the sum is greater than the target, decrement `right` to decrease the sum."
+        },
+        {
+          "title": "Valid Palindrome II",
+          "description": "Given a string s, return true if the s can be a palindrome after deleting at most one character from it.",
+          "startingPoint": "Use two pointers, `left` and `right`, starting at the beginning and end of the string. Iterate inwards. If `s[left]` and `s[right]` match, continue. If they don't match, you have one deletion opportunity. Check if the string is a palindrome after deleting `s[left]` OR after deleting `s[right]`. If either of these checks is true, the original string is valid with at most one deletion."
+        }
+      ]
+    },
+    {
+      "patternName": "Dynamic Programming (Basic)",
+      "totalProblems": 6,
+      "info": "An algorithmic technique where you solve complex problems by breaking them down into simpler subproblems. You store the results of these subproblems to avoid redundant computations, typically using a table (memoization or tabulation). Basic DP problems often involve sequences, grids, or simple optimization tasks.",
+      "problems": [
+        {
+          "title": "Climbing Stairs",
+          "description": "You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
+          "startingPoint": "Let dp[i] be the number of distinct ways to reach step i. To reach step i, you could have come from step i-1 (by taking 1 step) or step i-2 (by taking 2 steps). So, dp[i] = dp[i-1] + dp[i-2]. Define base cases for dp[0] and dp[1]."
+        },
+        {
+          "title": "Coin Change I",
+          "description": "You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money. Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1. You may assume that you have an infinite number of each kind of coin.",
+          "startingPoint": "Let dp[i] be the minimum number of coins to make up amount i. To find dp[i], consider each coin denomination `coin` in `coins`. If `i >= coin`, you can potentially make amount i by taking one coin of denomination `coin` and adding it to the minimum number of coins needed for amount `i - coin`. So, dp[i] = min(dp[i], dp[i - coin] + 1) for all valid coins. Initialize dp array with infinity except for dp[0] = 0."
+        },
+        {
+          "title": "Longest Increasing Subsequence",
+          "description": "Given an integer array nums, return the length of the longest strictly increasing subsequence.",
+          "startingPoint": "Let dp[i] be the length of the longest increasing subsequence ending at index i. To find dp[i], consider all previous indices j < i. If nums[j] < nums[i], then nums[i] can extend an increasing subsequence ending at j. So, dp[i] = 1 + max(dp[j]) for all j < i where nums[j] < nums[i]. The base case is dp[i] = 1 if no such j exists. The final answer is the maximum value in the dp array. An optimized O(n log n) solution using binary search and a patience sorting-like approach also exists."
+        },
+        {
+          "title": "Maximum Subarray",
+          "description": "Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.",
+          "startingPoint": "Kadane's algorithm is a simple DP approach. Let `current_max` be the maximum sum ending at the current position, and `global_max` be the overall maximum sum found so far. Iterate through the array. `current_max = max(nums[i], nums[i] + current_max)`. `global_max = max(global_max, current_max)`."
+        },
+        {
+          "title": "House Robber II",
+          "description": "You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have security systems connected, and it will automatically contact the police if two adjacent houses are broken into on the same night.\nGiven an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.",
+          "startingPoint": "Since the first and last houses are neighbors, you cannot rob both. This splits the problem into two independent cases: 1) Rob the first house but not the last. 2) Rob the last house but not the first. Apply the House Robber I logic (DP on a linear array) to the array excluding the last element (for case 1) and the array excluding the first element (for case 2). The maximum of the results from these two cases is the answer. Handle edge cases for arrays with 1 or 2 elements."
+        },
+        {
+          "title": "Decode Ways",
+          "description": "A message containing letters from A-Z is being encoded to numbers using the following mapping: 'A' -> 1, 'B' -> 2, ..., 'Z' -> 26. To decode an encoded message, all the digits must be grouped then mapped into letters using the reverse of the mapping above (there may be multiple ways). Given a string s containing only digits, return the number of ways to decode it.",
+          "startingPoint": "This is a dynamic programming problem. Let dp[i] be the number of ways to decode the first i characters of the string. To find dp[i], consider the last character `s[i-1]` and the last two characters `s[i-2]s[i-1]`. If `s[i-1]` is not '0', it can be decoded as a single digit, adding dp[i-1] ways. If `s[i-2]s[i-1]` forms a valid number between 10 and 26 inclusive, it can be decoded as a two-digit number, adding dp[i-2] ways. Be careful with leading zeros."
+        }
+      ]
+    },
+    {
+      "patternName": "Breadth-First Search (BFS)",
+      "totalProblems": 6,
+      "info": "A graph traversal algorithm that explores all the neighbor nodes at the present depth prior to moving on to the nodes at the next depth level. It typically uses a queue and is suitable for finding the shortest path in an unweighted graph or level-order traversal.",
+      "problems": [
+        {
+          "title": "Binary Tree Level Order Traversal",
+          "description": "Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).",
+          "startingPoint": "Use a queue. Enqueue the root. While the queue is not empty, dequeue all nodes at the current level, collect their values, and enqueue their non-null children. To separate levels, you can use a null marker in the queue or process all nodes added in the previous level before moving to the next."
+        },
+        {
+          "title": "Shortest Path in Binary Matrix",
+          "description": "Given an n x n binary matrix grid, return the length of the shortest clear path in the matrix. If there is no clear path, return -1. A clear path in a binary matrix is a path from the top-left cell (0, 0) to the bottom-right cell (n - 1, n - 1) such that all the visited cells are 0, and all the adjacent cells are 8-directionally connected (i.e., they are different and share an edge or a corner). The length of a clear path is the number of visited cells.",
+          "startingPoint": "This is a shortest path problem on an unweighted grid graph. Use BFS. The state in your queue should be (row, col). Start BFS from (0,0) if `grid[0][0]` is 0. Keep track of visited cells to avoid cycles and redundant work. The distance from the source is the number of steps. If you reach (n-1, n-1), return the distance + 1 (since the length includes the starting cell). If the queue becomes empty and you haven't reached the target, return -1. Handle the edge case where `grid[0][0]` or `grid[n-1][n-1]` is 1."
+        },
+        {
+          "title": "Walls and Gates",
+          "description": "You are given a m x n 2D grid initialized with these three possible values: -1 representing a wall or an obstacle. 0 representing a gate. INF representing an empty room. Fill each empty room with the distance to its nearest gate. If it is impossible to reach a gate, the distance should remain INF.",
+          "startingPoint": "This problem can be solved with a multi-source BFS. Initialize the queue with all gate locations (cells with value 0). Perform a BFS outwards from all gates simultaneously. The distance to an empty room will be the number of steps taken from the nearest gate. Update the room's value with the calculated distance. Walls (-1) and already visited rooms should not be added to the queue."
+        },
+        {
+          "title": "Number of Islands",
+          "description": "Given an m x n 2D binary grid which represents a map of '1's (land) and '0's (water), return the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.",
+          "startingPoint": "Iterate through the grid. If you encounter a '1' that hasn't been visited, it signifies a new island. Increment the island count. Then, start a traversal (BFS or DFS) from this '1' to visit and mark all connected '1's (land) as visited (e.g., change '1' to '0' or use a separate visited array) so they are not counted as part of a new island later. BFS: use a queue to explore neighbors."
+        },
+        {
+          "title": "Rotten Oranges",
+          "description": "You are given an m x n grid where each cell can have one of three values: 0 representing an empty cell, 1 representing a fresh orange, or 2 representing a rotten orange. Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten. Return the minimum number of minutes that must elapse until no fresh oranges are left. If this is impossible, return -1.",
+          "startingPoint": "This is a multi-source BFS problem. Initialize the queue with all initially rotten oranges (cells with value 2). Also, count the number of fresh oranges. Perform a level-by-level BFS. Each level represents one minute passing. In each level, process all rotten oranges from the previous minute and turn adjacent fresh oranges rotten. Decrement the fresh orange count. If you turn a fresh orange rotten, add it to the queue for the next minute. If the queue is empty but fresh oranges remain, it's impossible, return -1. Otherwise, the number of levels (minutes) is the answer."
+        },
+        {
+          "title": "Minimum Depth of Binary Tree",
+          "description": "Given a binary tree, find its minimum depth. The minimum depth is the number of nodes along the shortest path from the root node down to the nearest leaf node. A leaf node is a node with no children.",
+          "startingPoint": "Use BFS. Perform a level-order traversal. The first time you encounter a leaf node (a node with no left and right children) during the BFS, the current level is the minimum depth. Keep track of the current depth as you traverse level by level. Handle the edge case of an empty tree."
+        }
+      ]
+    },
+    {
+      "patternName": "Depth-First Search (DFS)",
+      "totalProblems": 6,
+      "info": "A graph traversal algorithm that explores as far as possible along each branch before backtracking. It typically uses recursion or a stack and is suitable for problems involving connectivity, cycle detection, topological sorting (with recursion), and exploring all paths.",
+      "problems": [
+        {
+          "title": "Number of Islands (DFS)",
+          "description": "Given an m x n 2D binary grid which represents a map of '1's (land) and '0's (water), return the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.",
+          "startingPoint": "Iterate through the grid. If you find an unvisited '1', increment the island count and start a DFS from this cell. The DFS should recursively visit all connected '1's (up, down, left, right) and mark them as visited (e.g., changing '1' to '0'). This effectively explores the entire island."
+        },
+        {
+          "title": "Max Area of Island",
+          "description": "You are given an m x n binary grid grid. An island is a group of '1's (land) connected 4-directionally (horizontal or vertical). You may assume all four edges of the grid are surrounded by water. The area of an island is the number of cells with a value 1 in the island. Return the maximum area of an island in the grid. If there is no island, return 0.",
+          "startingPoint": "Iterate through the grid. When you find an unvisited '1', start a DFS from that cell to calculate the area of the current island. The DFS should recursively visit adjacent '1's, count them, mark them as visited, and return the total count for that island. Keep track of the maximum area found across all islands."
+        },
+        {
+          "title": "Pacific Atlantic Water Flow",
+          "description": "There is an m x n rectangular island that borders both the Pacific Ocean and Atlantic Ocean. The Pacific Ocean borders the island's left and top edges, and the Atlantic Ocean borders the island's right and bottom edges.\nWater can flow from any cell to an adjacent cell if the adjacent cell's height is less than or equal to the current cell's height. Water can flow from any cell adjacent to an ocean into that ocean.\nReturn a list of grid coordinates where water can flow to both the Pacific and Atlantic oceans.",
+          "startingPoint": "Instead of simulating water flow from every cell, simulate water flow *backwards* from the oceans. Use two separate DFS traversals: one starting from all cells bordering the Pacific Ocean, marking all reachable cells (where water can flow *to* the Pacific). Another DFS starting from all cells bordering the Atlantic Ocean, marking all reachable cells (where water can flow *to* the Atlantic). The cells that are reachable by both DFS traversals are the ones where water can flow to both oceans. Use visited arrays for each ocean."
+        },
+        {
+          "title": "Course Schedule I",
+          "description": "There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai. Return true if you can finish all courses. Otherwise, return false.",
+          "startingPoint": "This problem is about detecting cycles in a directed graph. Build a directed graph from the prerequisites. Use DFS to detect cycles. During DFS, use states (e.g., 0: unvisited, 1: visiting, 2: visited) to track the status of nodes. If you encounter a node that is currently in the 'visiting' state during a DFS traversal, it means a cycle is detected. If no cycles are found after visiting all nodes, it's possible to finish all courses."
+        },
+        {
+          "title": "Binary Tree Maximum Path Sum",
+          "description": "A path in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them. A node can only appear in the sequence at most once. The path sum is the sum of the values of the nodes in the path. Given the root of a binary tree, return the maximum path sum of any path.",
+          "startingPoint": "Use a recursive DFS approach. For each node, the maximum path sum passing through this node can be: the node's value itself, node's value + max path sum from left child, node's value + max path sum from right child, or node's value + max path sum from left + max path sum from right. The recursive function should return the maximum *single-path* sum starting from this node downwards (either left child path or right child path, not both). Update a global maximum sum with the potential path that goes through the current node and potentially splits."
+        },
+        {
+          "title": "Subsets II",
+          "description": "Given an integer array nums that may contain duplicates, return all possible subsets (the power set). The solution set must not contain duplicate subsets. Return the solution in any order.",
+          "startingPoint": "This is a backtracking problem that can be implemented with DFS. Sort the input array to handle duplicates easily. The recursive function explores building subsets. At each step, decide whether to include the current element or not. To avoid duplicate subsets with duplicate numbers, if the current element is the same as the previous one, only include it if the previous element *was* included in the previous recursive call. If the previous element was skipped, skip the current duplicate as well to avoid generating the same subset."
+        }
+      ]
+    }
+  ]
+}

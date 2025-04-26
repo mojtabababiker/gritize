@@ -1,17 +1,24 @@
 "use client";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Button from "@/components/common/Button";
 
 import Bounded from "@/components/common/Bounded";
 import Heading from "../common/Heading";
 import Paragraph from "../common/Paragraph";
-import { useState } from "react";
 import AuthDialog from "../auth/AuthDialog";
 import QuizRunner from "../quiz/QuizRunner";
+import { useAuth } from "@/context/AuthProvider";
 
 function Hero() {
   const [startQuiz, setStartQuiz] = useState(false);
   const [requireLogin, setRequireLogin] = useState(false);
+  const { isLoggedIn, user } = useAuth();
+
+  useEffect(() => {
+    console.log("User status checked:", isLoggedIn, user);
+  }, [isLoggedIn, user]);
+
   return (
     // Hero section
     <>
