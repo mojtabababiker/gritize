@@ -5,6 +5,8 @@ import Bounded from "../common/Bounded";
 import { useState } from "react";
 import Button from "../common/Button";
 import AuthDialog from "../auth/AuthDialog";
+import { useAuth } from "@/context/AuthProvider";
+import { useRouter } from "next/navigation";
 
 type MenuPage = {
   name: string;
@@ -19,12 +21,22 @@ const MENU_ITEMS: MenuPage[] = [
 function Header() {
   const [active, setActive] = useState<MenuPage>(MENU_ITEMS[0]);
   const [requireLogin, setRequireLogin] = useState(false);
-  // const {} = useAuth
+  const router = useRouter();
+  const { isLoggedIn, user, setIsLoggedIn, setUser } = useAuth();
 
   const handleClick = (page: MenuPage) => {
     setActive(page);
     // route to the page
     // router.push(page.href);
+  };
+
+  const logout = () => {
+    /* Add logout functionality here */
+    user.logout();
+    setIsLoggedIn(false);
+    setUser(user);
+    setActive(MENU_ITEMS[0]);
+    router.push("/");
   };
   return (
     <>
@@ -67,13 +79,31 @@ function Header() {
 
           {/* button */}
           <div className="flex items-center justify-end px-2">
+            {isLoggedIn && (
+              <div className="flex items-center justify-center gap-4 mr-4">
+                <button
+                  onClick={logout}
+                  className={clsx(
+                    "text-bg/65 hover:text-accent cursor-pointer flex-1 text-left transition-colors duration-200 ease-in-out"
+                  )}
+                >
+                  Logout
+                </button>
+              </div>
+            )}
             <Button
               variant="accent"
               size="lg"
               className="ml-0 px-8"
-              onClick={() => setRequireLogin(true)}
+              onClick={() => {
+                if (!isLoggedIn) {
+                  setRequireLogin(true);
+                } else {
+                  router.push("/dashboard");
+                }
+              }}
             >
-              Login
+              {isLoggedIn ? "Dashboard" : "Login"}
             </Button>
           </div>
         </div>

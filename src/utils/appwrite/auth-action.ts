@@ -40,7 +40,15 @@ export const checkAuth = async (): Promise<{
       return { isLoggedIn: false, user: null };
     }
 
-    return { isLoggedIn: true, user };
+    return {
+      isLoggedIn: true,
+      user: {
+        ...user,
+        name: userAccount.name,
+        id: userAccount.$id,
+        email: userAccount.email,
+      },
+    };
   } catch (error) {
     console.error("Failed to check authentication", error);
     return { isLoggedIn: false, user: null };
@@ -66,7 +74,12 @@ export const loginUser = async (email: string, password: string) => {
     const session = await account.createEmailPasswordSession(email, password);
     // create a new session for the user
     await saveSession(session);
-    return { data: session.userId, error: null };
+    const { account: clientAccount } = await createUserClient(session.secret);
+    const data = await clientAccount.get();
+    return {
+      data: { id: data.$id, email: data.email, name: data.name },
+      error: null,
+    };
   } catch (error) {
     console.error("Login failed", error);
     if (error instanceof AppwriteException) {

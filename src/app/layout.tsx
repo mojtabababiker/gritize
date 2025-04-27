@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Genos, Orbitron } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
-import Header from "@/components/base/Header";
-import Footer from "@/components/base/Footer";
+
 import { AuthProvider } from "@/context/AuthProvider";
 
 const body = Genos({
@@ -30,7 +30,10 @@ export default function RootLayout({
       <body
         className={`${body.variable} ${heading.variable} antialiased relative`}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <Toaster position="top-right" />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

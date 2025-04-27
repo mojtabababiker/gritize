@@ -21,6 +21,7 @@ export class User {
   skillLevel: SkillLevel;
   avatar?: string;
   onboarding?: boolean;
+  isNewUser?: boolean;
   totalSolvedProblems?: number;
 
   /**
@@ -46,6 +47,7 @@ export class User {
     avatar,
     skillLevel = "mid-level",
     onboarding = false,
+    isNewUser = true,
     totalSolvedProblems = 0,
   }: UserSchema) {
     this.id = id;
@@ -54,6 +56,7 @@ export class User {
     this.skillLevel = skillLevel;
     this.avatar = avatar;
     this.onboarding = onboarding;
+    this.isNewUser = isNewUser;
     this.totalSolvedProblems = totalSolvedProblems;
   }
 
@@ -71,19 +74,23 @@ export class User {
     }
 
     // call the backend login service action
-    const { data: userId, error } = await loginUser(email, password);
+    const { data: userAccount, error } = await loginUser(email, password);
     // if the login fails, throw an error
     if (error) {
       throw error;
     }
-    const userData = await getUserById(userId);
+    const userData = await getUserById(userAccount.id);
     // if the user is not found, throw an error
     if (!userData) {
       throw new Error("User not found.");
     }
 
     // return a new User instance with the user information
-    return User.fromJson(userData);
+    return User.fromJson({
+      ...userData,
+      name: userAccount.name,
+      email: userAccount.email,
+    });
   }
 
   /**

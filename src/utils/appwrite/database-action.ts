@@ -1,14 +1,32 @@
 "use server";
 import { AppwriteException, ID, Query } from "node-appwrite";
 import { createAdminClient } from "@/config/appwrite";
+
 import { Settings } from "@/constant/setting";
-import {
-  CodingPatternSchema,
-  UserProblemSchema,
-  UserSchema,
-} from "@/models/schemas";
+import { CodingPatternSchema, UserProblemSchema } from "@/models/schemas";
 import { UserDTO } from "@/models/dto/user-dto";
 
+/**
+ * Retrieves a user by their ID from the database along with their associated general algorithms and coding patterns.
+ *
+ * @param userId - The unique identifier of the user to retrieve
+ * @returns Promise that resolves to a UserDTO object containing user data and associated collections, or null if user not found or error occurs
+ * @throws Error if userId is not provided
+ *
+ * @remarks
+ * This function performs the following operations:
+ * 1. Retrieves the basic user document
+ * 2. Fetches associated general algorithms
+ * 3. Fetches associated coding patterns
+ * 4. Combines all data into a single UserDTO object
+ *
+ * The returned UserDTO includes:
+ * - Basic user information
+ * - Array of general algorithms (UserProblemSchema[])
+ * - Array of coding patterns (CodingPatternSchema[])
+ *
+ * All database entities are cleaned of internal properties ($id, $collectionId, etc.) before being returned.
+ */
 export const getUserById = async (userId: string) => {
   if (!userId) {
     throw new Error("User ID is required.");
@@ -38,14 +56,19 @@ export const getUserById = async (userId: string) => {
       ...rest
     } = userDoc;
     const user = { id, ...rest } as UserDTO;
+
+    // this never happens, only for typescript eslinting
+    if (!user.id) {
+      return null;
+    }
     // retrieve user's general algorithms and coding patterns
     const generalAlgorithmsDocs = await databases.listDocuments(
       Settings.databaseId,
       Settings.userProblemsCollectionId,
-      [Query.equal("user", user.id || "")]
+      [Query.equal("user", user.id)]
     );
     const { documents: gaDocs } = generalAlgorithmsDocs;
-    // update generalAlgorithm schema
+    // construct the user's generalAlgorithm schema
     const generalAlgorithms = gaDocs.map((algorithm) => {
       const {
         $id: id,
@@ -62,18 +85,15 @@ export const getUserById = async (userId: string) => {
       } as UserProblemSchema;
     });
 
-    console.log("General Algorithms:", generalAlgorithms);
+    // console.log("General Algorithms:", generalAlgorithms);
     const codingPatternsDoc = await databases.listDocuments(
       Settings.databaseId,
-      Settings.userProblemsCollectionId,
-      [
-        Query.equal("user", user.id || ""),
-        Query.equal("type", "coding-pattern"),
-      ]
+      Settings.codingTechniquesCollectionId,
+      [Query.equal("user", user.id || "")]
     );
     const { documents: cpDocs } = codingPatternsDoc;
 
-    // update codingPatterns schema
+    // construct user's codingPatterns schema
     const codingPatterns = cpDocs.map((pattern) => {
       const {
         $id: id,
@@ -89,7 +109,7 @@ export const getUserById = async (userId: string) => {
         ...rest,
       } as CodingPatternSchema;
     });
-    console.log("Coding Patterns:", codingPatterns);
+    // console.log("Coding Patterns:", codingPatterns);
     // add the general algorithms and coding patterns to the user object
     user.generalAlgorithms = generalAlgorithms;
     user.codingPatterns = codingPatterns;
@@ -103,22 +123,53 @@ export const getUserById = async (userId: string) => {
   }
 };
 
-export const createUser = async (user: UserDTO) => {
+/**
+ * Creates a new user document in the database
+ *
+ * @param userObj - User data transfer object containing user information
+ * @returns Promise resolving to an object with either:
+ *  - success: {data: UserDTO, error: null}
+ *  - failure: {data: null, error: AppwriteException | {response: string}}
+ *
+ * @throws {AppwriteException} When Appwrite service throws an error
+ *
+ * @example
+ * ```typescript
+ * const result = await createUser({
+ *   id: "user123",
+ *   name: "John Doe",
+ *   email: "john@example.com",
+ *   codingPatterns: [...],
+ *   generalAlgorithms: [...],
+ *   // other user properties
+ * });
+ * ```
+ */
+export const createUser = async (userObj: UserDTO) => {
   const { databases } = await createAdminClient();
+  const {
+    id: userId,
+    name,
+    email,
+    codingPatterns,
+    generalAlgorithms,
+    ...user
+  } = userObj;
   try {
     const userDoc = await databases.createDocument(
       Settings.databaseId,
       Settings.usersCollectionId,
-      user.id || ID.unique(),
+      userId || ID.unique(),
       {
         ...user,
         totalSolvedProblems: 0,
-        generalAlgorithms: user.generalAlgorithms.map((algorithm) => ({
+        avatar: user.avatar || null,
+        generalAlgorithms: generalAlgorithms.map((algorithm) => ({
           ...algorithm,
           problem: [algorithm.problem.id],
         })),
 
-        codingTechniques: user.codingPatterns.map((pattern) => ({
+        codingTechniques: codingPatterns.map((pattern) => ({
           ...pattern,
           problems: pattern.problems.map((problem) => ({
             ...problem,

@@ -1,23 +1,32 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Button from "@/components/common/Button";
 
+import Button from "@/components/common/Button";
 import Bounded from "@/components/common/Bounded";
-import Heading from "../common/Heading";
-import Paragraph from "../common/Paragraph";
-import AuthDialog from "../auth/AuthDialog";
-import QuizRunner from "../quiz/QuizRunner";
+import Heading from "@/components/common/Heading";
+import Paragraph from "@/components/common/Paragraph";
+import AuthDialog from "@/components/auth/AuthDialog";
+import QuizRunner from "@/components/quiz/QuizRunner";
+
 import { useAuth } from "@/context/AuthProvider";
+import { useRouter } from "next/navigation";
 
 function Hero() {
   const [startQuiz, setStartQuiz] = useState(false);
   const [requireLogin, setRequireLogin] = useState(false);
   const { isLoggedIn, user } = useAuth();
 
-  useEffect(() => {
-    console.log("User status checked:", isLoggedIn, user);
-  }, [isLoggedIn, user]);
+  const router = useRouter();
+
+  // useEffect(() => {
+  //   console.log("User status checked:", isLoggedIn, user);
+  // }, [isLoggedIn, user]);
+
+  const onQuizFinish = () => {
+    setStartQuiz(false);
+    setRequireLogin(true);
+  };
 
   return (
     // Hero section
@@ -64,7 +73,15 @@ function Hero() {
               <Button
                 variant="accent"
                 size="lg"
-                onClick={() => setStartQuiz(true)}
+                onClick={() => {
+                  if (isLoggedIn) {
+                    // redirect to dashboard
+                    router.push("/dashboard");
+                  } else {
+                    // otherwise, start the quiz
+                    setStartQuiz(true);
+                  }
+                }}
               >
                 Try Gritize
               </Button>
@@ -161,14 +178,7 @@ function Hero() {
         />
       )}
 
-      {startQuiz && (
-        <QuizRunner
-          onFinish={() => {
-            setStartQuiz(false);
-            setRequireLogin(true);
-          }}
-        />
-      )}
+      {startQuiz && <QuizRunner onFinish={onQuizFinish} />}
     </>
   );
 }

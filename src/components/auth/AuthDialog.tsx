@@ -1,4 +1,5 @@
-import { useActionState, useEffect, useRef, useState } from "react";
+"use client";
+import { useEffect, useRef, useState } from "react";
 import Paragraph from "../common/Paragraph";
 import { XIcon } from "lucide-react";
 import LoginForm from "./LoginForm";

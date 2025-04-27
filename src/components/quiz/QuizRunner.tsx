@@ -13,6 +13,7 @@ import { Question, Quiz } from "@/utils/quiz-actions";
 import QuestionTrueFalse from "./QuestionTrueFalse";
 import QuestionSC from "./QuestionSC";
 import QuestionMCs from "./QuestionMCs";
+import { useAuth } from "@/context/AuthProvider";
 
 /**
  * A mapping of question types to their respective components.
@@ -44,6 +45,8 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
   const [quizLanguage, setQuizLanguage] = useState<
     "ts" | "js" | "py" | "cpp" | null
   >(null);
+
+  const { user, setUser } = useAuth();
 
   useEffect(() => {
     if (!quizLanguage) return;
@@ -98,8 +101,13 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
     // submitting the quiz to the AI assistant, determine the skill level
     // TODO: implement the AI assistant interface
     console.log("Submitting quiz:", { quiz });
+    const level = "senior"; // TODO: get the level from the AI assistant
 
     // TODO: update the user instance with the quiz result, and set its level and toggle the new attribute to false
+    user.skillLevel = level;
+    user.isNewUser = false;
+    user.onboarding = true;
+    setUser(user);
 
     // Call the onFinish function to indicate the quiz is completed
 
