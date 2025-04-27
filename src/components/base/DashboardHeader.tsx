@@ -1,13 +1,13 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import Bounded from "../common/Bounded";
 import Heading from "../common/Heading";
+import { useAuth } from "@/context/AuthProvider";
 
 function DashboardHeader() {
-  const user = {
-    firstName: "Mazin",
-    profileImage: "/images/users/user3.png",
-  };
+  const { user } = useAuth();
+
   return (
     <Bounded
       as="header"
@@ -28,17 +28,23 @@ function DashboardHeader() {
         <div className="flex items-center justify-end gap-2">
           {/* name */}
           <Heading as="span" size="sm" className="text-fg">
-            {user.firstName}
+            {user.name}
           </Heading>
           {/* user image */}
           <div className="flex-items-center justify-center rounded-full w-14 h-14 p-0 bg-surface">
-            <Image
-              src={user.profileImage}
-              width={64}
-              height={64}
-              className="object-cover w-full h-full"
-              alt={user.firstName}
-            />
+            {user.avatar ? (
+              <Image
+                src={user.avatar}
+                width={64}
+                height={64}
+                className="object-cover w-full h-full"
+                alt={user.name}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center rounded-full font-heading font-bold text-2xl sm:text-4xl text-bg/75 bg-accent/30">
+                {user.name?.at(0)}
+              </div>
+            )}
           </div>
         </div>
       </div>

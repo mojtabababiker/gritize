@@ -49,7 +49,7 @@ function ServiceCard({ title, description, href, hrefText, className }: Props) {
       {/* CTA */}
       <div className="absolute z-30 left-0 right-0 -bottom-20 flex items-center justify-center group-[:hover]:bottom-10 transition-all duration-300 ease-in-out">
         <Button variant="accent" size="md" className="text-center">
-          <Link href={href ? href : "#"} className="text-center">
+          <Link href={href ? href : "/dashboard"} className="text-center">
             {hrefText || "Start Now"}
           </Link>
         </Button>

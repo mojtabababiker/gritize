@@ -18,7 +18,7 @@ const FOOTER_MENU = [
   },
   {
     item: "dashboard",
-    href: "/profile",
+    href: "/dashboard",
   },
 ];
 

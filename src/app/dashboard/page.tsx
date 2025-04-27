@@ -4,18 +4,21 @@ import StatisticalCard from "@/components/cards/StatisticalCard";
 import { TableCell, TableRow } from "@/components/cards/TableRow";
 import Bounded from "@/components/common/Bounded";
 import Heading from "@/components/common/Heading";
+import { useAuth } from "@/context/AuthProvider";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 
 function page() {
-  const user = {
-    firstName: "Mazin",
-    profileImage: "/images/users/user3.png",
-    solvedProblems: 17, // typically it would be array of objects
-    codingTechniques: 2, // typically it would be array of objects
-    totalAlgorithms: 3,
-  };
+  // const user = {
+  //   firstName: "Mazin",
+  //   profileImage: "/images/users/user3.png",
+  //   solvedProblems: 17, // typically it would be array of objects
+  //   codingTechniques: 2, // typically it would be array of objects
+  //   totalAlgorithms: 3,
+  // };
+
+  const { user } = useAuth();
 
   const featuredProblems = [
     {
@@ -62,7 +65,7 @@ function page() {
         {/* welcoming */}
         <div className="flex flex-col mt-14">
           <Heading as="h4" size="sm" className="text-surface">
-            Welcome, {user.firstName}!
+            Welcome, {user.name}!
           </Heading>
           <Heading as="h3" size="lg" className="text-fg sm:-mt-10">
             Let's Keep The{" "}
@@ -77,19 +80,25 @@ function page() {
           {/* total problems card */}
           <StatisticalCard
             title="Total Problems"
-            value={user.solvedProblems}
+            value={user.totalSolvedProblems || 0}
             className="flex-1"
           />
           {/* total algorithms card */}
           <StatisticalCard
-            title="Mastered Algorithm"
-            value={user.totalAlgorithms}
+            title="Mastered Algorithms"
+            value={
+              user.algorithmProblems.filter((algo) => algo.solved).length || 0
+            }
             className="flex-1"
           />
           {/* total technique card */}
           <StatisticalCard
             title="Learned Techniques"
-            value={user.codingTechniques}
+            value={
+              user.codingTechniques.filter(
+                (tech) => tech.solvedProblems === tech.totalProblems
+              ).length || 0
+            }
             className="flex-1"
           />
         </div>

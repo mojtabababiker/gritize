@@ -5,51 +5,57 @@ import { useEffect, useState } from "react";
 import Heading from "../common/Heading";
 import Paragraph from "../common/Paragraph";
 import clsx from "clsx";
+import { useAuth } from "@/context/AuthProvider";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import CustomToast from "../common/CustomToast";
 
 function Sidebar() {
+  const router = useRouter();
   const [open, setOpen] = useState(true);
-  const user = {
-    firstName: "Mazin",
-    profileImage: "/images/users/user3.png",
-    solvedProblems: 18, // typically it would be array of objects
-    codingTechniques: [
-      {
-        name: "Tow Pointers",
-        slug: "two-pointers",
-        totalProblems: 6,
-        solvedProblems: 6,
-      },
-      {
-        name: "Sliding Window",
-        slug: "sliding-window",
-        totalProblems: 5,
-        solvedProblems: 4,
-      },
-      {
-        name: "Backtracking",
-        slug: "backtracking",
-        totalProblems: 3,
-        solvedProblems: 2,
-      },
-    ], // typically it would be array of objects
-    totalAlgorithms: [
-      {
-        name: "bobble sort",
-        slug: "bobble-sort",
-        score: 9.3,
-      },
-      {
-        name: "quick sort",
-        slug: "quick-sort",
-        score: 8.5,
-      },
-      {
-        name: "merge sort",
-        slug: "merge-sort",
-        score: 7.5,
-      },
-    ],
-  };
+  // const user = {
+  //   firstName: "Mazin",
+  //   profileImage: "/images/users/user3.png",
+  //   solvedProblems: 18, // typically it would be array of objects
+  //   codingTechniques: [
+  //     {
+  //       name: "Tow Pointers",
+  //       slug: "two-pointers",
+  //       totalProblems: 6,
+  //       solvedProblems: 6,
+  //     },
+  //     {
+  //       name: "Sliding Window",
+  //       slug: "sliding-window",
+  //       totalProblems: 5,
+  //       solvedProblems: 4,
+  //     },
+  //     {
+  //       name: "Backtracking",
+  //       slug: "backtracking",
+  //       totalProblems: 3,
+  //       solvedProblems: 2,
+  //     },
+  //   ], // typically it would be array of objects
+  //   totalAlgorithms: [
+  //     {
+  //       name: "bobble sort",
+  //       slug: "bobble-sort",
+  //       score: 9.3,
+  //     },
+  //     {
+  //       name: "quick sort",
+  //       slug: "quick-sort",
+  //       score: 8.5,
+  //     },
+  //     {
+  //       name: "merge sort",
+  //       slug: "merge-sort",
+  //       score: 7.5,
+  //     },
+  //   ],
+  // };
+  const { user, setUser, setIsLoggedIn } = useAuth();
 
   const closeSidebar = (e: MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -58,6 +64,18 @@ function Sidebar() {
     } else {
       setOpen(false);
     }
+  };
+
+  const logout = async () => {
+    await user.logout();
+    setIsLoggedIn(false);
+    setUser(user);
+
+    toast.custom((t) => (
+      <CustomToast t={t} type="success" message="Logged out successfully" />
+    ));
+
+    router.replace("/");
   };
 
   useEffect(() => {
@@ -81,8 +99,10 @@ function Sidebar() {
   return (
     <aside
       className={clsx(
-        "sidebar fixed z-40 top-22 2xl:top-0 left-0 2xl:min-h-screen 2xl:min-w-[86px] max-w-[420px] flex flex-col justify-between px-4 bg-fg/5 backdrop-blur-md overflow-x-hidden overflow-y-auto drop-shadow-sm shadow-fg/10 shadow-xl ",
-        open ? "w-full h-dvh py-12" : "w-12 h-12 rounded-full 2xl:rounded-none"
+        "sidebar fixed z-40 top-22 2xl:top-0 left-0 2xl:min-h-screen 2xl:min-w-[86px] max-w-[420px] flex flex-col justify-between px-4 bg-fg/5 backdrop-blur-md overflow-x-hidden drop-shadow-sm shadow-fg/10 shadow-xl ",
+        open
+          ? "w-full h-[calc(100dvh-90px)] py-12 overflow-y-auto"
+          : "w-12 h-12 rounded-full 2xl:rounded-none overflow-hidden"
       )}
     >
       {/* solved problems */}
@@ -115,10 +135,10 @@ function Sidebar() {
             !open && "opacity-0 scale-x-0"
           )}
         >
-          {user.totalAlgorithms.length > 0 ? (
-            user.totalAlgorithms.map((algo) => (
+          {user.algorithmProblems.length > 0 ? (
+            user.algorithmProblems.map((algo) => (
               <div
-                key={algo.slug}
+                key={algo.problem.title}
                 className="flex items-center justify-between w-full px-4 py-2 rounded-2xl bg-primary/25 shadow shadow-fg/10 shadow-b"
               >
                 <div className="flex gap-2 items-center">
@@ -130,10 +150,10 @@ function Sidebar() {
                     className="w-3 h-3 object-contain"
                   />
                   <Link
-                    href={`/playground?problem=${algo.slug}`}
+                    href={`/playground?problem=${algo.id}`}
                     className="text-lg  capitalize text-surface hover:text-accent"
                   >
-                    {algo.name}
+                    {algo.problem.title}
                   </Link>
                 </div>
                 <span className="text-fg/50">{algo.score}/10</span>
@@ -180,7 +200,7 @@ function Sidebar() {
           {user.codingTechniques.length > 0 ? (
             user.codingTechniques.map((tech) => (
               <div
-                key={tech.slug}
+                key={tech.title}
                 className="flex items-center justify-between w-full px-4 py-2 rounded-2xl bg-primary/25 shadow shadow-fg/10 shadow-b"
               >
                 <div className="flex gap-2 items-center">
@@ -192,10 +212,10 @@ function Sidebar() {
                     className="w-3 h-3 object-contain"
                   />
                   <Link
-                    href={`/playground?problem=${tech.slug}`}
+                    href={`/playground?problem=${tech.id}`}
                     className="text-lg  capitalize text-surface hover:text-accent truncate"
                   >
-                    {tech.name}
+                    {tech.title}
                   </Link>
                 </div>
                 <span className="text-fg/50">
@@ -240,9 +260,7 @@ function Sidebar() {
             className="object-contain"
           />
           <button
-            onClick={() => {
-              /* Add logout functionality here */
-            }}
+            onClick={logout}
             className={clsx(
               "text-fg hover:text-accent cursor-pointer flex-1 text-left",
               !open && "hidden"

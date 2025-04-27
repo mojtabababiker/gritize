@@ -3,6 +3,8 @@ import { useState } from "react";
 import TestimonialCard from "../cards/TestimonialCard";
 import Button from "../common/Button";
 import AuthDialog from "../auth/AuthDialog";
+import { useAuth } from "@/context/AuthProvider";
+import { useRouter } from "next/navigation";
 
 type Props = {
   testimonials: {
@@ -15,7 +17,17 @@ type Props = {
 };
 
 export function TestimonialsContainer({ testimonials }: Props) {
+  const router = useRouter();
   const [requireLogin, setRequireLogin] = useState(false);
+  const { isLoggedIn } = useAuth();
+
+  const handleClick = () => {
+    if (isLoggedIn) {
+      router.push("/dashboard");
+    } else {
+      setRequireLogin(true);
+    }
+  };
   return (
     <>
       <div className="flex flex-wrap items-center justify-center gap-4">
@@ -34,11 +46,7 @@ export function TestimonialsContainer({ testimonials }: Props) {
 
       {/* CTA */}
       <div className="flex w-full items-center justify-center py-2 mt-6">
-        <Button
-          variant="accent"
-          size="md"
-          onClick={() => setRequireLogin(true)}
-        >
+        <Button variant="accent" size="md" onClick={handleClick}>
           Try it yourself
         </Button>
       </div>

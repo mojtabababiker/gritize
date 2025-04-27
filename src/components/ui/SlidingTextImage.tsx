@@ -95,6 +95,7 @@ function SlidingTextImage() {
           width={1000}
           height={1000}
           className="relative z-30 opacity-85 object-cover w-full h-auto max-w-[1024px] transition-opacity duration-500 ease-in-out"
+          unoptimized
         />
         {TEXTS.map((text, index) => (
           <div

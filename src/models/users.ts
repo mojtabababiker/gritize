@@ -94,7 +94,7 @@ export class User {
   }
 
   /**
-   * Logout the user, remove the session cookie and redirect to the home page.
+   * Logout the user, remove the session cookie.
    * @throws {Error} when the logout fails
    * @returns {Promise<void>} void
    */
@@ -113,9 +113,6 @@ export class User {
       this.totalSolvedProblems = 0;
       this.generalAlgorithms = {};
       this.codingPatterns = {};
-
-      // redirect to home page
-      redirect("/");
     } catch (error) {
       console.error("Logout failed", error);
       throw error;
