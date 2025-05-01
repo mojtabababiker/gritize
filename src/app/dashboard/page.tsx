@@ -1,25 +1,27 @@
 "use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+
+import clsx from "clsx";
+
+import { useAuth } from "@/context/AuthProvider";
 
 import StatisticalCard from "@/components/cards/StatisticalCard";
 import { TableCell, TableRow } from "@/components/cards/TableRow";
 import Bounded from "@/components/common/Bounded";
 import Heading from "@/components/common/Heading";
-import { useAuth } from "@/context/AuthProvider";
-import clsx from "clsx";
-import Image from "next/image";
-import Link from "next/link";
 
 function page() {
-  // const user = {
-  //   firstName: "Mazin",
-  //   profileImage: "/images/users/user3.png",
-  //   solvedProblems: 17, // typically it would be array of objects
-  //   codingTechniques: 2, // typically it would be array of objects
-  //   totalAlgorithms: 3,
-  // };
+  const router = useRouter();
+  const { user, setUser } = useAuth();
 
-  const { user } = useAuth();
-
+  useEffect(() => {
+    if (user.isNewUser) {
+      router.push("/dashboard/create-profile");
+    }
+  }, [user.isNewUser, router]);
   const featuredProblems = [
     {
       title: "Two Sum",
@@ -50,6 +52,7 @@ function page() {
       slug: "median-of-two-sorted-arrays",
     },
   ];
+
   return (
     <Bounded className="profile-container relative z-20 min-h-screen pb-40">
       {/* bg */}

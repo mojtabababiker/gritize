@@ -1,4 +1,9 @@
 export const Settings = {
+  // environment
+  env: process.env.NODE_ENV || "development",
+  dumpData: process.env.DUMP_DATA || false,
+
+  // Appwrite API Settings
   apiKey: process.env.NEXT_APPWRITE_API_KEY || "",
   endpoint: process.env.NEXT_PUBLIC_API_URL || "",
   appURL: process.env.NEXT_PUBLIC_APP_URL || "",
@@ -19,4 +24,7 @@ export const Settings = {
   // You can find these IDs in the Appwrite console under the storage settings
   // Make sure to replace these with your actual bucket IDs
   storageBucketId: process.env.NEXT_APPWRITE_STORAGE_ID || "",
+
+  // Google Generative AI Settings
+  googleApiKey: process.env.NEXT_GOOGLE_AI_API_KEY || "",
 };

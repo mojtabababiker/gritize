@@ -1,12 +1,13 @@
 import { SkillLevel } from "../types/indext";
 
 export interface TechnicalProblemSchema {
-  id: string;
+  id?: string;
   type: "algorithm" | "coding-pattern";
   title: string;
   difficulty: "easy" | "mid" | "advanced";
   description: string;
   hint?: string;
+  slug: string;
 }
 
 export interface UserSchema {

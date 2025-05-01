@@ -3,8 +3,13 @@ import { AppwriteException, ID, Query } from "node-appwrite";
 import { createAdminClient } from "@/config/appwrite";
 
 import { Settings } from "@/constant/setting";
-import { CodingPatternSchema, UserProblemSchema } from "@/models/schemas";
+import {
+  CodingPatternSchema,
+  TechnicalProblemSchema,
+  UserProblemSchema,
+} from "@/models/schemas";
 import { UserDTO } from "@/models/dto/user-dto";
+import { error } from "console";
 
 /**
  * Retrieves a user by their ID from the database along with their associated general algorithms and coding patterns.
@@ -195,5 +200,60 @@ export const createUser = async (userObj: UserDTO) => {
       return { error, data: null };
     }
     return { data: null, error: { response: "An unexpected error occurred" } };
+  }
+};
+
+export const createProblem = async (problemObj: TechnicalProblemSchema) => {
+  const { id, ...cleanProblemObj } = problemObj;
+  try {
+    const { databases } = await createAdminClient();
+    const resultDoc = await databases.createDocument(
+      Settings.databaseId,
+      Settings.problemsCollectionId,
+      problemObj.id || ID.unique(),
+      {
+        ...cleanProblemObj,
+      }
+    );
+    return { data: resultDoc.$id, error: null };
+  } catch (error) {
+    console.error(error);
+    if (error instanceof AppwriteException) {
+      return { error, data: null };
+    }
+    return { data: null, error: { response: "An unexpected error occurred" } };
+  }
+};
+
+export const getProblemBySlug = async (
+  slug: string
+): Promise<TechnicalProblemSchema | null> => {
+  if (!slug) return null;
+  const { databases } = await createAdminClient();
+  try {
+    const problemDoc = await databases.listDocuments(
+      Settings.databaseId,
+      Settings.problemsCollectionId,
+      [Query.equal("slug", slug)]
+    );
+    const { documents } = problemDoc;
+    if (documents.length === 0) {
+      return null;
+    }
+    const problem = documents[0];
+    const {
+      $id: id,
+      $collectionId,
+      $databaseId,
+      $createdAt,
+      $updatedAt,
+      $permissions,
+      ...rest
+    } = problem;
+    const cleanProblemObj = { id, ...rest } as TechnicalProblemSchema;
+    return cleanProblemObj;
+  } catch (error) {
+    console.error("Error getting problem by slug", error);
+    return null;
   }
 };
