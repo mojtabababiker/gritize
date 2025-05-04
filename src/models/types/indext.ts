@@ -1,1 +1,1 @@
-export type SkillLevel = "junior" | "mid-level" | "senior";
+export type SkillLevel = "entry-level" | "junior" | "mid-level" | "senior";

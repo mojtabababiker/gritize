@@ -19,6 +19,7 @@ export const Settings = {
     process.env.NEXT_APPWRITE_USER_PROBLEMS_COLLECTION_ID || "",
   codingTechniquesCollectionId:
     process.env.NEXT_APPWRITE_CODING_TECHNIQUES_COLLECTION_ID || "",
+  quizzesCollectionId: process.env.NEXT_APPWRITE_QUIZZES_COLLECTION_ID || "",
 
   // Appwrite Storage Buckets IDs
   // You can find these IDs in the Appwrite console under the storage settings

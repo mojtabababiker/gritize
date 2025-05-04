@@ -3,8 +3,11 @@ export type Question = {
   question: string;
   options?: string[];
   answer?: string | string[];
+  userAnswer?: string | string[] | boolean;
 };
 export type Quiz = {
-  id: number;
+  id: string;
+  language: string;
+  questionsCount: number;
   questions: Question[];
 };

@@ -1,19 +1,23 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
 
+import { FileWarning } from "lucide-react";
+
+import { useAuth } from "@/context/AuthProvider";
 import Timer from "@/components/common/Timer";
 import Heading from "@/components/common/Heading";
 import Paragraph from "@/components/common/Paragraph";
 import Button from "@/components/common/Button";
 
-import { getQuiz } from "@/utils/quiz-actions";
+import { SkillLevel } from "@/models/types/indext";
 import { Question, Quiz } from "@/utils/quiz-actions";
+
 import QuestionTrueFalse from "./QuestionTrueFalse";
 import QuestionSC from "./QuestionSC";
 import QuestionMCs from "./QuestionMCs";
-import { useAuth } from "@/context/AuthProvider";
 
 /**
  * A mapping of question types to their respective components.
@@ -32,31 +36,41 @@ const CONTAINER_CLS =
   "fixed z-50 inset-0 backdrop-blur-2xl flex items-center justify-center overflow-hidden";
 // popup div tailwind classes for abstraction
 const CLASS_NAME =
-  "quiz-popup w-full max-w-[640px] flex flex-col items-center justify-between px-3 py-5 rounded-xl ";
+  "quiz-popup relative w-full max-w-[640px] flex flex-col items-center justify-between px-3 py-5 rounded-xl ";
 
 export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentPage, setCurrentPage] = useState<
-    "languageSelector" | "info" | "rule"
+    "languageSelector" | "info" | "rule" | "submitting"
   >("info");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<
     number | null
   >(null);
   const [quizLanguage, setQuizLanguage] = useState<
-    "ts" | "js" | "py" | "cpp" | null
+    "typescript" | "javascript" | "python" | "cpp" | null
   >(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { user, setUser } = useAuth();
 
   useEffect(() => {
     if (!quizLanguage) return;
     const fetchQuiz = async () => {
-      const quiz = await getQuiz(quizLanguage);
-      if (quiz) {
-        setQuiz(quiz);
-      } else {
-        console.error("Failed to fetch quiz");
+      setIsLoading(true);
+      setError(null);
+      const response = await fetch(
+        `/api/generate-quiz?language=${quizLanguage}`
+      );
+      const { data, error } = await response.json();
+      if (error) {
+        console.error("Error fetching quiz:", error);
+        setError(error.message || "Failed to fetch quiz!!, please try again.");
+        setIsLoading(false);
+        return;
       }
+      // console.log("Quiz data:", data);
+      setQuiz(data);
     };
 
     fetchQuiz();
@@ -81,7 +95,7 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
       return;
     }
     const question = quiz.questions[currentQuestionIndex];
-    question.answer = answer;
+    question.userAnswer = answer;
 
     const isLastQuestion = currentQuestionIndex === quiz.questions.length - 1;
     if (isLastQuestion || timeUp) {
@@ -98,21 +112,52 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
    * @throws {Error} - Logs error to console if the quiz submission fails
    */
   const submitQuiz = async (quiz: Quiz): Promise<void> => {
-    // submitting the quiz to the AI assistant, determine the skill level
-    // TODO: implement the AI assistant interface
+    setCurrentQuestionIndex(null);
+    setCurrentPage("submitting");
     console.log("Submitting quiz:", { quiz });
-    const level = "senior"; // TODO: get the level from the AI assistant
+    let result = 0; // quiz checking result
+
+    for (const question of quiz.questions) {
+      let isCorrect = false;
+      if (typeof question.userAnswer === typeof question.answer) {
+        if (Array.isArray(question.userAnswer)) {
+          isCorrect =
+            question.userAnswer.length === question.answer?.length &&
+            question.userAnswer.every((ans) => question.answer?.includes(ans));
+        } else {
+          isCorrect = question.userAnswer === question.answer;
+        }
+      }
+
+      isCorrect && result++;
+    }
+
+    let level: SkillLevel = "entry-level";
+
+    if (result <= quiz.questions.length / 4) {
+      // 25%
+      level = "entry-level";
+    } else if (result <= quiz.questions.length) {
+      // 50%
+      level = "junior";
+    } else if (result <= (quiz.questions.length * 2) / 3) {
+      // 66%
+      level = "mid-level";
+    } else {
+      level = "senior";
+    }
 
     // TODO: update the user instance with the quiz result, and set its level and toggle the new attribute to false
     user.skillLevel = level;
-    user.isNewUser = false;
+    // user.isNewUser = false;
     user.onboarding = true;
+    await user.save();
+
+    console.log("Quiz result:", { result, level });
     setUser(user);
-
     // Call the onFinish function to indicate the quiz is completed
-
-    onFinish();
-    setCurrentQuestionIndex(null);
+    // give the user time seeing submitting page before calling
+    setTimeout(onFinish, 2500);
     return;
   };
 
@@ -149,7 +194,7 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
             {/* timer */}
             <div className="flex-1 -mt-10">
               <Timer
-                minutes={0}
+                minutes={2}
                 seconds={10}
                 onTimeUp={() => handleAnswer("", true)}
               />
@@ -198,20 +243,95 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
               Please select the language you want to be quizzed on:
             </Paragraph>
             <div className="flex gap-2 mt-5">
-              {["ts", "js", "py", "cpp"].map((lang) => (
+              {["typescript", "javascript", "python", "cpp"].map((lang) => (
                 <Image
                   key={lang}
                   src={`/images/${lang}-image.png`}
                   alt={`${lang} icon`}
                   className="w-[56px] sm:w-[64px] h-auto flex items-center justify-center opacity-85 cursor-pointer hover:opacity-100 hover:scale-105 transition-transform duration-200 active:scale-105"
                   onClick={() => {
-                    setQuizLanguage(lang as "ts" | "js" | "py" | "cpp");
+                    setQuizLanguage(
+                      lang as "typescript" | "javascript" | "python" | "cpp"
+                    );
                     setCurrentQuestionIndex(0);
                   }}
                   width={200}
                   height={200}
                 />
               ))}
+            </div>
+          </div>
+        )}
+        {currentPage === "submitting" && (
+          <div className="w-full flex-1 flex items-center justify-center my-10">
+            <Paragraph size="md" className="text-center text-bg/85 px-4">
+              Submitting your quiz...
+              <br />
+              <Paragraph as="span" size="sm" className="text-bg/85 w-full">
+                Please wait while we process your results.
+              </Paragraph>
+            </Paragraph>
+          </div>
+        )}
+
+        {/* loader */}
+        {isLoading && (
+          <div className="absolute inset-0 z-20 bg-fg/20 backdrop-blur-lg rounded-2xl flex items-center justify-center gap-2">
+            <Image
+              src="/icons/main-icon.png"
+              alt="Loading..."
+              width={64}
+              height={64}
+              className="w-16 h-16 animate-spin"
+            />
+            <Paragraph size="md" className="text-center text-bg/85 px-4">
+              Loading...
+            </Paragraph>
+          </div>
+        )}
+
+        {/* error */}
+        {error && (
+          <div className="absolute inset-0 z-20 bg-fg/20 backdrop-blur-lg rounded-2xl flex flex-col items-center justify-center gap-2">
+            <FileWarning size={32} className="text-red-900 animate-pulse" />
+            <div className="flex flex-col gap-4 items-center justify-center">
+              <Heading as="h3" className="text-bg/90 text-center">
+                Oops!
+                <br />
+                Something went wrong.
+              </Heading>
+              <Paragraph
+                size="md"
+                className="w-full max-w-[420px] text-sm text-bg/80  text-center"
+              >
+                {error}
+                <br />
+                <Paragraph
+                  as="span"
+                  size="sm"
+                  className="text-bg/65 text-center"
+                >
+                  You can try to reload, if the error persists please contact{" "}
+                  <Link
+                    href="/#contact-us"
+                    className="italic underline text-bg/85 block"
+                  >
+                    support
+                  </Link>
+                  .
+                </Paragraph>
+              </Paragraph>
+              <button
+                type="button"
+                className="px-6 py-3 rounded-xl text-bg/85 text-sm font-semibold font-heading text-center bg-accent cursor-pointer hover:bg-accent/80 transition-all duration-200 ease-in-out"
+                onClick={() => {
+                  setError(null);
+                  setCurrentPage("languageSelector");
+                  setQuizLanguage(null);
+                }}
+              >
+                Reload
+              </button>
             </div>
           </div>
         )}
