@@ -33,7 +33,7 @@ const options = {
       responseMimeType: "application/json",
     },
   },
-  maxSteps: 500, // high number of steps to make sure the assistant has the space to run up to 125 problem (algorithm + coding patterns)
+  maxSteps: 15,
 };
 
 /**
@@ -144,7 +144,7 @@ const combine = (object1: string, object2: string) => {
       return combined;
     } catch (error) {
       console.error("Error parsing combined JSON:", error);
-      return `{${cleanObject1},${cleanObject2}}`;
+      throw new Error("Output generation failed.");
     }
   }
 };

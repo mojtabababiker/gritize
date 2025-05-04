@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { SkillLevel } from "./types/indext";
 import { CodingPatternSchema, UserProblemSchema, UserSchema } from "./schemas";
 import {
@@ -6,8 +5,13 @@ import {
   logoutUser,
   registerUser,
 } from "@/utils/appwrite/auth-action";
-import { createUser, getUserById } from "@/utils/appwrite/database-action";
-import { UserDTO } from "./dto/user-dto";
+import {
+  createCodingTechnique,
+  createUser,
+  createUserProblem,
+  getUserById,
+} from "@/utils/appwrite/database-action";
+import { CodingPatternDTO, UserDTO } from "./dto/user-dto";
 
 /**
  * User class
@@ -146,6 +150,7 @@ export class User {
 
     this.id = userId ?? undefined;
     this.name = username;
+    this.isNewUser = true;
 
     const { data: user, error: dbError } = await createUser(this.json);
 
@@ -163,6 +168,8 @@ export class User {
    * @returns {User} the User instance
    */
   static fromJson(data: UserDTO): User {
+    // console.log("\n\nUser data from JSON", data, "\n\n");
+
     const user = new User({
       id: data.id,
       name: data.name,
@@ -171,10 +178,11 @@ export class User {
       avatar: data.avatar,
       onboarding: data.onboarding || false,
       totalSolvedProblems: data.totalSolvedProblems || 0,
+      isNewUser: data.isNewUser || false,
     });
-    user.algorithmProblems = {};
+
     data.generalAlgorithms?.forEach((problem) => {
-      user.generalAlgorithms[problem.id] = problem;
+      user.generalAlgorithms[problem.id as string] = problem;
     });
     user.codingPatterns = {};
     data.codingPatterns?.forEach((cp) => {
@@ -183,6 +191,20 @@ export class User {
     return user;
   }
 
+  /**
+   * Converts the User instance to a Data Transfer Object (DTO)
+   * @returns {UserDTO} A plain object containing user data with the following properties:
+   * - id: User's unique identifier
+   * - name: User's full name
+   * - email: User's email address
+   * - skillLevel: User's current skill level
+   * - avatar: URL to user's avatar image
+   * - onboarding: User's onboarding status
+   * - isNewUser: Boolean indicating if user is new
+   * - totalSolvedProblems: Number of problems solved by user
+   * - generalAlgorithms: Array of user's general algorithm data
+   * - codingPatterns: Array of user's coding pattern data
+   */
   get json(): UserDTO {
     return {
       id: this.id,
@@ -191,51 +213,115 @@ export class User {
       skillLevel: this.skillLevel,
       avatar: this.avatar,
       onboarding: this.onboarding,
+      isNewUser: this.isNewUser,
       totalSolvedProblems: this.totalSolvedProblems,
       generalAlgorithms: Object.values(this.generalAlgorithms),
       codingPatterns: Object.values(this.codingPatterns),
     };
   }
 
-  public get algorithmProblems(): UserProblemSchema[] {
+  /**
+   * Gets a list of algorithm problems associated with the user.
+   * @returns {UserProblemSchema[]} An array of user algorithm problems
+   */
+  get algorithmProblems(): UserProblemSchema[] {
     return Object.values(this.generalAlgorithms);
   }
-  public set algorithmProblems(value: Record<string, UserProblemSchema>) {
-    this.generalAlgorithms = value;
+
+  /**
+   * Associates a list of algorithm problems with the user.
+   * For each problem ID in the input array, creates a user-problem relationship
+   * and stores it in the generalAlgorithms map.
+   *
+   * @param problems - Array of problem IDs to associate with the user
+   * @returns Promise<void>
+   *
+   * @remarks
+   * - Silently skips if problems array is empty or user ID is not set
+   * - Continues execution even if individual problem creation fails
+   * - Failed problem creations are logged to console.error
+   */
+  async setAlgorithmProblems(problems: string[]): Promise<void> {
+    // this.generalAlgorithms = value;
+    if (!problems || !problems.length || !this.id) {
+      return;
+    }
+
+    for (const problemId of problems) {
+      const { data: userProblem, error } = await createUserProblem(
+        this.id,
+        problemId
+      );
+      if (error || !userProblem) {
+        console.error("Error creating user problem", error);
+        continue;
+      }
+      // console.log("User problem created", userProblem.id);
+      this.generalAlgorithms[userProblem.id as string] = userProblem;
+    }
   }
 
-  public getAlgorithmProblem(id: string): UserProblemSchema | null {
+  /**
+   * Retrieves an algorithm problem from the user's general algorithms by its ID
+   * @param id - The unique identifier of the algorithm problem
+   * @returns The algorithm problem matching the ID, or null if not found
+   */
+  getAlgorithmProblem(id: string): UserProblemSchema | null {
     const problem = this.generalAlgorithms[id] || null;
     return problem;
   }
 
-  public updateAlgorithmProblem(id: string, problem: UserProblemSchema): void {
+  updateAlgorithmProblem(id: string, problem: UserProblemSchema): void {
     if (this.generalAlgorithms[id]) {
       this.generalAlgorithms[id] = problem;
     }
   }
 
-  public get codingTechniques(): CodingPatternSchema[] {
+  get codingTechniques(): CodingPatternSchema[] {
     return Object.values(this.codingPatterns);
   }
 
-  public set codingTechniques(value: Record<string, CodingPatternSchema>) {
-    this.codingPatterns = value;
+  /**
+   * Sets coding techniques/patterns for the user
+   * @param codingPatterns - Array of coding pattern data transfer objects to be associated with the user
+   * @returns {Promise<void>} - Returns void if successful, continues to next pattern if error occurs
+   * @remarks
+   * - Requires user id to be set
+   * - Skips if codingPatterns array is empty or undefined
+   * - Creates coding techniques one by one and stores them in the user's codingPatterns map
+   * - Continues to next pattern if error occurs during creation
+   */
+  async setCodingTechniques(codingPatterns: CodingPatternDTO[]): Promise<void> {
+    if (!codingPatterns || !codingPatterns.length || !this.id) {
+      return;
+    }
+
+    for (const codingPattern of codingPatterns) {
+      const { data: userCodingPattern, error } = await createCodingTechnique(
+        this.id,
+        codingPattern
+      );
+      if (error || !userCodingPattern) {
+        console.error("Error creating user coding pattern", error);
+        continue;
+      }
+      // console.log("User coding pattern created", userCodingPattern.id);
+      this.codingPatterns[userCodingPattern.id] = userCodingPattern;
+    }
+    // this.codingPatterns = value;
   }
 
-  public getCodingTechnique(id: string): CodingPatternSchema | null {
+  getCodingTechnique(id: string): CodingPatternSchema | null {
     const codingPattern = this.codingPatterns[id] || null;
     return codingPattern;
   }
 
-  public getCodingTechniqueProblems(
-    techniqueId: string
-  ): UserProblemSchema[] | null {
+  getCodingTechniqueProblems(techniqueId: string): UserProblemSchema[] | null {
     const codingPattern = this.codingPatterns[techniqueId] || null;
     return codingPattern?.problems || null;
   }
 
-  public updateCodingTechniqueProblem(
+  updateCodingTechniqueProblem(
     techniqueId: string,
     problemId: string,
     problem: UserProblemSchema

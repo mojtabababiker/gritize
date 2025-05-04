@@ -45,12 +45,12 @@ export class TechnicalProblem {
   /**
    * Creates a new TechnicalProblem instance from JSON data and saves it to the database
    * @param data - The technical problem data conforming to TechnicalProblemSchema
-   * @returns Promise resolving to a new TechnicalProblem instance
+   * @returns Promise resolving to a new TechnicalProblem instance or null
    * @throws Error if saving to database fails
    */
   static async fromJson(
     data: TechnicalProblemSchema
-  ): Promise<TechnicalProblem> {
+  ): Promise<TechnicalProblem | null> {
     const problem = new TechnicalProblem({
       id: data.id || ID.unique(),
       type: data.type,
@@ -60,23 +60,29 @@ export class TechnicalProblem {
       hint: data.hint || undefined,
       slug: data.slug,
     });
-    await problem.save();
-    return problem;
+    try {
+      await problem.save();
+      return problem;
+    } catch (error) {
+      return null;
+    }
   }
 
   /**
    * Creates an array of TechnicalProblem instances from an array of problem schema objects.
    * @param data - An array of TechnicalProblemSchema objects to convert
-   * @returns Promise that resolves to an array of TechnicalProblem instances
+   * @returns Promise that resolves to an array of TechnicalProblem instances or null
    * @throws Will throw an error if any problem schema fails to convert
    */
   static async fromJsonArray(
     data: TechnicalProblemSchema[]
-  ): Promise<TechnicalProblem[]> {
+  ): Promise<(TechnicalProblem | null)[]> {
     const problems = await Promise.all(
       data.map((problem) => TechnicalProblem.fromJson(problem))
     );
-    return problems;
+    return problems.filter(
+      (problem): problem is TechnicalProblem => problem !== null
+    );
   }
 
   /**

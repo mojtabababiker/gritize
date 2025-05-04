@@ -1,4 +1,8 @@
-import { UserProblemSchema, CodingPatternSchema } from "../schemas";
+import {
+  UserProblemSchema,
+  CodingPatternSchema,
+  TechnicalProblemSchema,
+} from "../schemas";
 import { SkillLevel } from "../types/indext";
 
 export interface UserDTO {
@@ -12,4 +16,19 @@ export interface UserDTO {
   totalSolvedProblems?: number;
   generalAlgorithms: UserProblemSchema[];
   codingPatterns: CodingPatternSchema[];
+}
+
+export interface UserProblemDTO {
+  id: string;
+  problem: TechnicalProblemSchema;
+  solved: boolean;
+  score: number;
+}
+
+export interface CodingPatternDTO {
+  title: string;
+  info: string;
+  problems: string[];
+  totalProblems: number;
+  solvedProblems?: number;
 }

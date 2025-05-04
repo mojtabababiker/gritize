@@ -30,16 +30,19 @@ export default function Page() {
     const { program: programData, error } = program;
     if (error || !programData) return;
 
-    console.log({ object });
-    console.log({ error });
+    const { algorithms, codingPatterns } = programData;
+    // console.log("programData", JSON.stringify(programData));
+    // console.log("algorithms", JSON.stringify(algorithms));
 
     setIsLoading(false);
 
     //user.algorithmProblems = program.algorithms;
+    await user.setAlgorithmProblems(algorithms);
     // user.codingTechniques = program.codingPatterns;
+    await user.setCodingTechniques(codingPatterns);
+    user.isNewUser = false;
     // await user.save()
-    // user.isNewUser = false;
-    // setUser(user);
+    setUser(user);
     router.replace("/dashboard");
   };
   const createProgram = () => {
@@ -68,14 +71,14 @@ export default function Page() {
       algorithms: z.array(z.string()),
       codingPatterns: z.array(
         z.object({
-          patternName: z.string(),
+          title: z.string(),
           totalProblems: z.number(),
           info: z.string(),
           problems: z.array(z.string()),
         })
       ),
     }),
-    onFinish: saveProgram,
+    onFinish: ({ object, error }) => saveProgram({ program: object, error }),
     onError: handleError,
   });
 

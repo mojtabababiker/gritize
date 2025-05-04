@@ -1,5 +1,5 @@
 "use server";
-import { AppwriteException, ID, Query } from "node-appwrite";
+import { AppwriteException, ID, Models, Query } from "node-appwrite";
 import { createAdminClient } from "@/config/appwrite";
 
 import { Settings } from "@/constant/setting";
@@ -8,8 +8,8 @@ import {
   TechnicalProblemSchema,
   UserProblemSchema,
 } from "@/models/schemas";
-import { UserDTO } from "@/models/dto/user-dto";
-import { error } from "console";
+import { CodingPatternDTO, UserDTO } from "@/models/dto/user-dto";
+import { checkAuth } from "./auth-action";
 
 /**
  * Retrieves a user by their ID from the database along with their associated general algorithms and coding patterns.
@@ -58,68 +58,58 @@ export const getUserById = async (userId: string) => {
       $createdAt,
       $updatedAt,
       $permissions,
+      codingTechniques,
+      generalAlgorithms: userGeneralAlgorithms,
       ...rest
     } = userDoc;
-    const user = { id, ...rest } as UserDTO;
+    const codingPatterns = (codingTechniques as Models.Document[]).map(
+      (pattern) => {
+        const {
+          $id: id,
+          $collectionId,
+          $databaseId,
+          $createdAt,
+          $updatedAt,
+          $permissions,
+          user: userRelation,
+          ...rest
+        } = pattern;
+        return {
+          id,
+          ...rest,
+        } as CodingPatternSchema;
+      }
+    );
+    const generalAlgorithms = (userGeneralAlgorithms as Models.Document[]).map(
+      (problem) => {
+        const {
+          $id: id,
+          $collectionId,
+          $databaseId,
+          $createdAt,
+          $updatedAt,
+          $permissions,
+          user: userRelation,
+          ...rest
+        } = problem;
+        return {
+          id,
+          ...rest,
+        } as UserProblemSchema;
+      }
+    );
+    const user = {
+      id,
+      ...rest,
+      codingPatterns,
+      generalAlgorithms,
+    } as unknown as UserDTO;
 
     // this never happens, only for typescript eslinting
     if (!user.id) {
       return null;
     }
-    // retrieve user's general algorithms and coding patterns
-    const generalAlgorithmsDocs = await databases.listDocuments(
-      Settings.databaseId,
-      Settings.userProblemsCollectionId,
-      [Query.equal("user", user.id)]
-    );
-    const { documents: gaDocs } = generalAlgorithmsDocs;
-    // construct the user's generalAlgorithm schema
-    const generalAlgorithms = gaDocs.map((algorithm) => {
-      const {
-        $id: id,
-        $collectionId,
-        $databaseId,
-        $createdAt,
-        $updatedAt,
-        $permissions,
-        ...rest
-      } = algorithm;
-      return {
-        id,
-        ...rest,
-      } as UserProblemSchema;
-    });
-
-    // console.log("General Algorithms:", generalAlgorithms);
-    const codingPatternsDoc = await databases.listDocuments(
-      Settings.databaseId,
-      Settings.codingTechniquesCollectionId,
-      [Query.equal("user", user.id || "")]
-    );
-    const { documents: cpDocs } = codingPatternsDoc;
-
-    // construct user's codingPatterns schema
-    const codingPatterns = cpDocs.map((pattern) => {
-      const {
-        $id: id,
-        $collectionId,
-        $databaseId,
-        $createdAt,
-        $updatedAt,
-        $permissions,
-        ...rest
-      } = pattern;
-      return {
-        id,
-        ...rest,
-      } as CodingPatternSchema;
-    });
-    // console.log("Coding Patterns:", codingPatterns);
-    // add the general algorithms and coding patterns to the user object
-    user.generalAlgorithms = generalAlgorithms;
-    user.codingPatterns = codingPatterns;
-
-    // return the result as UserSchema object
+    // console.log("User from DB: ", JSON.stringify(user, null, 2));
 
     return user as UserDTO;
   } catch (error) {
@@ -171,14 +161,14 @@ export const createUser = async (userObj: UserDTO) => {
         avatar: user.avatar || null,
         generalAlgorithms: generalAlgorithms.map((algorithm) => ({
           ...algorithm,
-          problem: [algorithm.problem.id],
+          problem: [algorithm.problem],
         })),
 
         codingTechniques: codingPatterns.map((pattern) => ({
           ...pattern,
           problems: pattern.problems.map((problem) => ({
             ...problem,
-            problem: [problem.problem.id],
+            problem: [problem.problem],
           })),
         })),
       }
@@ -255,5 +245,137 @@ export const getProblemBySlug = async (
   } catch (error) {
     console.error("Error getting problem by slug", error);
     return null;
+  }
+};
+
+export const createUserProblem = async (
+  userId: string | null,
+  problemId: string
+) => {
+  const userProblemId = ID.unique();
+  try {
+    const { databases } = await createAdminClient();
+
+    const resultDoc = await databases.createDocument(
+      Settings.databaseId,
+      Settings.userProblemsCollectionId,
+      // ID.unique(),
+      userProblemId,
+      {
+        user: userId,
+        problem: problemId,
+        solved: false,
+        score: 0,
+      }
+    );
+
+    const {
+      $id: id,
+      $collectionId,
+      $databaseId,
+      $createdAt,
+      $updatedAt,
+      $permissions,
+      ...rest
+    } = resultDoc;
+    const result = { id, ...rest } as UserProblemSchema;
+    return { data: result, error: null };
+  } catch (error) {
+    console.log(
+      `\nError creating user Problem: ${userProblemId}\nWith Problem: ${problemId}\nFor user ${userId}\n`
+    );
+    // console.log("Error creating user problem", error);
+    if (error instanceof AppwriteException) {
+      return { error, data: null };
+    }
+    return { data: null, error: { response: "An unexpected error occurred" } };
+  }
+};
+
+export const createCodingTechnique = async (
+  userId: string,
+  codingPatternObj: CodingPatternDTO
+) => {
+  const { user } = await checkAuth();
+  if (!user || !user.id) {
+    return {
+      error: { response: "User is not logged in" },
+      data: null,
+    };
+  }
+
+  if (userId !== user.id) {
+    return {
+      error: { response: "Unauthorized operation" },
+      data: null,
+    };
+  }
+  try {
+    const { databases } = await createAdminClient();
+    const { problems: codingProblems, ...codingPattern } = codingPatternObj;
+    const resultDoc = await databases.createDocument(
+      Settings.databaseId,
+      Settings.codingTechniquesCollectionId,
+      ID.unique(),
+      {
+        ...codingPattern,
+        user: userId,
+      }
+    );
+
+    // Initialize user problems for the coding pattern
+    // We create these after the coding pattern to maintain referential integrity
+    // This ensures we don't have orphaned user problems if pattern creation fails
+    const problems: string[] = [];
+    for (const problem of codingProblems) {
+      const { data: userProblem, error } = await createUserProblem(
+        null,
+        problem
+      );
+      if (error || !userProblem || !userProblem.id) {
+        console.error("Error creating user problem", error);
+        continue;
+      }
+      console.log("User problem created", userProblem.id);
+      problems.push(userProblem.id);
+    }
+
+    // Update the coding pattern with the created user problems
+    console.log(`Updating coding pattern with ${problems.length} problems`);
+    await databases.updateDocument(
+      Settings.databaseId,
+      Settings.codingTechniquesCollectionId,
+      resultDoc.$id,
+      {
+        problems,
+      }
+    );
+    // Fetch the updated document
+    const updatedDoc = await databases.getDocument(
+      Settings.databaseId,
+      Settings.codingTechniquesCollectionId,
+      resultDoc.$id
+    );
+
+    // remove the unwanted properties from the result object
+    const {
+      $id: id,
+      $collectionId,
+      $databaseId,
+      $createdAt,
+      $updatedAt,
+      $permissions,
+      user,
+      ...rest
+    } = updatedDoc;
+    const result = { id, ...rest } as CodingPatternSchema;
+    console.log("Coding pattern created", result.id);
+    return { data: result, error: null };
+  } catch (error) {
+    console.log("\nError creating user Technique\n", error);
+    if (error instanceof AppwriteException) {
+      return { error, data: null };
+    }
+    return { data: null, error: { response: "An unexpected error occurred" } };
   }
 };

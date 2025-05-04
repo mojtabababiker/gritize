@@ -24,8 +24,8 @@ export interface UserSchema {
 }
 
 export interface UserProblemSchema {
-  id: string;
-  problem: TechnicalProblemSchema;
+  id?: string;
+  problem: string;
   solved: boolean;
   score: number;
 }

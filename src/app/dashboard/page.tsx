@@ -18,10 +18,12 @@ function page() {
   const { user, setUser } = useAuth();
 
   useEffect(() => {
-    if (user.isNewUser) {
+    if (user.id && user.isNewUser) {
+      // If the user is new and has no algorithm problems, redirect to create profile
+      // This is a temporary solution until we have a better way to handle new users
       router.push("/dashboard/create-profile");
     }
-  }, [user.isNewUser, router]);
+  }, [user.id, user.isNewUser, router]);
   const featuredProblems = [
     {
       title: "Two Sum",
