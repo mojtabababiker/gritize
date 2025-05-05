@@ -1,5 +1,3 @@
-import { SkillLevel } from "./types/indext";
-import { CodingPatternSchema, UserProblemSchema, UserSchema } from "./schemas";
 import {
   loginUser,
   logoutUser,
@@ -10,7 +8,12 @@ import {
   createUser,
   createUserProblem,
   getUserById,
-} from "@/utils/appwrite/database-action";
+  listCodingPatternsById,
+  listUserProblemsById,
+} from "@/utils/appwrite/database-actions";
+
+import { SkillLevel } from "./types/indext";
+import { CodingPatternSchema, UserProblemSchema, UserSchema } from "./schemas";
 import { CodingPatternDTO, UserDTO } from "./dto/user-dto";
 
 /**
@@ -90,7 +93,7 @@ export class User {
     }
 
     // return a new User instance with the user information
-    return User.fromJson({
+    return await User.fromJson({
       ...userData,
       name: userAccount.name,
       email: userAccount.email,
@@ -159,15 +162,27 @@ export class User {
       throw new Error("User registration failed.");
     }
 
-    return User.fromJson(user);
+    // return await User.fromJson(user);
+    return new User({ ...user, generalAlgorithms: {}, codingPatterns: {} });
   }
 
   /**
-   * Create a new User instance from the user information json object.
-   * @param {UserDTO} data - the user information
-   * @returns {User} the User instance
+   * Creates a User instance from JSON data.
+   * @param data - The user data transfer object containing user information.
+   * @returns A Promise that resolves to a new User instance populated with the provided data.
+   *
+   * The method performs the following:
+   * - Initializes a new User with basic properties from the DTO
+   * - Fetches and assigns associated general algorithm problems
+   * - Fetches and assigns associated coding patterns
+   *
+   * Default values are provided for:
+   * - skillLevel (defaults to "mid-level")
+   * - onboarding (defaults to false)
+   * - totalSolvedProblems (defaults to 0)
+   * - isNewUser (defaults to false)
    */
-  static fromJson(data: UserDTO): User {
+  static async fromJson(data: UserDTO): Promise<User> {
     // console.log("\n\nUser data from JSON", data, "\n\n");
 
     const user = new User({
@@ -181,12 +196,13 @@ export class User {
       isNewUser: data.isNewUser || false,
     });
 
-    data.generalAlgorithms?.forEach((problem) => {
-      user.generalAlgorithms[problem.id as string] = problem;
+    const userProblems = await listUserProblemsById(data.generalAlgorithms);
+    userProblems.forEach((problem) => {
+      user.generalAlgorithms[problem.id] = problem;
     });
-    user.codingPatterns = {};
-    data.codingPatterns?.forEach((cp) => {
-      user.codingPatterns[cp.id] = cp;
+    const codingPatterns = await listCodingPatternsById(data.codingPatterns);
+    codingPatterns.forEach((pattern) => {
+      user.codingPatterns[pattern.id] = pattern;
     });
     return user;
   }
@@ -202,8 +218,8 @@ export class User {
    * - onboarding: User's onboarding status
    * - isNewUser: Boolean indicating if user is new
    * - totalSolvedProblems: Number of problems solved by user
-   * - generalAlgorithms: Array of user's general algorithm data
-   * - codingPatterns: Array of user's coding pattern data
+   * - generalAlgorithms: Array of user's general algorithm ids
+   * - codingPatterns: Array of user's coding pattern ids
    */
   get json(): UserDTO {
     return {
@@ -215,8 +231,8 @@ export class User {
       onboarding: this.onboarding,
       isNewUser: this.isNewUser,
       totalSolvedProblems: this.totalSolvedProblems,
-      generalAlgorithms: Object.values(this.generalAlgorithms),
-      codingPatterns: Object.values(this.codingPatterns),
+      generalAlgorithms: Object.keys(this.generalAlgorithms),
+      codingPatterns: Object.keys(this.codingPatterns),
     };
   }
 
@@ -252,12 +268,12 @@ export class User {
         this.id,
         problemId
       );
-      if (error || !userProblem) {
+      if (error || !userProblem?.id) {
         console.error("Error creating user problem", error);
         continue;
       }
       // console.log("User problem created", userProblem.id);
-      this.generalAlgorithms[userProblem.id as string] = userProblem;
+      this.generalAlgorithms[userProblem.id] = userProblem;
     }
   }
 

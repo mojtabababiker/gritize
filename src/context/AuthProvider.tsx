@@ -1,7 +1,4 @@
 "use client";
-
-import { User } from "@/models/users";
-import { checkAuth } from "@/utils/appwrite/auth-action";
 import {
   createContext,
   ReactNode,
@@ -10,7 +7,10 @@ import {
   useState,
 } from "react";
 
-const anonymousUser = User.fromJson({
+import { User } from "@/models/users";
+import { checkAuth } from "@/utils/appwrite/auth-action";
+
+const anonymousUser = new User({
   id: undefined,
   name: "Anonymous",
   email: "",
@@ -19,8 +19,6 @@ const anonymousUser = User.fromJson({
   onboarding: false,
   isNewUser: false,
   totalSolvedProblems: 0,
-  generalAlgorithms: [],
-  codingPatterns: [],
 });
 
 type AuthContextType = {
@@ -41,7 +39,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { isLoggedIn: loggedIn, user } = await checkAuth();
       setIsLoggedIn(loggedIn);
       if (loggedIn && user) {
-        setUser(User.fromJson(user));
+        const newUser = await User.fromJson(user);
+        setUser(newUser);
       } else {
         setUser(anonymousUser);
       }

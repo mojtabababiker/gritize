@@ -2,10 +2,13 @@
 
 "use server";
 import { cookies } from "next/headers";
-import { createAdminClient, createUserClient } from "@/config/appwrite";
+
 import { AppwriteException, Models } from "node-appwrite";
-import { getUserById } from "./database-action";
+
+import { createAdminClient, createUserClient } from "@/config/appwrite";
 import { UserDTO } from "@/models/dto/user-dto";
+
+import { getUserById } from "./database-actions";
 
 /**
  * Checks the authentication status of the user and retrieves their information.

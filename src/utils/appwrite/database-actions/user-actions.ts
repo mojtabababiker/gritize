@@ -1,0 +1,149 @@
+"use server";
+import { ID, AppwriteException } from "node-appwrite";
+
+import { createAdminClient } from "@/config/appwrite";
+import { UserDTO } from "@/models/dto/user-dto";
+import { Settings } from "@/constant/setting";
+
+import {
+  listCodingPatternsById,
+  listUserProblemsById,
+} from "./user-program-actions";
+
+/**
+ * Retrieves a user by their ID from the database along with their associated general algorithms and coding patterns.
+ *
+ * @param userId - The unique identifier of the user to retrieve
+ * @returns Promise that resolves to a UserDTO object containing user data and associated collections, or null if user not found or error occurs
+ * @throws Error if userId is not provided
+ *
+ * @remarks
+ * This function performs the following operations:
+ * 1. Retrieves the basic user document
+ * 2. Fetches associated general algorithms
+ * 3. Fetches associated coding patterns
+ * 4. Combines all data into a single UserDTO object
+ *
+ * The returned UserDTO includes:
+ * - Basic user information
+ * - Array of general algorithms (UserProblemSchema[])
+ * - Array of coding patterns (CodingPatternSchema[])
+ *
+ * All database entities are cleaned of internal properties ($id, $collectionId, etc.) before being returned.
+ */
+export const getUserById = async (userId: string) => {
+  if (!userId) {
+    throw new Error("User ID is required.");
+  }
+
+  const { databases } = await createAdminClient();
+
+  try {
+    // get the user document from the database
+    const userDoc = await databases.getDocument(
+      Settings.databaseId,
+      Settings.usersCollectionId,
+      userId
+    );
+    if (!userDoc) {
+      return null;
+    }
+
+    // remove the unwanted properties from the user object
+    const {
+      $id: id,
+      $collectionId,
+      $databaseId,
+      $createdAt,
+      $updatedAt,
+      $permissions,
+      codingPatterns: userCodingPatterns,
+      generalAlgorithms: userGeneralAlgorithms,
+      ...rest
+    } = userDoc;
+    const codingPatterns = await listCodingPatternsById(userCodingPatterns);
+    const generalAlgorithms = await listUserProblemsById(userGeneralAlgorithms);
+    const user = {
+      id,
+      ...rest,
+      codingPatterns,
+      generalAlgorithms,
+    } as unknown as UserDTO;
+
+    // this never happens, only for typescript eslinting
+    if (!user.id) {
+      return null;
+    }
+    // console.log("User from DB: ", JSON.stringify(user, null, 2));
+
+    return user as UserDTO;
+  } catch (error) {
+    console.error("Error getting user by ID", error);
+    return null;
+  }
+};
+
+/**
+ * Creates a new user document in the database
+ *
+ * @param userObj - User data transfer object containing user information
+ * @returns Promise resolving to an object with either:
+ *  - success: {data: UserDTO, error: null}
+ *  - failure: {data: null, error: AppwriteException | {response: string}}
+ *
+ * @throws {AppwriteException} When Appwrite service throws an error
+ *
+ * @example
+ * ```typescript
+ * const result = await createUser({
+ *   id: "user123",
+ *   name: "John Doe",
+ *   email: "john@example.com",
+ *   codingPatterns: [...],
+ *   generalAlgorithms: [...],
+ *   // other user properties
+ * });
+ * ```
+ */
+export const createUser = async (userObj: UserDTO) => {
+  const { databases } = await createAdminClient();
+  const {
+    id: userId,
+    name,
+    email,
+    codingPatterns,
+    generalAlgorithms,
+    ...user
+  } = userObj;
+  try {
+    const userDoc = await databases.createDocument(
+      Settings.databaseId,
+      Settings.usersCollectionId,
+      userId || ID.unique(),
+      {
+        ...user,
+        totalSolvedProblems: 0,
+        avatar: user.avatar || null,
+        generalAlgorithms,
+        codingTechniques: codingPatterns.map((pattern) => pattern),
+      }
+    );
+    const {
+      $id: id,
+      $collectionId,
+      $databaseId,
+      $createdAt,
+      $updatedAt,
+      $permissions,
+      ...rest
+    } = userDoc;
+    const data = { id, ...rest } as UserDTO;
+    return { data, error: null };
+  } catch (error) {
+    console.error("Error creating user", error);
+    if (error instanceof AppwriteException) {
+      return { error, data: null };
+    }
+    return { data: null, error: { response: "An unexpected error occurred" } };
+  }
+};

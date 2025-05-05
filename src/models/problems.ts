@@ -4,7 +4,7 @@ import { TechnicalProblemSchema } from "./schemas";
 import {
   createProblem,
   getProblemBySlug,
-} from "@/utils/appwrite/database-action";
+} from "@/utils/appwrite/database-actions";
 
 /**
  * TechnicalProblem class

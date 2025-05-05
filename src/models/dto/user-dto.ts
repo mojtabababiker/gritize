@@ -14,13 +14,13 @@ export interface UserDTO {
   onboarding?: boolean;
   isNewUser?: boolean;
   totalSolvedProblems?: number;
-  generalAlgorithms: UserProblemSchema[];
-  codingPatterns: CodingPatternSchema[];
+  generalAlgorithms: string[];
+  codingPatterns: string[];
 }
 
 export interface UserProblemDTO {
   id: string;
-  problem: TechnicalProblemSchema;
+  problemId: string;
   solved: boolean;
   score: number;
 }
