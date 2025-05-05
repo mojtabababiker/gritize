@@ -42,3 +42,8 @@ next-env.d.ts
 
 # AI prompts
 assistant-ai.ts
+
+
+# vscode
+settings.json
+client_secret.json
