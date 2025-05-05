@@ -9,6 +9,7 @@ import {
   listCodingPatternsById,
   listUserProblemsById,
 } from "./user-program-actions";
+import { checkAuth } from "../auth-action";
 
 /**
  * Retrieves a user by their ID from the database along with their associated general algorithms and coding patterns.
@@ -57,17 +58,17 @@ export const getUserById = async (userId: string) => {
       $createdAt,
       $updatedAt,
       $permissions,
-      codingPatterns: userCodingPatterns,
-      generalAlgorithms: userGeneralAlgorithms,
+      // codingPatterns: userCodingPatterns,
+      // generalAlgorithms: userGeneralAlgorithms,
       ...rest
     } = userDoc;
-    const codingPatterns = await listCodingPatternsById(userCodingPatterns);
-    const generalAlgorithms = await listUserProblemsById(userGeneralAlgorithms);
+    // const codingPatterns = await listCodingPatternsById(userCodingPatterns);
+    // const generalAlgorithms = await listUserProblemsById(userGeneralAlgorithms);
     const user = {
       id,
       ...rest,
-      codingPatterns,
-      generalAlgorithms,
+      // codingPatterns,
+      // generalAlgorithms,
     } as unknown as UserDTO;
 
     // this never happens, only for typescript eslinting
@@ -76,7 +77,7 @@ export const getUserById = async (userId: string) => {
     }
     // console.log("User from DB: ", JSON.stringify(user, null, 2));
 
-    return user as UserDTO;
+    return user;
   } catch (error) {
     console.error("Error getting user by ID", error);
     return null;
@@ -125,7 +126,7 @@ export const createUser = async (userObj: UserDTO) => {
         totalSolvedProblems: 0,
         avatar: user.avatar || null,
         generalAlgorithms,
-        codingTechniques: codingPatterns.map((pattern) => pattern),
+        codingPatterns,
       }
     );
     const {
@@ -141,6 +142,45 @@ export const createUser = async (userObj: UserDTO) => {
     return { data, error: null };
   } catch (error) {
     console.error("Error creating user", error);
+    if (error instanceof AppwriteException) {
+      return { error, data: null };
+    }
+    return { data: null, error: { response: "An unexpected error occurred" } };
+  }
+};
+
+export const updateUser = async (userId: string, userObj: Partial<UserDTO>) => {
+  const { id, email, name, ...cleanUserObject } = userObj;
+  const { user } = await checkAuth();
+  if (!user || user.id !== userId) {
+    return {
+      error: { response: "Authorized operation" },
+      data: null,
+    };
+  }
+  try {
+    const { databases } = await createAdminClient();
+    const userDoc = await databases.updateDocument(
+      Settings.databaseId,
+      Settings.usersCollectionId,
+      userId,
+      {
+        ...cleanUserObject,
+      }
+    );
+    const {
+      $id: id,
+      $collectionId,
+      $databaseId,
+      $createdAt,
+      $updatedAt,
+      $permissions,
+      ...rest
+    } = userDoc;
+    const data = { id, ...rest } as UserDTO;
+    return { data, error: null };
+  } catch (error) {
+    console.error("Error updating user", error);
     if (error instanceof AppwriteException) {
       return { error, data: null };
     }

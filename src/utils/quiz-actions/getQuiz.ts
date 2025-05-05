@@ -3,7 +3,7 @@ import { Settings } from "@/constant/setting";
 import { Quiz } from "@/utils/quiz-actions/types";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateObject } from "ai";
-import { saveQuiz } from "../appwrite/database-action";
+import { saveQuiz } from "../appwrite/database-actions";
 
 export const runtime = "edge";
 

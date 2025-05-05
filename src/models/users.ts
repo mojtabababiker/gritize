@@ -10,6 +10,7 @@ import {
   getUserById,
   listCodingPatternsById,
   listUserProblemsById,
+  updateUser,
 } from "@/utils/appwrite/database-actions";
 
 import { SkillLevel } from "./types/indext";
@@ -163,7 +164,13 @@ export class User {
     }
 
     // return await User.fromJson(user);
-    return new User({ ...user, generalAlgorithms: {}, codingPatterns: {} });
+    return new User({
+      ...user,
+      name: this.name,
+      email: this.email,
+      generalAlgorithms: {},
+      codingPatterns: {},
+    });
   }
 
   /**
@@ -183,7 +190,7 @@ export class User {
    * - isNewUser (defaults to false)
    */
   static async fromJson(data: UserDTO): Promise<User> {
-    // console.log("\n\nUser data from JSON", data, "\n\n");
+    console.log("\n\nUser data from JSON", data, "\n\n");
 
     const user = new User({
       id: data.id,
@@ -356,5 +363,14 @@ export class User {
   async save(): Promise<void> {
     // call the backend service action with the serialized user information
     // if the save fails, throw an error
+    if (!this.id) {
+      console.error("Login to save user data");
+      throw new Error("Login to save user data");
+    }
+    const { error } = await updateUser(this.id, this.json);
+    if (error) {
+      console.error("Error saving user data", error);
+      throw new Error("Error saving user data");
+    }
   }
 }

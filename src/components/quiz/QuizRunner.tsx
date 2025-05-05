@@ -137,7 +137,7 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
     if (result <= quiz.questions.length / 4) {
       // 25%
       level = "entry-level";
-    } else if (result <= quiz.questions.length) {
+    } else if (result <= quiz.questions.length / 2) {
       // 50%
       level = "junior";
     } else if (result <= (quiz.questions.length * 2) / 3) {
@@ -151,7 +151,9 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
     user.skillLevel = level;
     // user.isNewUser = false;
     user.onboarding = true;
-    await user.save();
+    if (user.id) {
+      await user.save();
+    }
 
     console.log("Quiz result:", { result, level });
     setUser(user);

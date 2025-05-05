@@ -41,7 +41,7 @@ export default function Page() {
     // user.codingTechniques = program.codingPatterns;
     await user.setCodingTechniques(codingPatterns);
     user.isNewUser = false;
-    // await user.save()
+    await user.save();
     setUser(user);
     router.replace("/dashboard");
   };
