@@ -1,5 +1,5 @@
 "use server";
-import { ID, AppwriteException, Query } from "node-appwrite";
+import { ID, AppwriteException, Query, Models } from "node-appwrite";
 
 import { createAdminClient } from "@/config/appwrite";
 import { TechnicalProblemSchema } from "@/models/schemas";
@@ -120,5 +120,96 @@ export const getProblemBySlug = async (
   } catch (error) {
     console.error("Error getting problem by slug", error);
     return null;
+  }
+};
+
+/**
+ * Retrieves a list of technical problems from the database.
+ *
+ * @param page - The page number for pagination (default: 1)
+ * @param limit - The number of problems to retrieve per page (default: 10)
+ * @param featured - Whether to filter for featured problems (default: false)
+ * @returns Promise that resolves to an object containing:
+ *          - data: Array of TechnicalProblemSchema objects
+ *          - total: Total number of problems available
+ *          - hasMore: Boolean indicating if more problems are available
+ */
+export const listProblems = async (
+  cursorId: string = "",
+  page: number = 1,
+  limit: number = 10,
+  prev: boolean = false
+): Promise<
+  | {
+      data: TechnicalProblemSchema[];
+      total: number;
+      hasMore: boolean;
+      error: null;
+    }
+  | {
+      error: AppwriteException | { response: string };
+      data: null;
+      total: null;
+      hasMore: null;
+    }
+> => {
+  const { databases } = await createAdminClient();
+  let problemsDoc: Models.DocumentList<Models.Document>;
+
+  console.log("Listing problems with cursorId:", cursorId);
+  console.log("Listing problems with limit:", limit);
+
+  try {
+    if (prev) {
+      const query =
+        cursorId.length > 0
+          ? [Query.cursorBefore(cursorId), Query.limit(limit)]
+          : [Query.limit(limit)];
+
+      problemsDoc = await databases.listDocuments(
+        Settings.databaseId,
+        Settings.problemsCollectionId,
+        query
+      );
+    } else {
+      const query =
+        cursorId.length > 0
+          ? [Query.cursorAfter(cursorId), Query.limit(limit)]
+          : [Query.limit(limit)];
+
+      problemsDoc = await databases.listDocuments(
+        Settings.databaseId,
+        Settings.problemsCollectionId,
+        query
+      );
+    }
+    const { documents, total } = problemsDoc;
+    const problems: TechnicalProblemSchema[] = documents.map((problem) => ({
+      id: problem.$id,
+      type: problem.type,
+      title: problem.title,
+      description: problem.description,
+      slug: problem.slug,
+      difficulty: problem.difficulty,
+    }));
+    console.log(`Fetch ${problems.length} problems of ${total} total`);
+    const hasMore = page * limit < total;
+    return {
+      data: problems,
+      total,
+      hasMore,
+      error: null,
+    };
+  } catch (error) {
+    console.error("Error listing problems", error);
+    if (error instanceof AppwriteException) {
+      return { error, data: null, total: null, hasMore: null };
+    }
+    return {
+      error: { response: "An unexpected error occurred" },
+      data: null,
+      total: null,
+      hasMore: null,
+    };
   }
 };
