@@ -3,10 +3,22 @@
 import Button from "@/components/common/Button";
 import Heading from "@/components/common/Heading";
 import Paragraph from "@/components/common/Paragraph";
+import CodeEditor from "@/components/playground/CodeEditor";
+import ProblemSection from "@/components/playground/ProblemSection";
+import { useAuth } from "@/context/AuthProvider";
+import { UserProblemSchema } from "@/models/schemas";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 function Page() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { user } = useAuth();
   const [isSmallScreen, setIsSmallScreen] = useState(true);
+  const [problem, setProblem] = useState<UserProblemSchema | null>(null);
+  const [code, setCode] = useState<string | undefined>(undefined);
+  const [language, setLanguage] = useState<string>("javascript");
+  const problemId = searchParams.get("problem");
 
   useEffect(() => {
     const handleResize = () => {
@@ -16,17 +28,45 @@ function Page() {
     handleResize(); // Check on initial load
     window.addEventListener("resize", handleResize);
 
+    // update language based on the user preference
+    // const userLanguage = user.language || "javascript";
+    // setLanguage(userLanguage);
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (!problemId) {
+      // If no problemId is provided, redirect to the dashboard
+      console.log("No problemId provided");
+      router.replace("/404");
+    }
+    const problem = user.getAlgorithmProblem(problemId || ""); // need
+    setProblem(problem);
+    if (!problem) {
+      // If no problemId is found, redirect to the dashboard
+      // You can also show a message or a loading state here
+      // Redirect to dashboard if no problemId is found
+      // router.replace("/404");
+    }
+    console.log("Problem data:", problem);
+  }, [user, problemId, router]);
+
   return isSmallScreen ? (
     <NoticeCard />
   ) : (
-    <div className="w-screen bg-bg/65 flex relative">
-      {/* AI Assistant */}
+    <div className="w-screen bg-bg/65 flex relative h-screen overflow-hidden">
+      {/* Problem */}
+      <div className="max-w-[740px] min-w-[400px] w-full">
+        <ProblemSection problem={problem} />
+      </div>
 
       {/* Code Section */}
+      <div className="flex-1 min-w-[620px]">
+        <CodeEditor onChange={setCode} value={code} />
+      </div>
     </div>
   );
 }

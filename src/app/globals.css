@@ -86,6 +86,26 @@ body {
   overflow-x: hidden;
 }
 
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
 .button-cutout.primary {
   filter: drop-shadow(1px 0 var(--color-fg)) drop-shadow(-1px 0 var(--color-fg))
     drop-shadow(0 1px var(--color-fg)) drop-shadow(0 -1px var(--color-fg))
@@ -203,6 +223,10 @@ body {
     var(--color-bg) 13%,
     var(--color-accent) 26%
   );
+}
+
+.problem-article {
+  background-image: linear-gradient(to bottom, #212121 0%, #21212175 96%);
 }
 
 @theme inline {
