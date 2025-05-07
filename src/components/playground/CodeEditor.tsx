@@ -3,7 +3,9 @@
 import Editor, { EditorProps } from "@monaco-editor/react";
 import Button from "../common/Button";
 import Paragraph from "../common/Paragraph";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import Timer from "../common/Timer";
+import { HistoryIcon } from "lucide-react";
 
 type Props = EditorProps & {
   defaultValue: string;
@@ -17,6 +19,7 @@ function CodeEditor({
   ...props
 }: Props) {
   const editorRef = useRef(null);
+  const [timerTime, setTimerTimer] = useState(0); // in minutes
 
   const onMount = (editor: any) => {
     editorRef.current = editor;
@@ -85,6 +88,17 @@ function CodeEditor({
           <span className="text-fg">Output will appear here</span>
           {/* <Paragraph>{value}</Paragraph> */}
         </div>
+      </div>
+
+      {/* timer */}
+      <div className="absolute z-50 top-0 right-0 py-2 pr-4 flex gap-2 opacity-85 text-primary">
+        <Timer
+          minutes={timerTime}
+          seconds={0}
+          onTimeUp={() => {}}
+          onChange={setTimerTimer}
+          upTimer
+        />
       </div>
     </div>
   );
