@@ -27,6 +27,10 @@ export default function Page() {
   const initialRenderCompleted = useRef(false);
 
   const saveProgram = async (program: Program): Promise<void> => {
+    if (!user) {
+      console.error("User is not initialized");
+      return;
+    }
     const { program: programData, error } = program;
     if (error || !programData) return;
 
@@ -46,6 +50,10 @@ export default function Page() {
     router.replace("/dashboard");
   };
   const createProgram = () => {
+    if (!user) {
+      console.error("User is not initialized");
+      return;
+    }
     initialRenderCompleted.current = true;
     if (!isLoading && user.isNewUser) {
       setIsLoading(true);
@@ -53,7 +61,7 @@ export default function Page() {
         prompt: prompt,
       });
     } else if (!user.isNewUser) {
-      router.replace("/dashboard");
+      // router.replace("/dashboard");
     }
   };
 
@@ -64,7 +72,7 @@ export default function Page() {
     console.error("Cause:", cause);
   };
 
-  const prompt = `Create a program for a ${user.skillLevel} software engineer`;
+  const prompt = `Create a program for a ${user?.skillLevel} software engineer`;
   const { object, submit, error } = useObject({
     api: "/api/generate_program",
     schema: z.object({
@@ -87,7 +95,7 @@ export default function Page() {
       console.log("initialRenderCompleted");
       createProgram();
     }
-  }, []);
+  }, [user]);
 
   return isLoading ? (
     // loading message shows up when the program is being created

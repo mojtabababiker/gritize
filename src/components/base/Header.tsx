@@ -7,6 +7,7 @@ import Button from "../common/Button";
 import AuthDialog from "../auth/AuthDialog";
 import { useAuth } from "@/context/AuthProvider";
 import { useRouter } from "next/navigation";
+import Loading from "../common/Loading";
 
 type MenuPage = {
   name: string;
@@ -32,13 +33,18 @@ function Header() {
 
   const logout = () => {
     /* Add logout functionality here */
+    if (!user) {
+      return;
+    }
     user.logout();
     setIsLoggedIn(false);
     setUser(user);
     setActive(MENU_ITEMS[0]);
     router.push("/");
   };
-  return (
+  return !user ? (
+    <Loading />
+  ) : (
     <>
       <Bounded
         as="header"

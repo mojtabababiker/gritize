@@ -67,6 +67,9 @@ function Sidebar() {
   };
 
   const logout = async () => {
+    if (!user) {
+      return;
+    }
     await user.logout();
     setIsLoggedIn(false);
     setUser(user);
@@ -135,7 +138,7 @@ function Sidebar() {
             !open && "opacity-0 scale-x-0"
           )}
         >
-          {user.algorithmProblems.length > 0 ? (
+          {user && user.algorithmProblems.length > 0 ? (
             user.algorithmProblems.map((algo) => (
               <div
                 key={algo.problem.title}
@@ -197,7 +200,7 @@ function Sidebar() {
             !open && "opacity-0 scale-x-0"
           )}
         >
-          {user.codingTechniques.length > 0 ? (
+          {user && user.codingTechniques.length > 0 ? (
             user.codingTechniques.map((tech) => (
               <div
                 key={tech.title}

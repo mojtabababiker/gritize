@@ -110,6 +110,10 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
    * @throws {Error} - Logs error to console if the quiz submission fails
    */
   const submitQuiz = async (quiz: Quiz): Promise<void> => {
+    if (!user) {
+      console.error("User is not initialized");
+      return;
+    }
     setCurrentQuestionIndex(null);
     setCurrentPage("submitting");
     console.log("Submitting quiz:", { quiz });
@@ -160,6 +164,8 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
     setTimeout(onFinish, 2500);
     return;
   };
+
+  if (!user) return null;
 
   // when the user sees all the quiz information and rules, and the quiz language is selected.
   if (currentQuestionIndex !== null && quiz) {

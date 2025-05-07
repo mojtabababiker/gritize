@@ -28,11 +28,11 @@ function DashboardHeader() {
         <div className="flex items-center justify-end gap-2">
           {/* name */}
           <Heading as="span" size="sm" className="text-fg">
-            {user.name}
+            {user?.name || "..."}
           </Heading>
           {/* user image */}
           <div className="flex-items-center justify-center rounded-full w-14 h-14 p-0 bg-surface">
-            {user.avatar ? (
+            {user?.avatar ? (
               <Image
                 src={user.avatar}
                 width={64}
@@ -42,7 +42,7 @@ function DashboardHeader() {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center rounded-full font-heading font-bold text-2xl sm:text-4xl text-bg/75 bg-accent/30">
-                {user.name?.at(0)}
+                {user?.name?.at(0) || "?"}
               </div>
             )}
           </div>

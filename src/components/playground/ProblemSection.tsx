@@ -37,7 +37,7 @@ function ProblemSection({ problem }: Props) {
           href={"/dashboard"}
           className="flex-items-center justify-center rounded-full w-8 h-8 p-0 bg-surface"
         >
-          {user.avatar ? (
+          {user?.avatar ? (
             <Image
               src={user.avatar}
               width={64}
@@ -47,7 +47,7 @@ function ProblemSection({ problem }: Props) {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center rounded-full font-heading font-bold text-xl sm:text-3xl text-bg/75 bg-accent/30">
-              {user.name?.at(0)}
+              {user?.name?.at(0) || "?"}
             </div>
           )}
         </Link>

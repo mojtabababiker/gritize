@@ -11,6 +11,7 @@ import { FeaturedProblems } from "@/components/dashboard/FeaturedProblems";
 import StatisticalCard from "@/components/cards/StatisticalCard";
 import Bounded from "@/components/common/Bounded";
 import Heading from "@/components/common/Heading";
+import Loading from "@/components/common/Loading";
 
 function page() {
   const router = useRouter();
@@ -20,13 +21,20 @@ function page() {
   >([]);
 
   useEffect(() => {
+    if (!user) {
+      return;
+    }
     if (user.id && user.isNewUser) {
       // If the user is new and has no algorithm problems, redirect to create profile
       // This is a temporary solution until we have a better way to handle new users
       router.push("/dashboard/create-profile");
     }
     console.log("User data:", user);
-  }, [user.id, user.isNewUser, router]);
+  }, [user, router]);
+
+  if (!user) {
+    return <Loading />;
+  }
 
   return (
     <Bounded className="profile-container relative z-20 min-h-screen pb-40">
