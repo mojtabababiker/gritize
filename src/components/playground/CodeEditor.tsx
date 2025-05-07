@@ -6,6 +6,8 @@ import Paragraph from "../common/Paragraph";
 import { useEffect, useRef, useState } from "react";
 import Timer from "../common/Timer";
 import { HistoryIcon } from "lucide-react";
+import { useResize } from "@/hooks/useHandleResize";
+import ResizeRuler from "../common/ResizeRuler";
 
 type Props = EditorProps & {
   defaultValue: string;
@@ -21,6 +23,8 @@ function CodeEditor({
   const editorRef = useRef(null);
   const [timerTime, setTimerTimer] = useState(0); // in minutes
 
+  const { boxRef, handleResize } = useResize({ direction: "vertical" });
+
   const onMount = (editor: any) => {
     editorRef.current = editor;
   };
@@ -28,13 +32,13 @@ function CodeEditor({
   return (
     <div className="relative flex w-full h-screen flex-col">
       {/* editor */}
-      <div className="h-[60vh] w-full bg-[#1E1E1E]">
+      <div className="min-h-[60vh] w-full bg-[#1E1E1E] -mb-2.5">
         <Editor
           language={language.replace("++", "pp")}
           onChange={onChange}
           value={value}
           theme="vs-dark"
-          className="py-10 text-2xl"
+          className="pt-10 pb-3 text-2xl"
           options={{
             fontSize: 16,
             minimap: {
@@ -59,7 +63,10 @@ function CodeEditor({
       </div>
 
       {/* terminal & actions */}
-      <div className="w-full min-h-[43vh] absolute bottom-0 pb-5 px-5 flex flex-col gap-3 border-t-4 rounded-t-2xl border-bg bg-[#212121]">
+      <div
+        ref={boxRef}
+        className="relative flex-1 w-full min-h-[28vh] max-h-[43vh] pb-5 px-5 flex flex-col gap-3 border-t-4 rounded-t-2xl border-bg bg-[#212121]"
+      >
         {/* actions */}
         <div className="w-full flex items-center gap-2 mt-6">
           <Button
@@ -88,6 +95,13 @@ function CodeEditor({
           <span className="text-fg">Output will appear here</span>
           {/* <Paragraph>{value}</Paragraph> */}
         </div>
+
+        {/* resize ruler */}
+        {/* <ResizeRuler
+          direction="horizontal"
+          onResize={handleResize}
+          className="-top-1 z-50 left-0 w-full"
+        /> */}
       </div>
 
       {/* timer */}

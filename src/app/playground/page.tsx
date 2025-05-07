@@ -4,10 +4,12 @@ import Button from "@/components/common/Button";
 import Heading from "@/components/common/Heading";
 import Loading from "@/components/common/Loading";
 import Paragraph from "@/components/common/Paragraph";
+import ResizeRuler from "@/components/common/ResizeRuler";
 import CodeEditor from "@/components/playground/CodeEditor";
 import ProblemSection from "@/components/playground/ProblemSection";
 import { CodeSnippets } from "@/constant/codeSnippets";
 import { useAuth } from "@/context/AuthProvider";
+import { useResize } from "@/hooks/useHandleResize";
 import { UserProblemSchema } from "@/models/schemas";
 import { Languages } from "@/models/types/indext";
 import Image from "next/image";
@@ -15,16 +17,21 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 function Page() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const { user } = useAuth();
+  const searchParams = useSearchParams();
+  const problemId = searchParams.get("problem");
+
   const [isSmallScreen, setIsSmallScreen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+
+  const { user } = useAuth();
+  const { boxRef, handleResize } = useResize({
+    direction: "horizontal",
+  });
 
   const [problem, setProblem] = useState<UserProblemSchema | null>(null);
   const [code, setCode] = useState<string | undefined>(undefined);
   const [language, setLanguage] = useState<Languages>("javascript");
-  const problemId = searchParams.get("problem");
 
   useEffect(() => {
     const handleResize = () => {
@@ -74,8 +81,17 @@ function Page() {
       ) : (
         <>
           {/* Problem */}
-          <div className="max-w-[740px] min-w-[400px] w-full">
+          <div
+            ref={boxRef}
+            className="relative max-w-[744px] min-w-[400px] w-full mr-1"
+          >
             <ProblemSection problem={problem} />
+            {/* resize ruler */}
+            <ResizeRuler
+              onResize={handleResize}
+              direction="vertical"
+              className="top-0 -right-1 h-screen"
+            />
           </div>
           {/* Code Section */}
           <div className="flex-1 min-w-[620px]">

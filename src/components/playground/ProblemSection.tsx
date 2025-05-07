@@ -29,9 +29,15 @@ function ProblemSection({ problem }: Props) {
   };
 
   return !problem ? null : (
-    <article className="problem-article relative flex flex-col w-full h-screen overflow-auto">
+    <article
+      dir="rtl"
+      className="problem-article relative flex flex-col w-full h-screen overflow-auto"
+    >
       {/* header */}
-      <section className="w-full sticky top-0 flex items-center justify-between p-2 bg-primary">
+      <section
+        dir="lrt"
+        className="w-full sticky top-0 flex items-center justify-between p-2 bg-primary"
+      >
         {/* user avatar */}
         <Link
           href={"/dashboard"}
@@ -74,11 +80,18 @@ function ProblemSection({ problem }: Props) {
       </section>
 
       {/* title */}
-      <Heading as="h3" size="lg" className="p-4 text-surface w-full underline">
+      <Heading
+        as="h3"
+        size="lg"
+        className="p-4 text-surface text-end w-full underline"
+      >
         {problem.problem.title}
       </Heading>
       {/* context area (problem) */}
-      <section className="w-full flex flex-col items-center gap-4 p-4">
+      <section
+        dir="ltr"
+        className="w-full flex flex-col items-center gap-4 p-4"
+      >
         {/* description */}
         <div className="w-full flex flex-col gap-2">
           <Heading as="h4" size="sm" className="text-primary">
@@ -91,7 +104,10 @@ function ProblemSection({ problem }: Props) {
       </section>
 
       {/* AI Assistant & hints */}
-      <section className="w-full flex-1 flex flex-col items-center gap-4 p-4">
+      <section
+        dir="ltr"
+        className="w-full flex-1 flex flex-col items-center gap-4 p-4"
+      >
         <div className="w-full flex flex-col gap-2 pb-40">
           {/* hint & starting point */}
           <Heading as="h4" size="sm" className="text-primary">
@@ -133,7 +149,10 @@ function ProblemSection({ problem }: Props) {
         </div>
       </section>
       {/* actions */}
-      <div className="sticky z-20 px-4 pb-5 pt-2 -bottom-1 w-full flex items-center gap-3 bg-[#161415]">
+      <div
+        dir="ltr"
+        className="sticky z-20 px-4 pb-5 pt-2 -bottom-1 w-full flex items-center justify-end gap-3 bg-[#161415]"
+      >
         <Button
           variant="ghost"
           size="sm"
