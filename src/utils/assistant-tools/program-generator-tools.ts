@@ -155,7 +155,9 @@ export async function createProblems({
     });
     problemIds[slug] = problemObj?.id || null;
     if (problemObj && problemObj.id) {
-      console.info(`\nProblem created successfully: ${problem.title}\n`);
+      console.info(
+        `\nProblem created successfully: ${problem.title} - ${problemObj.id}\n`
+      );
     } else {
       console.error(`\nFailed to create problem: ${problem.title}\n`);
     }

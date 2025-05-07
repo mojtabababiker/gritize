@@ -32,6 +32,15 @@ export const createUserProblem = async (
 ) => {
   const userProblemId = ID.unique();
   try {
+    const problem = await getProblemById(problemId);
+    if (!problem) {
+      console.error("Problem not found");
+      return {
+        error: { response: `Problem ${problemId} not found` },
+        data: null,
+      };
+    }
+
     const { databases } = await createAdminClient();
 
     const resultDoc = await databases.createDocument(
@@ -58,11 +67,6 @@ export const createUserProblem = async (
       userId: userIdFromDoc,
       ...rest
     } = resultDoc;
-    const problem = await getProblemById(problemId);
-    if (!problem) {
-      console.error("Problem not found");
-      return { error: { response: "Problem not found" }, data: null };
-    }
     const result = { id, problem, ...rest } as UserProblemSchema;
     return { data: result, error: null };
   } catch (error) {

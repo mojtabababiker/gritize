@@ -74,7 +74,7 @@ export const getProblemById = async (
     const cleanProblemObj = { id, ...rest } as TechnicalProblemSchema;
     return cleanProblemObj;
   } catch (error) {
-    console.error("Error getting problem by ID", error);
+    console.error(`Error getting problem by ID : ${problemId}\n`, error);
     return null;
   }
 };

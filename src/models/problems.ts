@@ -5,6 +5,7 @@ import {
   createProblem,
   getProblemBySlug,
 } from "@/utils/appwrite/database-actions";
+import { TechnicalProblemDTO } from "./dto/problem-dto";
 
 /**
  * TechnicalProblem class
@@ -130,6 +131,7 @@ export class TechnicalProblem {
    */
   async save(): Promise<void> {
     const { data, error } = await createProblem({
+      id: this.id,
       title: this.title,
       slug: this.slug,
       description: this.description.slice(0, 2048), // LIMIT DESCRIPTION TO 2048
