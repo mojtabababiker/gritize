@@ -13,7 +13,7 @@ import {
   updateUser,
 } from "@/utils/appwrite/database-actions";
 
-import { SkillLevel } from "./types/indext";
+import { Languages, SkillLevel } from "./types/indext";
 import { CodingPatternSchema, UserProblemSchema, UserSchema } from "./schemas";
 import { CodingPatternDTO, UserDTO } from "./dto/user-dto";
 
@@ -26,8 +26,9 @@ export class User {
   id?: string;
   name: string;
   email: string;
-  skillLevel: SkillLevel;
   avatar?: string;
+  skillLevel: SkillLevel;
+  preferredLanguage?: Languages;
   onboarding?: boolean;
   isNewUser?: boolean;
   totalSolvedProblems?: number;
@@ -54,6 +55,7 @@ export class User {
     email,
     avatar,
     skillLevel = "mid-level",
+    preferredLanguage = "javascript",
     onboarding = false,
     isNewUser = true,
     totalSolvedProblems = 0,
@@ -61,8 +63,9 @@ export class User {
     this.id = id;
     this.name = name;
     this.email = email;
-    this.skillLevel = skillLevel;
     this.avatar = avatar;
+    this.skillLevel = skillLevel;
+    this.preferredLanguage = preferredLanguage;
     this.onboarding = onboarding;
     this.isNewUser = isNewUser;
     this.totalSolvedProblems = totalSolvedProblems;
@@ -115,8 +118,9 @@ export class User {
       this.id = undefined;
       this.name = "";
       this.email = "";
-      this.skillLevel = "mid-level";
       this.avatar = undefined;
+      this.skillLevel = "mid-level";
+      this.preferredLanguage = "javascript";
       this.onboarding = false;
       this.totalSolvedProblems = 0;
       this.generalAlgorithms = {};
@@ -196,8 +200,9 @@ export class User {
       id: data.id,
       name: data.name,
       email: data.email,
-      skillLevel: data.skillLevel || "mid-level",
       avatar: data.avatar,
+      skillLevel: data.skillLevel || "mid-level",
+      preferredLanguage: data.preferredLanguage || "javascript",
       onboarding: data.onboarding || false,
       totalSolvedProblems: data.totalSolvedProblems || 0,
       isNewUser: data.isNewUser || false,
@@ -233,8 +238,9 @@ export class User {
       id: this.id,
       name: this.name,
       email: this.email,
-      skillLevel: this.skillLevel,
       avatar: this.avatar,
+      skillLevel: this.skillLevel,
+      preferredLanguage: this.preferredLanguage,
       onboarding: this.onboarding,
       isNewUser: this.isNewUser,
       totalSolvedProblems: this.totalSolvedProblems,

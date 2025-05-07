@@ -12,7 +12,7 @@ import Heading from "@/components/common/Heading";
 import Paragraph from "@/components/common/Paragraph";
 import Button from "@/components/common/Button";
 
-import { SkillLevel } from "@/models/types/indext";
+import { Languages, SkillLevel } from "@/models/types/indext";
 import { Question, Quiz } from "@/utils/quiz-actions";
 
 import QuestionTrueFalse from "./QuestionTrueFalse";
@@ -46,9 +46,7 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<
     number | null
   >(null);
-  const [quizLanguage, setQuizLanguage] = useState<
-    "typescript" | "javascript" | "python" | "cpp" | null
-  >(null);
+  const [quizLanguage, setQuizLanguage] = useState<Languages | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -245,16 +243,15 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
               Please select the language you want to be quizzed on:
             </Paragraph>
             <div className="flex gap-2 mt-5">
-              {["typescript", "javascript", "python", "cpp"].map((lang) => (
+              {["typescript", "javascript", "python", "c++"].map((lang) => (
                 <Image
                   key={lang}
-                  src={`/images/${lang}-image.png`}
+                  src={`/images/${lang.replace("++", "pp")}-image.png`}
                   alt={`${lang} icon`}
                   className="w-[56px] sm:w-[64px] h-auto flex items-center justify-center opacity-85 cursor-pointer hover:opacity-100 hover:scale-105 transition-transform duration-200 active:scale-105"
                   onClick={() => {
-                    setQuizLanguage(
-                      lang as "typescript" | "javascript" | "python" | "cpp"
-                    );
+                    setQuizLanguage(lang as Languages);
+                    user.preferredLanguage = lang as Languages;
                     setCurrentQuestionIndex(0);
                   }}
                   width={200}

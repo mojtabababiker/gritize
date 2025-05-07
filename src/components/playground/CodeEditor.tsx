@@ -1,22 +1,33 @@
 "use client";
 
-import Editor from "@monaco-editor/react";
+import Editor, { EditorProps } from "@monaco-editor/react";
 import Button from "../common/Button";
 import Paragraph from "../common/Paragraph";
+import { useRef } from "react";
 
-type Props = {
-  language?: string;
-  onChange: (value?: string) => void;
-  value?: string;
+type Props = EditorProps & {
+  defaultValue: string;
 };
 
-function CodeEditor({ language = "javascript", onChange, value = "" }: Props) {
+function CodeEditor({
+  language = "javascript",
+  onChange,
+  value = "",
+  options = {},
+  ...props
+}: Props) {
+  const editorRef = useRef(null);
+
+  const onMount = (editor: any) => {
+    editorRef.current = editor;
+  };
+
   return (
     <div className="relative flex w-full h-screen flex-col">
       {/* editor */}
       <div className="h-[60vh] w-full bg-[#1E1E1E]">
         <Editor
-          language={language}
+          language={language.replace("++", "pp")}
           onChange={onChange}
           value={value}
           theme="vs-dark"
@@ -37,7 +48,10 @@ function CodeEditor({ language = "javascript", onChange, value = "" }: Props) {
               enabled: "off",
             },
             codeLens: false,
+            ...options,
           }}
+          onMount={onMount}
+          {...props}
         />
       </div>
 

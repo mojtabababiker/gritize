@@ -1,16 +1,12 @@
-import {
-  UserProblemSchema,
-  CodingPatternSchema,
-  TechnicalProblemSchema,
-} from "../schemas";
-import { SkillLevel } from "../types/indext";
+import { Languages, SkillLevel } from "../types/indext";
 
 export interface UserDTO {
   id?: string;
   name: string;
   email: string;
-  skillLevel: SkillLevel;
   avatar?: string;
+  skillLevel: SkillLevel;
+  preferredLanguage?: Languages;
   onboarding?: boolean;
   isNewUser?: boolean;
   totalSolvedProblems?: number;
