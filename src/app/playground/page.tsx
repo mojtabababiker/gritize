@@ -1,4 +1,14 @@
 "use client";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
+import { useAuth } from "@/context/AuthProvider";
+import { useResize } from "@/hooks/useHandleResize";
+
+import { UserProblemSchema } from "@/models/schemas";
+import { Languages } from "@/models/types/indext";
+
+import { CodeSnippets } from "@/constant/editor-constants";
 
 import Button from "@/components/common/Button";
 import Heading from "@/components/common/Heading";
@@ -7,14 +17,6 @@ import Paragraph from "@/components/common/Paragraph";
 import ResizeRuler from "@/components/common/ResizeRuler";
 import CodeEditor from "@/components/playground/CodeEditor";
 import ProblemSection from "@/components/playground/ProblemSection";
-import { CodeSnippets } from "@/constant/codeSnippets";
-import { useAuth } from "@/context/AuthProvider";
-import { useResize } from "@/hooks/useHandleResize";
-import { UserProblemSchema } from "@/models/schemas";
-import { Languages } from "@/models/types/indext";
-import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 
 function Page() {
   const router = useRouter();

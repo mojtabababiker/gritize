@@ -105,6 +105,12 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-accent);
 }
+.terminal::-webkit-scrollbar {
+  width: 6px;
+}
+.terminal.scroll-error::-webkit-scrollbar-thumb {
+  background: var(--color-red-900);
+}
 
 .button-cutout.primary {
   filter: drop-shadow(1px 0 var(--color-fg)) drop-shadow(-1px 0 var(--color-fg))
