@@ -87,7 +87,7 @@ function Page() {
             ref={boxRef}
             className="relative max-w-[744px] min-w-[400px] w-full mr-1"
           >
-            <ProblemSection problem={problem} />
+            <ProblemSection editorCodeText={code} problem={problem} />
             {/* resize ruler */}
             <ResizeRuler
               onResize={handleResize}
