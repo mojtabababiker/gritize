@@ -15,6 +15,7 @@ import { useChat } from "@ai-sdk/react";
 import { Message, UIMessage } from "ai";
 import toast from "react-hot-toast";
 import CustomToast from "../common/CustomToast";
+import AIAssistant from "./AIAssistant";
 
 type Props = {
   problem: UserProblemSchema | null;
@@ -24,154 +25,20 @@ type Props = {
 function ProblemSection({ problem, editorCodeText }: Props) {
   const { user } = useAuth();
 
-  const hintsScrollRef = useRef<HTMLDivElement>(null);
-  const reviewScrollRef = useRef<HTMLDivElement>(null);
-
   const [showHint, setShowHint] = useState<boolean>(false);
   const [hintsLoaded, setHintsLoaded] = useState<boolean>(false);
-
   const [error, setError] = useState<string | null>(null);
-
-  const DEFAULT_HINT_PROMPT =
-    "can you give more hints or guidance to help me solve this problem?";
-  const DEFAULT_REVIEW_PROMPT = `Here is my code:\n\`\`\`${user?.preferredLanguage}\n{{code}}\n\`\`\``;
-
-  const handleHintError = (error: Error) => {
-    console.error("Error fetching hints:", error.message);
-    setError(error.message || "Failed to fetch hints. Please try again.");
-    setHintInput(DEFAULT_HINT_PROMPT);
-  };
-
-  const handleReviewError = (error: Error) => {
-    console.error("Error fetching review:", error.message);
-    setError(error.message || "Failed to fetch review. Please try again.");
-  };
-
-  const handleHint = (message: Message) => {
-    setHintsLoaded(true);
-    setShowHint(true);
-    console.log("Hint received:", message);
-    setHintInput(DEFAULT_HINT_PROMPT);
-    if (!hintsScrollRef.current) return;
-    hintsScrollRef.current.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-      inline: "nearest",
-    });
-  };
-
-  const handleReview = (message: Message) => {
-    console.log("Review received:", message);
-    if (!reviewScrollRef.current) return;
-    reviewScrollRef.current.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-      inline: "nearest",
-    });
-  };
-
-  // AI assistant to get hints
-  const {
-    messages: hintMessages,
-    handleSubmit: handleHintSubmit,
-    setInput: setHintInput,
-    input: hintInput,
-    status: hintStatus,
-  } = useChat({
-    id: `${problem?.id}-problem-hint`,
-    api: "/api/get-problem-hint",
-    initialMessages: [
-      {
-        id: "user-prompt-message",
-        role: "user",
-        content: `I need help with the following problem:\n${problem?.problem.title}.\n${problem?.problem.description}`,
-      },
-      {
-        id: "assistant-prompt-message",
-        role: "assistant",
-        content: `Here are some hints and approaches to solve the problem: ${problem?.problem.hint}`,
-      },
-    ],
-    onError: handleHintError,
-    onFinish: handleHint,
-  });
-
-  // AI assistant to get a code review
-  const {
-    messages: reviewMessages,
-    handleSubmit: handleReviewSubmit,
-    setInput: setReviewInput,
-    input: reviewInput,
-    status: reviewStatus,
-  } = useChat({
-    id: `${problem?.id}-code-review`,
-    api: "/api/get-code-review",
-    initialMessages: [
-      {
-        id: "user-prompt-message",
-        role: "user",
-        content: `Here the problem: ${problem?.problem.title}.\n${problem?.problem.description}\n\n`,
-      },
-      {
-        id: "assistant-prompt-message",
-        role: "assistant",
-        content: `Waiting for the your code to review it...`,
-      },
-    ],
-    onError: handleReviewError,
-    onFinish: handleReview,
-  });
-
-  const getHints = async () => {
-    if (!showHint) {
-      setShowHint(true);
-      return;
-    }
-    // get hint from the AI assistant
-    console.log("Fetching hints...");
-    handleHintSubmit();
-    setHintInput("");
-    if (!hintsScrollRef.current) return;
-    hintsScrollRef.current.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-      inline: "nearest",
-    });
-  };
-
-  const getReview = async () => {
-    // get review from the AI assistant
-    console.log("Fetching review...");
-    console.log({ reviewInput });
-    handleReviewSubmit();
-    console.log("Review submitted:", reviewInput);
-    if (!reviewScrollRef.current) return;
-    reviewScrollRef.current.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-      inline: "nearest",
-    });
-  };
-
-  useEffect(() => {
-    if (!problem) return;
-
-    setHintInput(DEFAULT_HINT_PROMPT);
-    setReviewInput("");
-  }, [problem]);
-
-  useEffect(() => {
-    if (!editorCodeText) {
-      return;
-    }
-    const prompt = DEFAULT_REVIEW_PROMPT.replace("{{code}}", editorCodeText);
-    setReviewInput(prompt);
-  }, [editorCodeText]);
 
   useEffect(() => {
     if (error) {
-      toast.custom((t) => <CustomToast t={t} message={error} type="error" />);
-      setError(null);
+      toast.custom((t) => (
+        <CustomToast
+          t={t}
+          message={error}
+          // icon={<MessageCircleWarningIcon className="size-4" />}
+          type="error"
+        />
+      ));
     }
   }, [error]);
 
@@ -258,7 +125,7 @@ function ProblemSection({ problem, editorCodeText }: Props) {
         <div className="w-full flex flex-col gap-2">
           {/* hint & starting point */}
           <Heading as="h4" size="sm" className="text-primary">
-            Hints and Approaches
+            Hints and Reviews
           </Heading>
           <div className="w-full flex-1 flex flex-col">
             {/* show hint activator */}
@@ -267,7 +134,7 @@ function ProblemSection({ problem, editorCodeText }: Props) {
                 "group flex item-center gap-2 max-w-[230px] p-1 self-center text-fg capitalize border-b cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out",
                 showHint && "hidden"
               )}
-              onClick={() => setShowHint(!showHint)}
+              onClick={() => setShowHint(true)}
             >
               <MessageCircleWarningIcon className="size-4 animate-bounce group-hover:paused" />
               <span className="">show hints</span>
@@ -295,93 +162,16 @@ function ProblemSection({ problem, editorCodeText }: Props) {
         </div>
       </section>
 
-      {/* TODO: MOVE BOTH COMPLETION AND ACTION TO SEP COMP */}
       {/* completion */}
-      <section
-        dir="ltr"
-        className="relative z-0 w-full flex flex-wrap gap-4 p-4"
-      >
-        <div className="relative z-0 flex-1 min-w-[220px] flex flex-col gap-2">
-          {/* hint messages */}
-          <h4 className="text-fg/45">Hints and Approaches</h4>
-          {hintMessages.map((message) => (
-            <RenderMessage key={message.id} message={message} />
-          ))}
-          <div ref={hintsScrollRef} />
-        </div>
-        <div className="relative flex-1 min-w-[220px] flex flex-col gap-2">
-          {/* review messages */}
-          <h4 className="text-fg/45">Code Review</h4>
-          {reviewMessages.map((message) => (
-            <RenderMessage key={message.id} message={message} />
-          ))}
-          <div ref={reviewScrollRef} />
-        </div>
-      </section>
-
-      {/* actions */}
-      <div
-        dir="ltr"
-        className="sticky z-20 px-4 pb-5 pt-2 -bottom-1 w-full flex items-center justify-end gap-3 bg-[#161415]"
-      >
-        <form onSubmit={handleHintSubmit}>
-          <input name="prompt" type="text" value={hintInput} readOnly hidden />
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            isSimple
-            className="gap-2 text-fg hover:bg-primary/85 capitalize"
-            onClick={getHints}
-            disabled={
-              hintStatus === "streaming" || reviewStatus === "streaming"
-            }
-            isLoading={hintStatus === "streaming"}
-          >
-            <MessageCircleWarningIcon className="w-4 h-4" />
-            <span className="">get hints</span>
-          </Button>
-        </form>
-
-        <form onSubmit={handleReviewSubmit}>
-          <input
-            name="prompt"
-            type="text"
-            value={reviewInput}
-            readOnly
-            hidden
-          />
-          <Button
-            type="button"
-            variant="primary"
-            size="sm"
-            isSimple
-            className="gap-2 hover:bg-primary/75 capitalize"
-            onClick={getReview}
-            disabled={
-              reviewStatus === "streaming" ||
-              hintStatus === "streaming" ||
-              !editorCodeText
-            }
-            isLoading={reviewStatus === "streaming"}
-          >
-            <GitCompareIcon className="w-4 h-4 text-fg" />
-            <span className="text-fg">get review</span>
-          </Button>
-        </form>
-      </div>
+      <AIAssistant
+        problem={problem}
+        editorCodeText={editorCodeText}
+        showHint={showHint}
+        setShowHint={setShowHint}
+        onHintsLoaded={setHintsLoaded}
+        onError={setError}
+      />
     </article>
-  );
-}
-
-function RenderMessage({ message }: { message: UIMessage }) {
-  if (message.id.endsWith("prompt-message") || message.role === "user") {
-    return null;
-  }
-  return (
-    <div className="px-4 py-3 rounded-lg bg-primary/15 text-fg">
-      <RenderMarkdown markdownText={message.content} />
-    </div>
   );
 }
 
