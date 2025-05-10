@@ -28,3 +28,13 @@ export interface CodingPatternDTO {
   totalProblems: number;
   solvedProblems?: number;
 }
+
+export interface ProblemSolutionDTO {
+  id: string;
+  userId: string;
+  problemId: string;
+  solution: string;
+  score: number;
+  language: Languages;
+  time: number;
+}

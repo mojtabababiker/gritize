@@ -102,6 +102,7 @@ function Page() {
               value={code}
               defaultValue={CodeSnippets[language].code}
               language={language}
+              problem={problem}
             />
           </div>
         </>

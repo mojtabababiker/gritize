@@ -3,7 +3,7 @@ import { ID, AppwriteException } from "node-appwrite";
 
 import { createAdminClient } from "@/config/appwrite";
 import { UserProblemSchema, CodingPatternSchema } from "@/models/schemas";
-import { CodingPatternDTO } from "@/models/dto/user-dto";
+import { CodingPatternDTO, ProblemSolutionDTO } from "@/models/dto/user-dto";
 import { Settings } from "@/constant/setting";
 import { checkAuth } from "@/utils/appwrite/auth-action";
 import { getProblemById } from "./tech-problems-action";
@@ -210,6 +210,58 @@ export const deleteUserProblems = async (userProblemIds: string[] | string) => {
 };
 
 /**
+ * Updates a user's problem document in the database
+ *
+ * @param userId - The ID of the user
+ * @param problemId - The ID of the problem document to update
+ * @param data - The data to update, excluding 'problem' and 'id' fields
+ *
+ * @returns A promise that resolves to an object containing either:
+ *  - `{ data: UserProblemSchema, error: null }` on success
+ *  - `{ data: null, error: AppwriteException }` on Appwrite error
+ *  - `{ data: null, error: { response: string } }` on unexpected error
+ *
+ * @throws AppwriteException if there's an error communicating with Appwrite
+ */
+export const updateUserProblem = async (
+  userId: string,
+  problemId: string,
+  data: Omit<UserProblemSchema, "problem" | "id">
+) => {
+  try {
+    const { databases } = await createAdminClient();
+    const resultDoc = await databases.updateDocument(
+      Settings.databaseId,
+      Settings.userProblemsCollectionId,
+      problemId,
+      {
+        ...data,
+      }
+    );
+
+    const {
+      $id: id,
+      $collectionId,
+      $databaseId,
+      $createdAt,
+      $updatedAt,
+      $permissions,
+      userId: userIdFromDoc,
+      problemId: problemIdFromDoc,
+      ...rest
+    } = resultDoc;
+    const result = { id, ...rest } as UserProblemSchema;
+    return { data: result, error: null };
+  } catch (error) {
+    console.error("Error updating user problem", error);
+    if (error instanceof AppwriteException) {
+      return { error, data: null };
+    }
+    return { data: null, error: { response: "An unexpected error occurred" } };
+  }
+};
+
+/**
  * Creates a new coding technique with associated problems for a user.
  * 
  * @param userId - The ID of the user creating the coding technique
@@ -384,5 +436,68 @@ export const listCodingPatternsById = async (
   } catch (error) {
     console.error("Error listing coding patterns by ID", error);
     return [];
+  }
+};
+
+/**
+ * Creates a new problem solution in the database
+ *
+ * @param data - The problem solution data to be created (excluding the id field)
+ * @returns Promise containing either:
+ *          - `{ data: ProblemSolutionDTO, error: null }` on success
+ *          - `{ data: null, error: AppwriteException | { response: string } }` on failure
+ *
+ * @throws Will handle and return AppwriteException if Appwrite operation fails
+ *
+ * @remarks
+ * - Requires user authentication
+ * - Validates that the logged-in user matches the userId in the solution data
+ * - Strips internal Appwrite fields from the response before returning
+ */
+export const createProblemSolution = async (
+  data: Omit<ProblemSolutionDTO, "id">
+) => {
+  const { user } = await checkAuth();
+  if (!user || !user.id) {
+    return {
+      error: { response: "User is not logged in" },
+      data: null,
+    };
+  }
+
+  if (user.id !== data.userId) {
+    return {
+      error: { response: "Unauthorized operation" },
+      data: null,
+    };
+  }
+  try {
+    const { databases } = await createAdminClient();
+    const resultDoc = await databases.createDocument(
+      Settings.databaseId,
+      Settings.problemSolutionsCollectionId,
+      ID.unique(),
+      {
+        ...data,
+      }
+    );
+
+    const {
+      $id: id,
+      $collectionId,
+      $databaseId,
+      $createdAt,
+      $updatedAt,
+      $permissions,
+      ...rest
+    } = resultDoc;
+    const result = { id, ...rest } as ProblemSolutionDTO;
+    return { data: result, error: null };
+  } catch (error) {
+    console.error("Error creating problem solution", error);
+    if (error instanceof AppwriteException) {
+      return { error, data: null };
+    }
+    return { data: null, error: { response: "An unexpected error occurred" } };
   }
 };

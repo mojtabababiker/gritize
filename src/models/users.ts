@@ -5,12 +5,14 @@ import {
 } from "@/utils/appwrite/auth-action";
 import {
   createCodingTechnique,
+  createProblemSolution,
   createUser,
   createUserProblem,
   getUserById,
   listCodingPatternsById,
   listUserProblemsById,
   updateUser,
+  updateUserProblem,
 } from "@/utils/appwrite/database-actions";
 
 import { Languages, SkillLevel } from "./types/indext";
@@ -300,12 +302,6 @@ export class User {
     return problem;
   }
 
-  updateAlgorithmProblem(id: string, problem: UserProblemSchema): void {
-    if (this.generalAlgorithms[id]) {
-      this.generalAlgorithms[id] = problem;
-    }
-  }
-
   get codingTechniques(): CodingPatternSchema[] {
     return Object.values(this.codingPatterns);
   }
@@ -350,20 +346,67 @@ export class User {
     return codingPattern?.problems || null;
   }
 
-  updateCodingTechniqueProblem(
-    techniqueId: string,
+  /**
+   * Updates a specific problem for the current user.
+   *
+   * @param problemId - The unique identifier of the problem to update
+   * @param data - The problem data to update, excluding 'problem' and 'id' fields
+   * @returns A promise that resolves to an object containing either the updated problem data or null, and any potential error
+   * @throws Returns error message if user is not logged in
+   */
+  async updateProblem(
     problemId: string,
-    problem: UserProblemSchema
-  ): void {
-    const codingPattern = this.codingPatterns[techniqueId] || null;
-    if (codingPattern) {
-      const problemIndex = codingPattern.problems.findIndex(
-        (p) => p.id === problemId
-      );
-      if (problemIndex !== -1) {
-        codingPattern.problems[problemIndex] = problem;
-      }
+    data: Omit<UserProblemSchema, "problem" | "id">
+  ): Promise<{ data: UserProblemSchema | null; error: any }> {
+    if (!this.id) {
+      return { error: "User not logged in", data: null };
     }
+    return await updateUserProblem(this.id || "", problemId, data);
+  }
+
+  /**
+   * Submits a solution for a programming problem.
+   *
+   * @param problemId - The unique identifier of the problem being solved
+   * @param solution - The submitted solution code
+   * @param score - The score achieved for the solution
+   * @param language - The programming language used for the solution
+   * @param time - The execution time of the solution
+   *
+   * @returns A promise that resolves to an object containing either:
+   * - data: The created solution data if successful
+   * - error: Error message if submission fails or user is not logged in
+   *
+   * @throws Will return an error object if user is not logged in (no this.id)
+   */
+  async submitSolution({
+    problemId,
+    solution,
+    score,
+    language,
+    time,
+  }: {
+    problemId: string;
+    solution: string;
+    score: number;
+    language: Languages;
+    time: number;
+  }) {
+    if (!this.id) {
+      console.error("Login to submit solution");
+      return { error: "Login to submit solution" };
+    }
+
+    const { error, data } = await createProblemSolution({
+      userId: this.id,
+      problemId,
+      solution,
+      score,
+      language,
+      time,
+    });
+
+    return { data, error };
   }
 
   async save(): Promise<void> {
