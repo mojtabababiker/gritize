@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { UserProblemSchema } from "@/models/schemas";
 import { useChat } from "@ai-sdk/react";
 import clsx from "clsx";
+import ThinkingLoader from "./ThinkingLoader";
 
 type Props = {
   problem: UserProblemSchema | null;
@@ -35,6 +36,15 @@ function AIAssistant({
     "can you give more hints or guidance to help me solve this problem?";
   const DEFAULT_REVIEW_PROMPT = `Here is my code:\n\`\`\`${user?.preferredLanguage}\n{{code}}\n\`\`\``;
 
+  const scrollToBottom = (ref: React.RefObject<HTMLDivElement | null>) => {
+    if (!ref.current) return;
+    ref.current.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "nearest",
+    });
+  };
+
   const handleError = (error: Error, type: "hint" | "review") => {
     console.error(`Error fetching ${type}:`, error.message);
     onError(error.message || `Failed to fetch ${type}. Please try again.`);
@@ -45,22 +55,12 @@ function AIAssistant({
     setShowHint(true);
     console.log("Hint received:", message);
     setHintInput(DEFAULT_HINT_PROMPT);
-    if (!hintsScrollRef.current) return;
-    hintsScrollRef.current.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-      inline: "nearest",
-    });
+    scrollToBottom(hintsScrollRef);
   };
 
   const handleReview = (message: Message) => {
     console.log("Review received:", message);
-    if (!reviewScrollRef.current) return;
-    reviewScrollRef.current.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-      inline: "nearest",
-    });
+    scrollToBottom(reviewScrollRef);
   };
 
   const getHints = () => {
@@ -69,6 +69,7 @@ function AIAssistant({
       return;
     }
     handleHintSubmit();
+    scrollToBottom(hintsScrollRef);
   };
 
   const getReview = () => {
@@ -82,6 +83,7 @@ function AIAssistant({
     );
     setReviewInput(reviewPrompt);
     handleReviewSubmit();
+    scrollToBottom(reviewScrollRef);
   };
 
   useEffect(() => {
@@ -160,7 +162,8 @@ function AIAssistant({
           {hintMessages.map((message) => (
             <RenderMessage key={message.id} message={message} />
           ))}
-          <div ref={hintsScrollRef} />
+          {hintStatus === "submitted" && <ThinkingLoader />}
+          <div ref={hintsScrollRef} className="mt-4" />
         </div>
         <div
           className={clsx(
@@ -173,7 +176,8 @@ function AIAssistant({
           {reviewMessages.map((message) => (
             <RenderMessage key={message.id} message={message} />
           ))}
-          <div ref={reviewScrollRef} />
+          {reviewStatus === "submitted" && <ThinkingLoader />}
+          <div ref={reviewScrollRef} className="mt-4" />
         </div>
       </section>
 
