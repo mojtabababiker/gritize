@@ -114,6 +114,7 @@ function Page() {
               language={language}
               problem={problem}
               setShowSubmission={setShowSubmission}
+              codingPatternId={codingPatternId}
             />
           </div>
 

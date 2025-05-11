@@ -9,6 +9,8 @@ import { useAuth } from "@/context/AuthProvider";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import CustomToast from "../common/CustomToast";
+import SidebarItem from "../cards/SidebarItem";
+import SidebarCPItems from "../cards/SidebarCPItems";
 
 function Sidebar() {
   const router = useRouter();
@@ -140,27 +142,11 @@ function Sidebar() {
         >
           {user && user.algorithmProblems.length > 0 ? (
             user.algorithmProblems.map((algo) => (
-              <div
-                key={algo.problem.title}
-                className="flex items-center justify-between w-full px-4 py-2 rounded-2xl bg-primary/25 shadow shadow-fg/10 shadow-b"
-              >
-                <div className="flex gap-2 items-center">
-                  <Image
-                    src={"/icons/list-icon.png"}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className="w-3 h-3 object-contain"
-                  />
-                  <Link
-                    href={`/playground?problem=${algo.id}`}
-                    className="text-lg  capitalize text-surface hover:text-accent"
-                  >
-                    {algo.problem.title}
-                  </Link>
-                </div>
-                <span className="text-fg/50">{algo.score}/10</span>
-              </div>
+              <SidebarItem
+                key={algo.id}
+                problem={algo}
+                href={`/playground?problem=${algo.id}`}
+              />
             ))
           ) : (
             <Paragraph className="text-fg/70 w-full text-center">
@@ -201,31 +187,32 @@ function Sidebar() {
           )}
         >
           {user && user.codingTechniques.length > 0 ? (
-            user.codingTechniques.map((tech) => (
-              <div
-                key={tech.title}
-                className="flex items-center justify-between w-full px-4 py-2 rounded-2xl bg-primary/25 shadow shadow-fg/10 shadow-b"
-              >
-                <div className="flex gap-2 items-center">
-                  <Image
-                    src={"/icons/list-icon.png"}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className="w-3 h-3 object-contain"
-                  />
-                  <Link
-                    href={`/playground?problem=${tech.id}`}
-                    className="text-lg  capitalize text-surface hover:text-accent truncate"
-                  >
-                    {tech.title}
-                  </Link>
-                </div>
-                <span className="text-fg/50">
-                  {tech.solvedProblems}/{tech.totalProblems}
-                </span>
-              </div>
-            ))
+            // user.codingTechniques.map((tech) => (
+            //   <div
+            //     key={tech.title}
+            //     className="flex items-center justify-between w-full px-4 py-2 rounded-2xl bg-primary/25 shadow shadow-fg/10 shadow-b"
+            //   >
+            //     <div className="flex gap-2 items-center">
+            //       <Image
+            //         src={"/icons/list-icon.png"}
+            //         alt=""
+            //         width={20}
+            //         height={20}
+            //         className="w-3 h-3 object-contain"
+            //       />
+            //       <Link
+            //         href={`/playground?problem=${tech.id}`}
+            //         className="text-lg  capitalize text-surface hover:text-accent truncate"
+            //       >
+            //         {tech.title}
+            //       </Link>
+            //     </div>
+            //     <span className="text-fg/50">
+            //       {tech.solvedProblems}/{tech.totalProblems}
+            //     </span>
+            //   </div>
+            // ))
+            <SidebarCPItems codingPatterns={user.codingTechniques} />
           ) : (
             <Paragraph className="text-fg/70 w-full text-center">
               No techniques solved yet

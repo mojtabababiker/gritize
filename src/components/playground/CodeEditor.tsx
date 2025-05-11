@@ -19,12 +19,20 @@ import Timer from "@/components/common/Timer";
 import ResizeRuler from "@/components/common/ResizeRuler";
 import { useAuth } from "@/context/AuthProvider";
 
+const SIGNAL_MSGS: Record<string, string> = {
+  SIGKILL:
+    "Oops! It looks like your code caused a stack overflow. This usually happens when there's too much recursion or an infinite loop. Try checking your code for functions that call themselves without a proper exit condition. Need help? We're here to assist!",
+
+  default: "Unexpected error occurred. Please check your code and try again.",
+};
+
 type Props = EditorProps & {
   language?: Languages;
   defaultValue: string;
   onChange: (value: string) => void;
   problem: UserProblemSchema | null;
   setShowSubmission?: (show: boolean) => void;
+  codingPatternId: string | null;
 };
 
 function CodeEditor({
@@ -34,6 +42,7 @@ function CodeEditor({
   options = {},
   problem,
   setShowSubmission,
+  codingPatternId,
   ...props
 }: Props) {
   const { user } = useAuth();
@@ -102,6 +111,8 @@ function CodeEditor({
       ],
     };
 
+    console.log("Running code with data:", data);
+
     try {
       const response = await fetch(`${sandBoxURL}/execute`, {
         method: "POST",
@@ -118,9 +129,16 @@ function CodeEditor({
         setResult(null);
         return;
       }
+      if (compile?.signal) {
+        setError(SIGNAL_MSGS[compile.signal] || SIGNAL_MSGS["default"]);
+        return;
+      }
       if (run.stderr) {
         setError(run.stderr);
-
+        return;
+      }
+      if (run.signal) {
+        setError(SIGNAL_MSGS[run.signal] || SIGNAL_MSGS["default"]);
         return;
       }
       setResult(run.stdout);
@@ -163,12 +181,18 @@ function CodeEditor({
     setResult("Saving solution...");
     setError(null); // Reset error state
 
+    const isFirstSubmission = problem.solved === false;
     problem.score = parseInt(score, 10);
     problem.solved = true;
-    const { error: problemUpdateError } = await user.updateProblem(problem.id, {
-      score: problem.score,
-      solved: problem.solved,
-    });
+    const { error: problemUpdateError } = await user.updateProblem(
+      problem.id,
+      {
+        score: problem.score,
+        solved: problem.solved,
+      },
+      codingPatternId,
+      isFirstSubmission
+    );
     if (problemUpdateError) {
       setError(`Failed to save solution: ${problemUpdateError.message}`);
       return;

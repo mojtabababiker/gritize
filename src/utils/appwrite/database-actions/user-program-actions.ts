@@ -397,9 +397,11 @@ export const getCodingPatternById = async (codingPatternId: string) => {
       $updatedAt,
       $permissions,
       userId,
+      problems: problemsIds,
       ...rest
     } = codPDoc;
-    return { id, ...rest } as CodingPatternSchema;
+    const problems = await listUserProblemsById(problemsIds);
+    return { id, problems, ...rest } as CodingPatternSchema;
   } catch (error) {
     console.error("Error getting coding pattern by ID", error);
     return null;
@@ -437,6 +439,57 @@ export const listCodingPatternsById = async (
   } catch (error) {
     console.error("Error listing coding patterns by ID", error);
     return [];
+  }
+};
+
+/**
+ * Updates a coding pattern document in the database with the provided data.
+ *
+ * @param patternId - The unique identifier of the coding pattern to update
+ * @param data - Partial data to update the coding pattern, excluding id, problem and totalProblems fields
+ * @returns A promise that resolves to an object containing either:
+ *          - {error: null, data: CodingPatternDTO} on success
+ *          - {error: AppwriteException, data: null} on Appwrite error
+ *          - {error: {response: string}, data: null} on unexpected error
+ *          - {error: string} if patternId is missing
+ * @throws Never throws, handles all errors internally
+ */
+export const updateCodingPattern = async (
+  patternId: string,
+  data: Partial<Omit<CodingPatternSchema, "id" | "problem" | "totalProblems">>
+) => {
+  if (!patternId) {
+    console.error("Coding Pattern ID is Missing");
+    return { error: "Coding Pattern ID is Missing" };
+  }
+  try {
+    const { databases } = await createAdminClient();
+    const updatedDoc = await databases.updateDocument(
+      Settings.databaseId,
+      Settings.codingTechniquesCollectionId,
+      patternId,
+      {
+        ...data,
+      }
+    );
+    const {
+      $collectionId,
+      $createdAt,
+      $updatedAt,
+      $databaseId,
+      $id,
+      $permissions,
+      ...rest
+    } = updatedDoc;
+    return { error: null, data: { ...(rest as CodingPatternDTO) } };
+  } catch (error) {
+    if (error instanceof AppwriteException) {
+      return { error, data: null };
+    }
+    return {
+      data: null,
+      error: { response: "An unexpected error occurred" },
+    };
   }
 };
 

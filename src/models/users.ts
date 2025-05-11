@@ -13,6 +13,7 @@ import {
   listCodingPatternsById,
   listProblemSolutions,
   listUserProblemsById,
+  updateCodingPattern,
   updateUser,
   updateUserProblem,
 } from "@/utils/appwrite/database-actions";
@@ -363,27 +364,63 @@ export class User {
       return null;
     }
     const problem = codingPattern.problems.find(
-      (problem) => problem.problem.id === problemId
+      (problem) => problem.id === problemId
     );
     return problem || null;
   }
 
   /**
-   * Updates a specific problem for the current user.
-   *
-   * @param problemId - The unique identifier of the problem to update
+   * Updates a problem for the current user and manages related coding pattern statistics
+   * @param problemId - The ID of the problem to update
    * @param data - The problem data to update, excluding 'problem' and 'id' fields
-   * @returns A promise that resolves to an object containing either the updated problem data or null, and any potential error
-   * @throws Returns error message if user is not logged in
+   * @param codingPatternId - Optional ID of the associated coding pattern
+   * @param isFirstSubmission - Optional flag indicating if this is the first submission for this problem
+   * @returns A promise containing either the updated problem data or an error
+   *
+   * @remarks
+   * - If the user is not logged in, an error is returned
+   * - If the coding pattern ID is provided, the corresponding coding pattern is updated
+   * - If the coding pattern ID is not provided, the problem is updated in the general algorithms
+   * - If the coding pattern is updated, the number of solved problems is incremented (only if it's the first submission)
+   * - If the coding pattern is not found, an error is returned
    */
   async updateProblem(
     problemId: string,
-    data: Omit<UserProblemSchema, "problem" | "id">
+    data: Omit<UserProblemSchema, "problem" | "id">,
+    codingPatternId: string | null = null,
+    isFirstSubmission: boolean = false
   ): Promise<{ data: UserProblemSchema | null; error: any }> {
     if (!this.id) {
       return { error: "User not logged in", data: null };
     }
-    return await updateUserProblem(this.id || "", problemId, data);
+    const { error, data: updateProblem } = await updateUserProblem(
+      this.id || "",
+      problemId,
+      data
+    );
+    if (error) {
+      console.error("Error updating user problem", error);
+      return { error, data: null };
+    }
+    if (codingPatternId) {
+      const codingPattern = this.codingPatterns[codingPatternId];
+      if (!codingPattern) {
+        return { error: "Coding pattern not found", data: null };
+      }
+
+      if (isFirstSubmission) {
+        codingPattern.solvedProblems++;
+        const { error } = await updateCodingPattern(codingPatternId, {
+          solvedProblems: codingPattern.solvedProblems,
+        });
+        if (error) {
+          console.error(error);
+        }
+      }
+    } else {
+      this.generalAlgorithms[problemId] = updateProblem;
+    }
+    return { data: updateProblem, error: null };
   }
 
   /**
