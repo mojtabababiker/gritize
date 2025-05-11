@@ -369,6 +369,39 @@ export class User {
     return problem || null;
   }
 
+  getProblemAfter(
+    problemId: string,
+    codingPatternId: string | null = null
+  ): UserProblemSchema | null {
+    if (codingPatternId) {
+      const codingPattern = this.codingPatterns[codingPatternId];
+      if (!codingPattern) {
+        return null;
+      }
+      const problemIndex = codingPattern.problems.findIndex(
+        (problem) => problem.id === problemId
+      );
+      if (
+        problemIndex === -1 ||
+        problemIndex + 1 >= codingPattern.problems.length
+      ) {
+        return null;
+      }
+      return codingPattern.problems[problemIndex + 1];
+    } else {
+      const problemIndex = this.algorithmProblems.findIndex(
+        (problem) => problem.id === problemId
+      );
+      if (
+        problemIndex === -1 ||
+        problemIndex + 1 >= this.algorithmProblems.length
+      ) {
+        return null;
+      }
+      return this.algorithmProblems[problemIndex + 1];
+    }
+  }
+
   /**
    * Updates a problem for the current user and manages related coding pattern statistics
    * @param problemId - The ID of the problem to update

@@ -77,8 +77,9 @@ function Page() {
     // update language based on the user preference
     const userLanguage = user.preferredLanguage || "javascript";
     setLanguage(userLanguage);
+    setCode(CodeSnippets[userLanguage].code);
     setIsLoading(user === null);
-  }, [user, problemId, router]);
+  }, [user, problemId, router, searchParams]);
 
   return isSmallScreen ? (
     <NoticeCard />
