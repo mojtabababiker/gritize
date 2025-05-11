@@ -8,8 +8,10 @@ import {
   createProblemSolution,
   createUser,
   createUserProblem,
+  getProblemSolution,
   getUserById,
   listCodingPatternsById,
+  listProblemSolutions,
   listUserProblemsById,
   updateUser,
   updateUserProblem,
@@ -17,7 +19,7 @@ import {
 
 import { Languages, SkillLevel } from "./types/indext";
 import { CodingPatternSchema, UserProblemSchema, UserSchema } from "./schemas";
-import { CodingPatternDTO, UserDTO } from "./dto/user-dto";
+import { CodingPatternDTO, ProblemSolutionDTO, UserDTO } from "./dto/user-dto";
 
 /**
  * User class
@@ -407,6 +409,45 @@ export class User {
     });
 
     return { data, error };
+  }
+
+  /**
+   * Retrieves the user's most recent solution for a specific problem.
+   * @param problemId - The unique identifier of the user problem to fetch the solution for
+   * @returns A Promise that resolves to either a ProblemSolutionDTO object containing the solution,
+   * or null if the user is not logged in or no solution exists
+   */
+  async getLastSolution(problemId: string): Promise<ProblemSolutionDTO | null> {
+    if (!this.id) {
+      console.error("Login to get last solution");
+      return null;
+    }
+    const solution = await getProblemSolution(
+      problemId,
+      this.preferredLanguage || "javascript"
+    );
+
+    if (!solution) {
+      return null;
+    }
+    return solution;
+  }
+
+  /**
+   * Retrieves all solutions for a specific problem
+   * @param problemId - The unique identifier of the user problem to get solutions for
+   * @returns Promise that resolves to an array of solutions if successful, null otherwise
+   */
+  async getProblemSolutions(problemId: string) {
+    if (!this.id) {
+      console.error("Login to get problem solutions");
+      return null;
+    }
+    const solutions = await listProblemSolutions(problemId);
+    if (!solutions) {
+      return null;
+    }
+    return solutions;
   }
 
   async save(): Promise<void> {

@@ -17,6 +17,7 @@ import Paragraph from "@/components/common/Paragraph";
 import ResizeRuler from "@/components/common/ResizeRuler";
 import CodeEditor from "@/components/playground/CodeEditor";
 import ProblemSection from "@/components/playground/ProblemSection";
+import Submissions from "@/components/playground/Submissions";
 
 function Page() {
   const router = useRouter();
@@ -34,6 +35,8 @@ function Page() {
   const [problem, setProblem] = useState<UserProblemSchema | null>(null);
   const [code, setCode] = useState<string | undefined>(undefined);
   const [language, setLanguage] = useState<Languages>("javascript");
+
+  const [showSubmission, setShowSubmission] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -69,9 +72,6 @@ function Page() {
     const userLanguage = user.preferredLanguage || "javascript";
     setLanguage(userLanguage);
     setIsLoading(user === null);
-    console.log("Is loading:", user === null);
-    console.log("User data:", user);
-    console.log("Problem data:", problem);
   }, [user, problemId, router]);
 
   return isSmallScreen ? (
@@ -87,7 +87,11 @@ function Page() {
             ref={boxRef}
             className="relative max-w-[744px] min-w-[400px] w-full mr-1"
           >
-            <ProblemSection editorCodeText={code} problem={problem} />
+            <ProblemSection
+              editorCodeText={code}
+              problem={problem}
+              setShowSubmission={setShowSubmission}
+            />
             {/* resize ruler */}
             <ResizeRuler
               onResize={handleResize}
@@ -103,8 +107,18 @@ function Page() {
               defaultValue={CodeSnippets[language].code}
               language={language}
               problem={problem}
+              setShowSubmission={setShowSubmission}
             />
           </div>
+
+          {/* submissions/solution drawer */}
+          <Submissions
+            problemId={problem?.id || ""}
+            problemTitle={problem?.problem.title || ""}
+            showSubmissions={showSubmission}
+            closeSubmissions={() => setShowSubmission(false)}
+            setCode={setCode}
+          />
         </>
       )}
     </div>

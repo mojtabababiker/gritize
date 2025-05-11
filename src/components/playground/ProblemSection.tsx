@@ -1,28 +1,35 @@
 "use client";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import clsx from "clsx";
+import toast from "react-hot-toast";
+import { MessageCircleWarningIcon } from "lucide-react";
 
 import { useAuth } from "@/context/AuthProvider";
 import { UserProblemSchema } from "@/models/schemas";
-import Button from "../common/Button";
-import Heading from "../common/Heading";
-import { RenderMarkdown } from "../common/RenderMarkdown";
-import Paragraph from "../common/Paragraph";
-import { GitCompareIcon, MessageCircleWarningIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import clsx from "clsx";
-import { useChat } from "@ai-sdk/react";
-import { Message, UIMessage } from "ai";
-import toast from "react-hot-toast";
-import CustomToast from "../common/CustomToast";
+
+import Button from "@/components/common/Button";
+import Heading from "@/components/common/Heading";
+import { RenderMarkdown } from "@/components/common/RenderMarkdown";
+import Paragraph from "@/components/common/Paragraph";
+import CustomToast from "@/components/common/CustomToast";
+
 import AIAssistant from "./AIAssistant";
 
 type Props = {
   problem: UserProblemSchema | null;
   editorCodeText?: string;
+  showSubmission?: boolean;
+  setShowSubmission?: (show: boolean) => void;
 };
 
-function ProblemSection({ problem, editorCodeText }: Props) {
+function ProblemSection({
+  problem,
+  editorCodeText,
+  showSubmission,
+  setShowSubmission,
+}: Props) {
   const { user } = useAuth();
 
   const [showHint, setShowHint] = useState<boolean>(false);
@@ -79,8 +86,9 @@ function ProblemSection({ problem, editorCodeText }: Props) {
             size="sm"
             isSimple
             className="capitalize hover:text-fg/85"
+            onClick={() => setShowSubmission?.(true)}
           >
-            save
+            submissions
           </Button>
           <Button
             variant="accent"

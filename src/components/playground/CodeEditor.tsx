@@ -7,7 +7,7 @@ import Editor, { EditorProps } from "@monaco-editor/react";
 import { useResize } from "@/hooks/useHandleResize";
 
 import { Languages } from "@/models/types/indext";
-import { TechnicalProblemSchema, UserProblemSchema } from "@/models/schemas";
+import { UserProblemSchema } from "@/models/schemas";
 
 import {
   sandBoxURL,
@@ -22,7 +22,9 @@ import { useAuth } from "@/context/AuthProvider";
 type Props = EditorProps & {
   language?: Languages;
   defaultValue: string;
+  onChange: (value: string) => void;
   problem: UserProblemSchema | null;
+  setShowSubmission?: (show: boolean) => void;
 };
 
 function CodeEditor({
@@ -31,6 +33,7 @@ function CodeEditor({
   value = "",
   options = {},
   problem,
+  setShowSubmission,
   ...props
 }: Props) {
   const { user } = useAuth();
@@ -46,6 +49,18 @@ function CodeEditor({
   const onMount = (editor: any) => {
     editorRef.current = editor;
   };
+
+  useEffect(() => {
+    const fetchSolution = async () => {
+      if (!problem || !user) return;
+      const solution = await user.getLastSolution(problem.id);
+      if (solution) {
+        onChange(solution.solution);
+        setTimerTimer(solution.time);
+      }
+    };
+    fetchSolution();
+  }, [problem, user]);
 
   /**
    * Executes the code in the editor by sending it to a sandbox environment.
@@ -173,6 +188,7 @@ function CodeEditor({
       return;
     }
     setResult("Solution submitted successfully!");
+    setShowSubmission?.(true);
     setError(null);
   };
 

@@ -66,6 +66,7 @@
   --animate-slide-right: slideRight 500ms ease-in-out forwards;
   --animate-slide-from-left: slideLeft 500ms ease-in-out reverse forwards;
   --animate-slide-from-right: slideRight 500ms ease-in-out reverse forwards;
+  --animate-slide-up: slideUp 500ms ease-in-out forwards;
 
   /* Add these new custom properties */
   --sliding-text-play-state: running;
@@ -99,6 +100,16 @@
 
     100% {
       transform: translateX(110%);
+    }
+  }
+
+  @keyframes slideUp {
+    0% {
+      bottom: -100%;
+    }
+
+    100% {
+      bottom: 0;
     }
   }
 }

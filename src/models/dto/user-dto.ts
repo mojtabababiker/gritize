@@ -37,4 +37,5 @@ export interface ProblemSolutionDTO {
   score: number;
   language: Languages;
   time: number;
+  $createdAt?: string;
 }

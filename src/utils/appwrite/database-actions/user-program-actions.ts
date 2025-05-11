@@ -1,5 +1,5 @@
 "use server";
-import { ID, AppwriteException } from "node-appwrite";
+import { ID, AppwriteException, Query } from "node-appwrite";
 
 import { createAdminClient } from "@/config/appwrite";
 import { UserProblemSchema, CodingPatternSchema } from "@/models/schemas";
@@ -7,6 +7,7 @@ import { CodingPatternDTO, ProblemSolutionDTO } from "@/models/dto/user-dto";
 import { Settings } from "@/constant/setting";
 import { checkAuth } from "@/utils/appwrite/auth-action";
 import { getProblemById } from "./tech-problems-action";
+import { Languages } from "@/models/types/indext";
 
 /**
  * Creates a new user problem record in the database
@@ -499,5 +500,117 @@ export const createProblemSolution = async (
       return { error, data: null };
     }
     return { data: null, error: { response: "An unexpected error occurred" } };
+  }
+};
+
+/**
+ * Retrieves a solution for a specific problem in a given programming language.
+ *
+ * @param problemId - The unique identifier of the problem to fetch the solution for
+ * @param language - The programming language of the solution
+ *
+ * @returns A promise that resolves to either:
+ * - A {@link ProblemSolutionDTO} object containing the solution details
+ * - null if:
+ *   - The problem ID is not provided
+ *   - No solution is found for the given problem and language
+ *   - An error occurs during the database operation
+ *
+ * @throws Does not throw errors (catches and returns null instead)
+ */
+export const getProblemSolution = async (
+  problemId: string,
+  language: Languages
+) => {
+  if (!problemId) {
+    console.error("Problem ID is required");
+    return null;
+  }
+  try {
+    const { databases } = await createAdminClient();
+
+    const problemSolutionDoc = await databases.listDocuments(
+      Settings.databaseId,
+      Settings.problemSolutionsCollectionId,
+      [
+        Query.equal("problemId", problemId),
+        Query.equal("language", language),
+        Query.orderDesc("$createdAt"),
+      ]
+    );
+
+    if (!problemSolutionDoc || problemSolutionDoc.documents.length === 0) {
+      console.error("Problem solution not found");
+      return null;
+    }
+    const {
+      $id: id,
+      $collectionId,
+      $databaseId,
+      $createdAt,
+      $updatedAt,
+      $permissions,
+      ...rest
+    } = problemSolutionDoc.documents[0];
+    return { id, ...rest } as ProblemSolutionDTO;
+  } catch (error) {
+    console.error("Error getting problem solution by ID", error);
+    return null;
+  }
+};
+
+/**
+ * Retrieves a list of solutions for a specific problem from the database.
+ *
+ * @param problemId - The unique identifier of the problem to get solutions for
+ * @returns Promise that resolves to an array of ProblemSolutionDTO objects or null if:
+ * - problemId is not provided
+ * - no solutions are found
+ * - an error occurs during the database operation
+ *
+ * @throws Will not throw errors, returns null instead and logs error to console
+ *
+ * @remarks
+ * The returned solutions are:
+ * - Ordered by creation date in descending order (most recent first)
+ * - Transformed to remove internal database fields ($id, $collectionId, etc)
+ * - Mapped to ProblemSolutionDTO format
+ */
+export const listProblemSolutions = async (
+  problemId: string
+): Promise<ProblemSolutionDTO[] | null> => {
+  if (!problemId) {
+    console.error("Problem ID is required");
+    return null;
+  }
+  try {
+    const { databases } = await createAdminClient();
+
+    const problemSolutionDoc = await databases.listDocuments(
+      Settings.databaseId,
+      Settings.problemSolutionsCollectionId,
+      [Query.equal("problemId", problemId), Query.orderDesc("$createdAt")]
+    );
+
+    if (!problemSolutionDoc || problemSolutionDoc.documents.length === 0) {
+      console.error("Problem solutions not found");
+      return null;
+    }
+    const docs = problemSolutionDoc.documents;
+
+    return docs.map((doc) => {
+      const {
+        $id: id,
+        $collectionId,
+        $databaseId,
+        $updatedAt,
+        $permissions,
+        ...rest
+      } = doc;
+      return { id, ...rest } as ProblemSolutionDTO;
+    });
+  } catch (error) {
+    console.error("Error getting problem solutions", error);
+    return null;
   }
 };
