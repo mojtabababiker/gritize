@@ -349,6 +349,26 @@ export class User {
   }
 
   /**
+   * Retrieves a specific problem from a coding pattern in the user's data
+   * @param patternId - The unique identifier of the coding pattern
+   * @param problemId - The unique identifier of the problem to find
+   * @returns The matching problem data if found, null otherwise
+   */
+  getCodingPatternProblem(
+    patternId: string,
+    problemId: string
+  ): UserProblemSchema | null {
+    const codingPattern = this.codingPatterns[patternId] || null;
+    if (!codingPattern) {
+      return null;
+    }
+    const problem = codingPattern.problems.find(
+      (problem) => problem.problem.id === problemId
+    );
+    return problem || null;
+  }
+
+  /**
    * Updates a specific problem for the current user.
    *
    * @param problemId - The unique identifier of the problem to update

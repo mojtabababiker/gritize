@@ -23,6 +23,7 @@ function Page() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const problemId = searchParams.get("problem");
+  const codingPatternId = searchParams.get("cp");
 
   const [isSmallScreen, setIsSmallScreen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -60,13 +61,18 @@ function Page() {
       router.replace("/dashboard");
       return;
     }
-    const problem = user.getAlgorithmProblem(problemId || ""); // need
+    let problem: UserProblemSchema | null = null;
+    if (codingPatternId) {
+      problem = user.getCodingPatternProblem(codingPatternId, problemId);
+    } else {
+      problem = user.getAlgorithmProblem(problemId);
+    }
     setProblem(problem);
     if (!problem) {
       // If no problemId is found, redirect to the dashboard
       // You can also show a message or a loading state here
       // Redirect to dashboard if no problemId is found
-      // router.replace("/404");
+      router.replace("/404");
     }
     // update language based on the user preference
     const userLanguage = user.preferredLanguage || "javascript";
