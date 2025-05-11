@@ -268,17 +268,18 @@ export class User {
    * and stores it in the generalAlgorithms map.
    *
    * @param problems - Array of problem IDs to associate with the user
-   * @returns Promise<void>
+   * @returns Promise<string[]> - A promise that resolves to an array of created user problem IDs
    *
    * @remarks
    * - Silently skips if problems array is empty or user ID is not set
    * - Continues execution even if individual problem creation fails
    * - Failed problem creations are logged to console.error
    */
-  async setAlgorithmProblems(problems: string[]): Promise<void> {
+  async setAlgorithmProblems(problems: string[]): Promise<string[]> {
     // this.generalAlgorithms = value;
+    const createdIds: string[] = [];
     if (!problems || !problems.length || !this.id) {
-      return;
+      return createdIds;
     }
 
     for (const problemId of problems) {
@@ -292,7 +293,9 @@ export class User {
       }
       // console.log("User problem created", userProblem.id);
       this.generalAlgorithms[userProblem.id] = userProblem;
+      createdIds.push(userProblem.id);
     }
+    return createdIds;
   }
 
   /**
