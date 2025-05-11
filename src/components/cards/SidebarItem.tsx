@@ -8,6 +8,7 @@ type Props = {
 };
 
 function SidebarItem({ problem, href }: Props) {
+  if (!problem) return null;
   return (
     <div
       key={problem.problem.title}
