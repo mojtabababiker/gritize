@@ -66,11 +66,21 @@ export function FeaturedProblems() {
   const [hasMore, setHasMore] = useState(true);
   const totalProblems = useRef<number>(0);
 
+  const firstRendered = useRef(false);
+
   const fetchFeaturedProblems = async (prev = false) => {
     setLoading(true);
+    let currentPage;
+    if (prev) {
+      setPage((_prev) => _prev - 1);
+      currentPage = page - 1;
+    } else {
+      setPage((_prev) => _prev + 1);
+      currentPage = page + 1;
+    }
     const lastProblem = featuredProblems[featuredProblems.length - 1];
     const firstProblem = featuredProblems[0];
-    let query = "&page=" + (page + 1);
+    let query = `&page=${currentPage}`;
     if (prev) {
       query += "&prev=true";
       if (firstProblem) {
@@ -90,9 +100,6 @@ export function FeaturedProblems() {
       const data = await response.json();
       setFeaturedProblems(data.problems);
       // setHasMore(data.hasMore);
-      prev
-        ? setPage((_lastPage) => _lastPage - 1)
-        : setPage((_lastPage) => _lastPage + 1);
       totalProblems.current = data.total;
       setHasMore(data.hasMore);
       setLoading(false);
@@ -101,6 +108,7 @@ export function FeaturedProblems() {
       setError("Failed to fetch featured problems.");
     } finally {
       setLoading(false);
+      console.log("\n\npage", page);
     }
   };
 
@@ -135,6 +143,11 @@ export function FeaturedProblems() {
   };
 
   useEffect(() => {
+    if (firstRendered.current) {
+      return;
+    }
+    firstRendered.current = true;
+    console.log("fetching featured problems");
     fetchFeaturedProblems();
   }, []);
   return (

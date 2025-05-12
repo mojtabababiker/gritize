@@ -8,13 +8,13 @@ import {
 } from "../base/Accordion";
 import Image from "next/image";
 import SidebarItem from "./SidebarItem";
+import clsx from "clsx";
 
 type Props = {
   codingPatterns: CodingPatternSchema[];
 };
 
 function SidebarCPItems({ codingPatterns }: Props) {
-  console.log(`\n\n${JSON.stringify(codingPatterns)}\n`);
   return (
     <Accordion type="single" collapsible className="w-full">
       {codingPatterns.map((cp) => (
@@ -32,9 +32,16 @@ function SidebarCPItems({ codingPatterns }: Props) {
                 {cp.title}
               </span>
             </div>
-            <span className="text-fg/50">
-              {cp.solvedProblems}/{cp.totalProblems}
-            </span>
+            <div className="flex gap-0.5 ">
+              <span
+                className={clsx(
+                  cp.solvedProblems ? "text-accent/85" : "text-fg/50"
+                )}
+              >
+                {cp.solvedProblems}
+              </span>
+              /{cp.totalProblems}
+            </div>
           </AccordionTrigger>
           <AccordionContent>
             <div className="flex flex-col gap-2 mt-2 pl-3 w-full">

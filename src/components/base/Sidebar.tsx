@@ -104,7 +104,7 @@ function Sidebar() {
   return (
     <aside
       className={clsx(
-        "sidebar fixed z-40 top-22 2xl:top-0 left-0 2xl:min-h-screen 2xl:min-w-[86px] max-w-[420px] flex flex-col justify-between px-4 bg-fg/5 backdrop-blur-md overflow-x-hidden drop-shadow-sm shadow-fg/10 shadow-xl ",
+        "sidebar fixed z-40 top-22 2xl:top-0 left-0 2xl:min-h-screen 2xl:min-w-[86px] max-w-[420px] flex flex-col justify-between gap-8 px-4 bg-fg/5 backdrop-blur-md overflow-x-hidden drop-shadow-sm shadow-fg/10 shadow-xl",
         open
           ? "w-full h-[calc(100dvh-90px)] py-12 overflow-y-auto"
           : "w-12 h-12 rounded-full 2xl:rounded-none overflow-hidden"
