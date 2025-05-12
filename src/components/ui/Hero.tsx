@@ -32,7 +32,7 @@ function Hero() {
     // Hero section
     <>
       <Bounded className="bg-surface overflow-hidden pt-40 md:pt-32 pb-8 ">
-        <div className="relative w-full md:min-h-[896px] flex items-between justify-between gap-4 bg-fg/30 sm:bg-fg/0">
+        <div className="relative w-full md:min-sh-[896px] flex items-between justify-between gap-4 bg-fg/30 sm:bg-fg/0">
           {/* text */}
           <div className="flex-1 flex flex-col justify-center w-full gap-8">
             {/* title */}
@@ -88,6 +88,7 @@ function Hero() {
               <Button
                 variant="ghost"
                 size="lg"
+                className="bg-surface"
                 onClick={() => console.log("Learn More")}
               >
                 Contribute To The Platform

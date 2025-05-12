@@ -47,7 +47,9 @@ function ServiceCard({ title, description, href, hrefText, className }: Props) {
       </div>
 
       {/* CTA */}
-      <div className="absolute z-30 left-0 right-0 -bottom-20 flex items-center justify-center group-[:hover]:bottom-10 transition-all duration-300 ease-in-out">
+      <div className="absolute z-30 left-0 right-0 -bottom-30 h-[32%] flex items-center justify-center group-[:hover]:bottom-0 transition-all duration-300 ease-in-out">
+        {/* overlay */}
+        <div className="absolute inset-0 bg-bg/30 backdrop-blur-xs blur-sm shadow-xl drop-shadow-2xl " />
         <Button variant="accent" size="md" className="text-center">
           <Link href={href ? href : "/dashboard"} className="text-center">
             {hrefText || "Start Now"}

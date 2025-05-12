@@ -48,7 +48,7 @@ function Header() {
     <>
       <Bounded
         as="header"
-        className="absolute z-40 top-0 max-h-fit bgs-surface overflow-hidden "
+        className="absolute z-40 h-fit top-0 max-h-fit bgs-surface overflow-hidden "
       >
         <div className="flex flex-wrap pt-6 pb-4 gap-4 overflow-clip">
           {/* icon */}

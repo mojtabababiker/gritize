@@ -25,7 +25,7 @@ function Page() {
   const problemId = searchParams.get("problem");
   const codingPatternId = searchParams.get("cp");
 
-  const [isSmallScreen, setIsSmallScreen] = useState(true);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const { user } = useAuth();

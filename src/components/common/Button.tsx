@@ -33,7 +33,7 @@ function Button({
           "font-heading capitalize font-semibold text-xl px-4 py-3",
         variant === "primary" && "text-fg bg-primary shadow-fg",
         variant === "accent" && "text-bg bg-accent shadow-primary",
-        variant === "ghost" && "bg-transparent text-bg border border-primary",
+        variant === "ghost" && " text-bg border border-primary",
         variant,
         className,
         disabled && "pointer-events-none opacity-85"
