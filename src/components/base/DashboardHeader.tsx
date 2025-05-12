@@ -11,7 +11,7 @@ function DashboardHeader() {
   return (
     <Bounded
       as="header"
-      className="sticky top-0 py-4 z-40 bg-bg/60 backdrop-blur-md drop-shadow-sm shadow-bg/50 shadow-xl"
+      className="sticky top-0 py-4 z-40 bg-bg/60  backdrop-blur-md drop-shadow-sm shadow-bg/50 shadow-xl"
     >
       {/* header */}
       <div className="flex items-center justify-between">

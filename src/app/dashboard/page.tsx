@@ -41,7 +41,7 @@ function page() {
         alt=""
         width={1440}
         height={860}
-        className="fixed inset-0 -z-10 w-full h-auto origin-top object-top blur-md"
+        className="fixed inset-0 -z-10 w-full h-auto origin-top object-top blur-md opacity-25"
       />
       {/* body */}
       <article className="relative w-full flex flex-col justify-between overflow-hidden">
