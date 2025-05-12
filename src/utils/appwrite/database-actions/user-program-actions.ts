@@ -10,7 +10,8 @@ import { getProblemById } from "./tech-problems-action";
 import { Languages } from "@/models/types/indext";
 
 /**
- * Creates a new user problem record in the database
+ * Creates a new user problem record in the database, if the problem does not already exist.
+ * If the problem already exists, it returns the existing record instead of creating a new one and prints a warning.
  * @param userId - The unique identifier of the user, can be null if creating coding pattern problem
  * @param problemId - The unique identifier of the problem
  * @returns Promise resolving to an object containing either:
@@ -43,6 +44,34 @@ export const createUserProblem = async (
     }
 
     const { databases } = await createAdminClient();
+
+    // try to retrieve a user problem with the same id
+    const existingUserProblem = await databases.listDocuments(
+      Settings.databaseId,
+      Settings.userProblemsCollectionId,
+      [Query.equal("problemId", problemId)]
+    );
+
+    if (existingUserProblem.documents?.length) {
+      console.warn("User problem already exists");
+      console.warn(
+        `Attempt to create problem already exists for user ${userId} and problem ${problemId}`
+      );
+      const existingProblem = existingUserProblem.documents[0];
+      const {
+        $id: id,
+        $collectionId,
+        $databaseId,
+        $createdAt,
+        $updatedAt,
+        $permissions,
+        userId: userIdFromDoc,
+        problemId: problemIdFromDoc,
+        ...rest
+      } = existingProblem;
+      const result = { id, problem, ...rest } as UserProblemSchema;
+      return { data: result, error: null };
+    }
 
     const resultDoc = await databases.createDocument(
       Settings.databaseId,
