@@ -1,6 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useAuth } from "@/context/AuthProvider";
 import { useResize } from "@/hooks/useHandleResize";
@@ -18,6 +18,8 @@ import ResizeRuler from "@/components/common/ResizeRuler";
 import CodeEditor from "@/components/playground/CodeEditor";
 import ProblemSection from "@/components/playground/ProblemSection";
 import Submissions from "@/components/playground/Submissions";
+import toast from "react-hot-toast";
+import CustomToast from "@/components/common/CustomToast";
 
 function Page() {
   const router = useRouter();
@@ -39,6 +41,29 @@ function Page() {
 
   const [showSubmission, setShowSubmission] = useState(false);
 
+  const getProblem = (problemId: string, codingPatternId: string | null) => {
+    if (!user) {
+      return null;
+    }
+    if (codingPatternId) {
+      const problem = user.getCodingPatternProblem(codingPatternId, problemId);
+      if (!problem) {
+        console.log("No problem found");
+        router.replace("/dashboard");
+        return null;
+      }
+      return problem;
+    } else {
+      const problem = user.getAlgorithmProblem(problemId);
+
+      if (!problem) {
+        console.log("No problem found");
+        router.replace("/dashboard");
+        return null;
+      }
+      return problem;
+    }
+  };
   useEffect(() => {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth < 1024);
@@ -56,22 +81,44 @@ function Page() {
       return;
     }
     if (!problemId) {
-      // If no problemId is provided, redirect to the dashboard
-      console.log("No problemId provided");
-      router.replace("/dashboard");
-      return;
+      // If no problemId is provided, fetch the localstorage problemId
+
+      const localStorageProblem = localStorage.getItem(`${user.id}-lpp`);
+      if (localStorageProblem) {
+        const { problemId, codingPatternId, code } =
+          JSON.parse(localStorageProblem);
+
+        if (!problemId) {
+          console.log("No problemId found in local storage");
+          toast.custom((t) => (
+            <CustomToast t={t} type="error" message="No problemId found" />
+          ));
+          router.replace("/dashboard");
+          return;
+        }
+        const problem = getProblem(problemId, codingPatternId);
+        if (!problem) {
+          console.log("No problem found in local storage");
+          return;
+        }
+        setProblem(problem);
+        setIsLoading(false);
+        const userLanguage = user.preferredLanguage || "javascript";
+        setLanguage(userLanguage);
+        setCode(code || CodeSnippets[userLanguage].code);
+        return;
+      } else {
+        console.log("No problemId provided, and no local storage data found");
+        toast.custom((t) => (
+          <CustomToast t={t} type="error" message="No problemId found" />
+        ));
+        router.replace("/dashboard");
+        return;
+      }
     }
-    let problem: UserProblemSchema | null = null;
-    if (codingPatternId) {
-      problem = user.getCodingPatternProblem(codingPatternId, problemId);
-    } else {
-      problem = user.getAlgorithmProblem(problemId);
-    }
+    const problem = getProblem(problemId, codingPatternId);
     setProblem(problem);
     if (!problem) {
-      // If no problemId is found, redirect to the dashboard
-      // You can also show a message or a loading state here
-      // Redirect to dashboard if no problemId is found
       router.replace("/404");
     }
     // update language based on the user preference
@@ -79,7 +126,40 @@ function Page() {
     setLanguage(userLanguage);
     setCode(CodeSnippets[userLanguage].code);
     setIsLoading(user === null);
+    window.localStorage.setItem(
+      `${user?.id}-lpp`,
+      JSON.stringify({
+        problemId: problem?.id,
+        codingPatternId: codingPatternId,
+        code: code || null,
+      })
+    );
   }, [user, problemId, router, searchParams]);
+
+  useEffect(() => {
+    const saveToLocalStorage = () => {
+      if (!user?.id || !problem?.id) return;
+
+      const data = {
+        problemId: problem.id,
+        codingPatternId,
+        code: code || null,
+        test: true,
+      };
+
+      const key = `${user.id}-lpp`;
+      window.localStorage.setItem(
+        key,
+        JSON.stringify({
+          ...data,
+          code: code || null,
+        })
+      );
+    };
+    // saveToLocalStorage(); // Save on initial load
+    const intervalId = setInterval(saveToLocalStorage, 5000); // Save every 5 seconds
+    return () => clearInterval(intervalId);
+  }, []);
 
   return isSmallScreen ? (
     <NoticeCard />
