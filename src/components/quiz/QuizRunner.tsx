@@ -200,7 +200,7 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
             {/* timer */}
             <div className="flex-1 -mt-10">
               <Timer
-                minutes={2}
+                minutes={7}
                 seconds={10}
                 onTimeUp={() => handleAnswer("", true)}
               />
@@ -382,7 +382,7 @@ const QuizInfo = ({ action }: { action: () => void }) => {
 
       {/* start button */}
       <div className="w-full flex items-center justify-center py-1">
-        <Button variant="ghost" onClick={action}>
+        <Button variant="ghost" className="bg-surface" onClick={action}>
           I understand
         </Button>
       </div>
@@ -415,7 +415,7 @@ const QuizRules = ({ action }: { action: () => void }) => {
 
       {/* start button */}
       <div className="w-full flex items-center justify-center py-1">
-        <Button variant="ghost" onClick={action}>
+        <Button variant="ghost" className="bg-surface" onClick={action}>
           Start
         </Button>
       </div>
