@@ -16,9 +16,6 @@ import Loading from "@/components/common/Loading";
 function page() {
   const router = useRouter();
   const { user, setUser } = useAuth();
-  const [featuredProblems, setFeaturedProblems] = useState<
-    TechnicalProblemSchema[]
-  >([]);
 
   useEffect(() => {
     if (!user) {
@@ -32,7 +29,7 @@ function page() {
     console.log("User data:", user);
   }, [user, router]);
 
-  if (!user) {
+  if (!user || !user.id) {
     return <Loading />;
   }
 

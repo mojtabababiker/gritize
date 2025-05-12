@@ -46,33 +46,34 @@ export const createUserProblem = async (
     const { databases } = await createAdminClient();
 
     // try to retrieve a user problem with the same id
-    const existingUserProblem = await databases.listDocuments(
-      Settings.databaseId,
-      Settings.userProblemsCollectionId,
-      [Query.equal("problemId", problemId)]
-    );
-
-    if (existingUserProblem.documents?.length) {
-      console.warn("User problem already exists");
-      console.warn(
-        `Attempt to create problem already exists for user ${userId} and problem ${problemId}`
+    if (userId) {
+      const existingUserProblem = await databases.listDocuments(
+        Settings.databaseId,
+        Settings.userProblemsCollectionId,
+        [Query.equal("problemId", problemId), Query.equal("userId", userId)]
       );
-      const existingProblem = existingUserProblem.documents[0];
-      const {
-        $id: id,
-        $collectionId,
-        $databaseId,
-        $createdAt,
-        $updatedAt,
-        $permissions,
-        userId: userIdFromDoc,
-        problemId: problemIdFromDoc,
-        ...rest
-      } = existingProblem;
-      const result = { id, problem, ...rest } as UserProblemSchema;
-      return { data: result, error: null };
-    }
 
+      if (existingUserProblem.documents?.length) {
+        console.warn("User problem already exists");
+        console.warn(
+          `Attempt to create problem already exists for user ${userId} and problem ${problemId}`
+        );
+        const existingProblem = existingUserProblem.documents[0];
+        const {
+          $id: id,
+          $collectionId,
+          $databaseId,
+          $createdAt,
+          $updatedAt,
+          $permissions,
+          userId: userIdFromDoc,
+          problemId: problemIdFromDoc,
+          ...rest
+        } = existingProblem;
+        const result = { id, problem, ...rest } as UserProblemSchema;
+        return { data: result, error: null };
+      }
+    }
     const resultDoc = await databases.createDocument(
       Settings.databaseId,
       Settings.userProblemsCollectionId,
@@ -588,6 +589,7 @@ export const createProblemSolution = async (
 /**
  * Retrieves a solution for a specific problem in a given programming language.
  *
+ * @param userId - The ID of the user requesting the solution
  * @param problemId - The unique identifier of the problem to fetch the solution for
  * @param language - The programming language of the solution
  *
@@ -601,6 +603,7 @@ export const createProblemSolution = async (
  * @throws Does not throw errors (catches and returns null instead)
  */
 export const getProblemSolution = async (
+  userId: string,
   problemId: string,
   language: Languages
 ) => {
@@ -615,6 +618,7 @@ export const getProblemSolution = async (
       Settings.databaseId,
       Settings.problemSolutionsCollectionId,
       [
+        Query.equal("userId", userId),
         Query.equal("problemId", problemId),
         Query.equal("language", language),
         Query.orderDesc("$createdAt"),
@@ -644,6 +648,7 @@ export const getProblemSolution = async (
 /**
  * Retrieves a list of solutions for a specific problem from the database.
  *
+ * @param userId - The ID of the user requesting the solutions
  * @param problemId - The unique identifier of the problem to get solutions for
  * @returns Promise that resolves to an array of ProblemSolutionDTO objects or null if:
  * - problemId is not provided
@@ -659,6 +664,7 @@ export const getProblemSolution = async (
  * - Mapped to ProblemSolutionDTO format
  */
 export const listProblemSolutions = async (
+  userId: string,
   problemId: string
 ): Promise<ProblemSolutionDTO[] | null> => {
   if (!problemId) {
@@ -671,7 +677,11 @@ export const listProblemSolutions = async (
     const problemSolutionDoc = await databases.listDocuments(
       Settings.databaseId,
       Settings.problemSolutionsCollectionId,
-      [Query.equal("problemId", problemId), Query.orderDesc("$createdAt")]
+      [
+        Query.equal("userId", userId),
+        Query.equal("problemId", problemId),
+        Query.orderDesc("$createdAt"),
+      ]
     );
 
     if (!problemSolutionDoc || problemSolutionDoc.documents.length === 0) {

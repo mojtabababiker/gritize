@@ -516,6 +516,7 @@ export class User {
       return null;
     }
     const solution = await getProblemSolution(
+      this.id,
       problemId,
       this.preferredLanguage || "javascript"
     );
@@ -536,7 +537,7 @@ export class User {
       console.error("Login to get problem solutions");
       return null;
     }
-    const solutions = await listProblemSolutions(problemId);
+    const solutions = await listProblemSolutions(this.id, problemId);
     if (!solutions) {
       return null;
     }
