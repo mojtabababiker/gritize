@@ -43,3 +43,11 @@ export interface CodingPatternSchema {
   totalProblems: number;
   solvedProblems: number;
 }
+
+export interface TestimonialSchema {
+  avatar?: string;
+  name: string;
+  userTitle: string;
+  review: string;
+  rating: number;
+}
