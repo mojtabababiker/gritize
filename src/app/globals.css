@@ -179,6 +179,20 @@ body {
   }
 }
 
+.button-cutout.ghost-2 {
+  filter: drop-shadow(1px 0 var(--color-fg)) drop-shadow(-1px 0 var(--color-fg))
+    drop-shadow(0 1px var(--color-fg)) drop-shadow(0 -1px var(--color-fg))
+    drop-shadow(3px 0 var(--color-fg)) drop-shadow(0 3px var(--color-fg));
+  &:hover,
+  &:focus,
+  &:active {
+    filter: drop-shadow(1px 0 var(--color-fg))
+      drop-shadow(-1px 0 var(--color-fg)) drop-shadow(0 1px var(--color-fg))
+      drop-shadow(0 -1px var(--color-fg)) drop-shadow(2px 0 var(--color-fg))
+      drop-shadow(0 2px var(--color-fg));
+  }
+}
+
 .brief-container {
   background-image: linear-gradient(
     to bottom,
@@ -238,6 +252,14 @@ body {
     var(--color-surface) 36%,
     #eaf6f1 63%,
     var(--color-fg) 100%
+  );
+}
+
+.testimonial-popup {
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-bg) 33%,
+    var(--color-surface) 100%
   );
 }
 

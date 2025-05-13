@@ -23,6 +23,9 @@ export const Settings = {
   problemSolutionsCollectionId:
     process.env.NEXT_APPWRITE_PROBLEM_SOLUTIONS_COLLECTION_ID || "",
 
+  testimonialsCollectionId:
+    process.env.NEXT_APPWRITE_TESTIMONIALS_COLLECTION_ID || "",
+
   // Appwrite Storage Buckets IDs
   // You can find these IDs in the Appwrite console under the storage settings
   // Make sure to replace these with your actual bucket IDs

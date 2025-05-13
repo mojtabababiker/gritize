@@ -16,6 +16,8 @@ type Props = InputHTMLAttributes<HTMLInputElement> & {
   placeholder?: string;
   label?: string;
   className?: string;
+  rows?: number;
+  onTextChange?: (value: string) => void;
 };
 
 function Input({
@@ -26,6 +28,8 @@ function Input({
   label,
   placeholder,
   id,
+  rows,
+  onTextChange,
 }: Props) {
   const [value, setValue] = useState<string | number | undefined>(defaultValue);
   const [showPwd, setShowPwd] = useState(false);
@@ -54,9 +58,12 @@ function Input({
           name={name}
           id={id}
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => {
+            setValue(e.target.value);
+            onTextChange?.(e.target.value);
+          }}
           placeholder={placeholder}
-          rows={8}
+          rows={rows || 8}
           className={clsx("px-6", CLASS_NAME, className)}
         />
       ) : (
@@ -67,7 +74,10 @@ function Input({
             type={inputType}
             id={id}
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => {
+              setValue(e.target.value);
+              onTextChange?.(e.target.value);
+            }}
             placeholder={placeholder}
             className={clsx("px-4", CLASS_NAME, className)}
           />

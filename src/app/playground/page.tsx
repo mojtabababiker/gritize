@@ -20,6 +20,7 @@ import ProblemSection from "@/components/playground/ProblemSection";
 import Submissions from "@/components/playground/Submissions";
 import toast from "react-hot-toast";
 import CustomToast from "@/components/common/CustomToast";
+import TestimonialProvider from "@/components/testimonials/TestmonialProvider";
 
 function Page() {
   const router = useRouter();
@@ -40,6 +41,8 @@ function Page() {
   const [language, setLanguage] = useState<Languages>("javascript");
 
   const [showSubmission, setShowSubmission] = useState(false);
+
+  const [askForTestimonial, setAskForTestimonial] = useState(false);
 
   const getProblem = (problemId: string, codingPatternId: string | null) => {
     if (!user) {
@@ -137,6 +140,28 @@ function Page() {
   }, [user, problemId, router, searchParams]);
 
   useEffect(() => {
+    if (!user) return;
+    if (user.hasReviewed) {
+      setAskForTestimonial(false);
+      return;
+    }
+    const lastAskedReview = user.lastAskedReview;
+    const currentDate = new Date();
+    const lastAskedDate = new Date(lastAskedReview || "");
+    const diffTime = Math.abs(currentDate.getTime() - lastAskedDate.getTime());
+    const diffHours = Math.ceil(diffTime / (1000 * 60 * 60));
+    // const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    user.lastAskedReview = currentDate.toISOString();
+
+    // if the last asked review is more than 8 hours ago
+    if (user.mustReview && diffHours >= 8) {
+      setAskForTestimonial(true);
+    }
+    // const last
+  }, [user]);
+
+  useEffect(() => {
     const saveToLocalStorage = () => {
       if (!user?.id || !problem?.id) return;
 
@@ -164,52 +189,59 @@ function Page() {
   return isSmallScreen ? (
     <NoticeCard />
   ) : (
-    <div className="w-screen bg-bg/65 flex relative h-screen overflow-hidden">
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <>
-          {/* Problem */}
-          <div
-            ref={boxRef}
-            className="relative max-w-[744px] min-w-[400px] w-full mr-1"
-          >
-            <ProblemSection
-              editorCodeText={code}
-              problem={problem}
-              setShowSubmission={setShowSubmission}
-            />
-            {/* resize ruler */}
-            <ResizeRuler
-              onResize={handleResize}
-              direction="vertical"
-              className="top-0 -right-1 h-screen"
-            />
-          </div>
-          {/* Code Section */}
-          <div className="flex-1 min-w-[620px]">
-            <CodeEditor
-              onChange={setCode}
-              value={code}
-              defaultValue={CodeSnippets[language].code}
-              language={language}
-              problem={problem}
-              setShowSubmission={setShowSubmission}
-              codingPatternId={codingPatternId}
-            />
-          </div>
+    <>
+      <div className="w-screen bg-bg/65 flex relative h-screen overflow-hidden">
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {/* Problem */}
+            <div
+              ref={boxRef}
+              className="relative max-w-[744px] min-w-[400px] w-full mr-1"
+            >
+              <ProblemSection
+                editorCodeText={code}
+                problem={problem}
+                setShowSubmission={setShowSubmission}
+              />
+              {/* resize ruler */}
+              <ResizeRuler
+                onResize={handleResize}
+                direction="vertical"
+                className="top-0 -right-1 h-screen"
+              />
+            </div>
+            {/* Code Section */}
+            <div className="flex-1 min-w-[620px]">
+              <CodeEditor
+                onChange={setCode}
+                value={code}
+                defaultValue={CodeSnippets[language].code}
+                language={language}
+                problem={problem}
+                setShowSubmission={setShowSubmission}
+                setAskForTestimonial={setAskForTestimonial}
+                codingPatternId={codingPatternId}
+              />
+            </div>
 
-          {/* submissions/solution drawer */}
-          <Submissions
-            problemId={problem?.id || ""}
-            problemTitle={problem?.problem.title || ""}
-            showSubmissions={showSubmission}
-            closeSubmissions={() => setShowSubmission(false)}
-            setCode={setCode}
-          />
-        </>
-      )}
-    </div>
+            {/* submissions/solution drawer */}
+            <Submissions
+              problemId={problem?.id || ""}
+              problemTitle={problem?.problem.title || ""}
+              showSubmissions={showSubmission}
+              closeSubmissions={() => setShowSubmission(false)}
+              setCode={setCode}
+            />
+          </>
+        )}
+      </div>
+      <TestimonialProvider
+        show={askForTestimonial}
+        onClose={() => setAskForTestimonial(false)}
+      />
+    </>
   );
 }
 
