@@ -13,6 +13,7 @@ import Heading from "@/components/common/Heading";
 import Paragraph from "@/components/common/Paragraph";
 import Link from "next/link";
 import { ProgramDto } from "@/dto";
+import ThinkingLoader from "@/components/playground/ThinkingLoader";
 
 type Program = {
   program?: ProgramDto;
@@ -24,6 +25,10 @@ export default function Page() {
   const { user, setUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [creationStatus, setCreationStatus] = useState<string>("");
+
+  const creationMessageInterval = useRef<NodeJS.Timeout | null>(null);
+  const creationCompletedTimeout = useRef<NodeJS.Timeout | null>(null);
   const initialRenderCompleted = useRef(false);
 
   const saveProgram = async (program: Program): Promise<void> => {
@@ -31,14 +36,24 @@ export default function Page() {
       console.error("User is not initialized");
       return;
     }
+    if (creationCompletedTimeout.current) {
+      clearTimeout(creationCompletedTimeout.current);
+    }
     const { program: programData, error } = program;
-    if (error || !programData) return;
+    if (error || !programData) {
+      setErrorMessage("Error generating program. Please try again later.");
+      setIsLoading(false);
+      setCreationStatus("");
+      return;
+    }
 
+    setCreationStatus("Saving program");
+    if (creationMessageInterval.current) {
+      clearInterval(creationMessageInterval.current);
+    }
     const { algorithms, codingPatterns } = programData;
     // console.log("programData", JSON.stringify(programData));
     // console.log("algorithms", JSON.stringify(algorithms));
-
-    setIsLoading(false);
 
     //user.algorithmProblems = program.algorithms;
     await user.setAlgorithmProblems(algorithms);
@@ -47,6 +62,7 @@ export default function Page() {
     user.isNewUser = false;
     await user.save();
     setUser(user);
+    setIsLoading(false);
     router.replace("/dashboard");
   };
   const createProgram = () => {
@@ -56,10 +72,34 @@ export default function Page() {
     }
     initialRenderCompleted.current = true;
     if (!isLoading && user.isNewUser) {
+      setCreationStatus("Creating program");
+      setErrorMessage("");
       setIsLoading(true);
       submit({
         prompt: prompt,
       });
+      creationMessageInterval.current = setInterval(() => {
+        setCreationStatus((prev) => {
+          if (prev === "Creating program") {
+            return "Analyzing your profile";
+          } else if (prev === "Analyzing your profile") {
+            return "Creating problems";
+          } else if (prev === "Creating problems") {
+            return "Finalizing your program";
+          } else {
+            return "Creating program";
+          }
+        });
+      }, 6000);
+
+      // if the program creation takes more than 45 seconds, show a message
+      creationCompletedTimeout.current = setTimeout(() => {
+        if (isLoading) {
+          setErrorMessage(
+            "Program creation is taking longer than expected. Please be patient."
+          );
+        }
+      }, 45000);
     } else if (!user.isNewUser) {
       // router.replace("/dashboard");
     }
@@ -69,7 +109,6 @@ export default function Page() {
     const { message, cause } = error;
     console.error("Error:", message);
     setErrorMessage("All slots are full, please wait or try again later.");
-    console.error("Cause:", cause);
   };
 
   const prompt = `Create a program for a ${user?.skillLevel} software engineer`;
@@ -113,12 +152,22 @@ export default function Page() {
                 size="md"
                 className="w-full max-w-[420px] text-sm text-bg/80  text-center"
               >
-                Please wait while we generate your program.
+                This may take a moment, thank you for your patience.
                 <br />
-                <Paragraph as="span" size="sm" className="text-bg/65">
-                  This may take a moment, thank you for your patience.
-                </Paragraph>
               </Paragraph>
+              <div className="text-bg/65 flex items-center justify-center gap-1 w-full max-w-[420px] text-sm text-center">
+                <Paragraph
+                  size="sm"
+                  className="text-bg/65 font-semibold w-full text-end"
+                >
+                  {creationStatus}
+                </Paragraph>
+                {/* {creationStatus} */}
+
+                <div className="scale-80 w-full grayscale-50">
+                  <ThinkingLoader />
+                </div>
+              </div>
             </div>
           </>
         ) : (
