@@ -6,7 +6,10 @@ import { AppwriteException } from "node-appwrite";
 import { z, ZodError } from "zod";
 
 const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z
+    .string()
+    .max(32, "Email can't be larger than 32 characters long")
+    .email("Invalid email address"),
   password: z.string().min(8, "invalid password"),
   // rememberMe: z.boolean().optional(),
 });

@@ -175,6 +175,7 @@ export class User {
 
     this.id = userId ?? undefined;
     this.name = username;
+    this.email = email;
     this.isNewUser = true;
 
     const { data: user, error: dbError } = await createUser(this.json);

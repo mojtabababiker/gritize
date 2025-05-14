@@ -108,14 +108,7 @@ export const getUserById = async (userId: string) => {
  */
 export const createUser = async (userObj: UserDTO) => {
   const { databases } = await createAdminClient();
-  const {
-    id: userId,
-    name,
-    email,
-    codingPatterns,
-    generalAlgorithms,
-    ...user
-  } = userObj;
+  const { id: userId, codingPatterns, generalAlgorithms, ...user } = userObj;
   try {
     const userDoc = await databases.createDocument(
       Settings.databaseId,
