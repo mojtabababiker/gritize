@@ -108,7 +108,10 @@ export default function Page() {
   const handleError = (error: Error) => {
     const { message, cause } = error;
     console.error("Error:", message);
-    setErrorMessage("All slots are full, please wait or try again later.");
+    setErrorMessage(
+      error.message ||
+        "It seems all slots are occupied, please wait or try again later."
+    );
   };
 
   const prompt = `Create a program for a ${user?.skillLevel} software engineer`;
