@@ -473,8 +473,6 @@ export class User {
           console.error(error);
         }
       }
-    } else {
-      this.generalAlgorithms[problemId] = updateProblem;
     }
     return { data: updateProblem, error: null };
   }

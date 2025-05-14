@@ -217,14 +217,17 @@ function CodeEditor({
     setShowSubmission?.(true);
     setError(null);
 
-    // Update the user to indicate that they need to review
-    user.mustReview = true;
-    setUser(user);
+    // ask for review if the user has not reviewed yet
+    if (!user.hasReviewed) {
+      // Update the user to indicate that they need to review
+      user.mustReview = true;
+      setUser(user);
 
-    // Ask for a testimonial/review after 3 seconds from successful submission
-    setTimeout(() => {
-      setAskForTestimonial(true);
-    }, 3000);
+      // Ask for a testimonial/review after 3 seconds from successful submission
+      setTimeout(() => {
+        setAskForTestimonial(true);
+      }, 3000);
+    }
   };
 
   /**
@@ -277,6 +280,15 @@ function CodeEditor({
         return;
       }
       const { message: score } = result;
+      if (!score || score <= 6) {
+        setError(
+          `Code submission failed. Please try again.\n\nYour code was not able to solve the problem or it was not efficient enough. Please check your code and try again.\n\nIf you need help, try the hints or ask for review.\n\nHere are some tips:\n- Check for syntax errors.\n- Ensure all variables are defined.\n- Make sure your logic is correct.\n- Test with different inputs.\n\nIf you have any questions, feel free to ask!\n\n
+          Score: ${score}
+          `
+        );
+        setResult(null);
+        return;
+      }
       setResult(`Code submitted successfully! \nScore: ${score}`);
       setError(null);
       await saveSolution(score);
