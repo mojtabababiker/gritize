@@ -47,3 +47,6 @@ assistant-ai.ts
 # vscode
 settings.json
 client_secret.json
+
+# local dev files
+*.local*
