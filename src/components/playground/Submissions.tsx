@@ -25,7 +25,6 @@ function Submissions({
   setCode,
 }: Props) {
   const { user } = useAuth();
-  const containerRef = useRef<HTMLDivElement>(null);
   const [solutions, setSolutions] = useState<ProblemSolutionDTO[] | null>(null);
 
   useEffect(() => {
@@ -34,12 +33,13 @@ function Submissions({
         closeSubmissions?.();
       }
     };
+
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [closeSubmissions, containerRef]);
+  }, [closeSubmissions]);
 
   useEffect(() => {
     if (!user || !showSubmissions) return;
@@ -52,68 +52,75 @@ function Submissions({
 
   if (!showSubmissions || !user) return null;
   return (
-    <Bounded className="absolute z-50 w-full max-h-[45vh] bg-bg/65 drop-shadow-xl backdrop-blur-2xl border-t border-fg/10 rounded-t-2xl animate-slide-up">
-      <div ref={containerRef} className="w-full py-4 flex flex-col gap-4">
-        <Heading as="h3" size="sm" className="text-fg">
-          {problemTitle}
-        </Heading>
-        {solutions ? (
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between p-2 bg-surface/30 rounded-lg ring-surface/30">
-              <Paragraph size="sm" className="text-fg">
-                Score
-              </Paragraph>
-              <Paragraph size="sm" className="text-fg">
-                Time
-              </Paragraph>
-              <Paragraph size="sm" className="text-fg">
-                Language
-              </Paragraph>
-              <Paragraph size="sm" className="text-fg/50">
-                Date
-              </Paragraph>
-            </div>
-            {solutions.map((solution) => (
-              <div
-                key={solution.id}
-                className="flex items-center justify-between p-2 bg-surface/10 rounded-lg ring-surface/30 cursor-pointer hover:bg-surface/20 hover:scale-105 transition-all duration-200"
-                onClick={() => setCode?.(solution.solution)}
-              >
+    <>
+      <div className="absolute inset-0 z-30" onClick={closeSubmissions} />
+      <Bounded className="absolute z-50 w-full max-h-[45vh] overflow-auto bg-bg/65 drop-shadow-xl backdrop-blur-2xl border-t border-fg/10 rounded-t-2xl animate-slide-up">
+        <div className="w-full py-8 flex flex-col gap-4">
+          <Heading as="h3" size="sm" className="text-fg">
+            {problemTitle}
+          </Heading>
+          {solutions ? (
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between p-2 bg-surface/30 rounded-lg ring-surface/30">
                 <Paragraph size="sm" className="text-fg">
-                  {solution.score} / <span className="text-accent/75">10</span>
+                  Score
                 </Paragraph>
                 <Paragraph size="sm" className="text-fg">
-                  {solution.time.toFixed(2)}{" "}
-                  <span className="text-accent/75">minutes</span>
+                  Time
                 </Paragraph>
                 <Paragraph size="sm" className="text-fg">
-                  {solution.language}
+                  Language
                 </Paragraph>
                 <Paragraph size="sm" className="text-fg/50">
-                  {new Date(solution.$createdAt || "").toLocaleDateString()}
+                  Date
                 </Paragraph>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center w-full h-full">
-            <Paragraph size="sm" className="text-fg/50">
-              No submissions yet
-            </Paragraph>
-          </div>
-        )}
+              {solutions.map((solution) => (
+                <div
+                  key={solution.id}
+                  className="flex items-center justify-between p-2 bg-surface/10 rounded-lg ring-surface/30 cursor-pointer hover:bg-surface/20 hover:scale-105 transition-all duration-200"
+                  onClick={() => {
+                    setCode?.(solution.solution);
+                    closeSubmissions?.();
+                  }}
+                >
+                  <Paragraph size="sm" className="text-fg">
+                    {solution.score} /{" "}
+                    <span className="text-accent/75">10</span>
+                  </Paragraph>
+                  <Paragraph size="sm" className="text-fg">
+                    {solution.time.toFixed(2)}{" "}
+                    <span className="text-accent/75">minutes</span>
+                  </Paragraph>
+                  <Paragraph size="sm" className="text-fg">
+                    {solution.language}
+                  </Paragraph>
+                  <Paragraph size="sm" className="text-fg/50">
+                    {new Date(solution.$createdAt || "").toLocaleDateString()}
+                  </Paragraph>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center w-full h-full">
+              <Paragraph size="sm" className="text-fg/50">
+                No submissions yet
+              </Paragraph>
+            </div>
+          )}
 
-        <Button
-          onClick={closeSubmissions}
-          className="max-w-[120px] mt-4 p-2 bg-primary text-white rounded"
-          variant="primary"
-          size="sm"
-          isSimple
-        >
-          Close
-        </Button>
-      </div>
-    </Bounded>
+          <Button
+            onClick={closeSubmissions}
+            className="max-w-[120px] mt-4 p-2 bg-primary text-white rounded"
+            variant="primary"
+            size="sm"
+            isSimple
+          >
+            Close
+          </Button>
+        </div>
+      </Bounded>
+    </>
   );
 }
 
