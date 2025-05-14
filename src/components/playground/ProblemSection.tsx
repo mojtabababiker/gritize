@@ -25,12 +25,7 @@ type Props = {
   setShowSubmission?: (show: boolean) => void;
 };
 
-function ProblemSection({
-  problem,
-  editorCodeText,
-  showSubmission,
-  setShowSubmission,
-}: Props) {
+function ProblemSection({ problem, editorCodeText, setShowSubmission }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const codingPatternId = searchParams.get("cp");
@@ -82,7 +77,7 @@ function ProblemSection({
       setError(null);
     }
     clearTimeout(timeout);
-  }, [problem]);
+  }, [problem, user, codingPatternId]);
 
   const goToNextProblem = () => {
     if (!nextProblem) {

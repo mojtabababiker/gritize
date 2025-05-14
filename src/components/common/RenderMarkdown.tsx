@@ -39,7 +39,7 @@ type Props = {
  *
  * @returns {JSX.Element} A rendered markdown component with custom styling
  */
-export function RenderMarkdown({ markdownText, ...props }: Props): JSX.Element {
+export function RenderMarkdown({ markdownText }: Props): JSX.Element {
   return (
     <Markdown
       remarkPlugins={[remarkGfm]}
@@ -75,20 +75,21 @@ export function RenderMarkdown({ markdownText, ...props }: Props): JSX.Element {
           </Heading>
         ),
         code: (props) => {
-          const { children, className, node, ...rest } = props;
+          const { children, className, ...rest } = props;
           const match = /language-(\w+)/.exec(className || "");
           return match ? (
             <SyntaxHighlighter
               // {...rest}
               PreTag="div"
-              children={String(children).replace(/\n$/, "")}
               language={match[1]}
               style={dark}
               customStyle={{
                 fontSize: "clamp(0.8rem, 0.5vw + 0.5rem, 1rem)",
                 fontFamily: "monospace",
               }}
-            />
+            >
+              {String(children).replace(/\n$/, "")}
+            </SyntaxHighlighter>
           ) : (
             <code
               {...rest}
@@ -105,7 +106,7 @@ export function RenderMarkdown({ markdownText, ...props }: Props): JSX.Element {
           const { children, ...rest } = props;
           return (
             <Paragraph size="sm" className="text-fg font-serif" {...rest}>
-              {props.children}
+              {children}
             </Paragraph>
           );
         },
@@ -116,7 +117,7 @@ export function RenderMarkdown({ markdownText, ...props }: Props): JSX.Element {
               className="list-disc list-inside text-fg font-body font-semibold"
               {...rest}
             >
-              {props.children}
+              {children}
             </ul>
           );
         },
@@ -124,7 +125,7 @@ export function RenderMarkdown({ markdownText, ...props }: Props): JSX.Element {
           const { children, ...rest } = props;
           return (
             <li className="text-fg font-body font-semibold mt-1.5" {...rest}>
-              {props.children}
+              {children}
             </li>
           );
         },

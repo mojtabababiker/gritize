@@ -82,7 +82,7 @@ function LoginForm({ onComplete, changeFormType }: Props) {
         <CustomToast t={t} type="error" message={errorMessage} />
       ));
     }
-  }, [state]);
+  }, [state, setIsLoggedIn, setUser, onComplete, router]);
 
   return (
     <div className="w-full flex flex-col gap-6 items-center justify-center">

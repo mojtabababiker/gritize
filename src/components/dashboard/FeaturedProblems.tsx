@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import clsx from "clsx";
@@ -134,8 +133,9 @@ export function FeaturedProblems() {
         <CustomToast t={t} message="Problem added to your profile!" />
       ));
       router.push(`/playground?problem=${createdProblemId[0]}`);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error creating new user problem:", error);
+      // @ts-expect-error to expensive to type it
       setError(error.message || "Failed to create new user problem.");
     } finally {
       setCreatingProblem(false);

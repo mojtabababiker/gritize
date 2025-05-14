@@ -5,7 +5,6 @@ import {
   createProblem,
   getProblemBySlug,
 } from "@/utils/appwrite/database-actions";
-import { TechnicalProblemDTO } from "./dto/problem-dto";
 
 /**
  * TechnicalProblem class
@@ -64,7 +63,7 @@ export class TechnicalProblem {
     try {
       await problem.save();
       return problem;
-    } catch (error) {
+    } catch {
       return null;
     }
   }

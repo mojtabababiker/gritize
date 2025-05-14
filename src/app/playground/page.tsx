@@ -1,6 +1,6 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 import { useAuth } from "@/context/AuthProvider";
 import { useResize } from "@/hooks/useHandleResize";
@@ -24,9 +24,6 @@ import TestimonialProvider from "@/components/testimonials/TestmonialProvider";
 
 function Page() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const problemId = searchParams.get("problem");
-  const codingPatternId = searchParams.get("cp");
 
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,6 +33,7 @@ function Page() {
     direction: "horizontal",
   });
 
+  const [codingPatternId, setCodingPatternId] = useState<string | null>(null);
   const [problem, setProblem] = useState<UserProblemSchema | null>(null);
   const [code, setCode] = useState<string | undefined>(undefined);
   const [language, setLanguage] = useState<Languages>("javascript");
@@ -43,6 +41,8 @@ function Page() {
   const [showSubmission, setShowSubmission] = useState(false);
 
   const [askForTestimonial, setAskForTestimonial] = useState(false);
+
+  const backupCodeIntervalId = useRef<NodeJS.Timeout | null>(null);
 
   const getProblem = (problemId: string, codingPatternId: string | null) => {
     if (!user) {
@@ -83,6 +83,10 @@ function Page() {
     if (!user) {
       return;
     }
+    const searchParams = new URLSearchParams(window.location.search);
+    const problemId = searchParams.get("problem");
+    const codingPatternId = searchParams.get("cp");
+    setCodingPatternId(codingPatternId);
     if (!problemId) {
       // If no problemId is provided, fetch the localstorage problemId
 
@@ -137,7 +141,7 @@ function Page() {
         code: code || null,
       })
     );
-  }, [user, problemId, router, searchParams]);
+  }, [user, router]);
 
   useEffect(() => {
     if (!user) return;
@@ -162,6 +166,9 @@ function Page() {
   }, [user]);
 
   useEffect(() => {
+    if (backupCodeIntervalId.current) {
+      clearInterval(backupCodeIntervalId.current);
+    }
     const saveToLocalStorage = () => {
       if (!user?.id || !problem?.id) return;
 
@@ -182,8 +189,8 @@ function Page() {
       );
     };
     // saveToLocalStorage(); // Save on initial load
-    const intervalId = setInterval(saveToLocalStorage, 5000); // Save every 5 seconds
-    return () => clearInterval(intervalId);
+    backupCodeIntervalId.current = setInterval(saveToLocalStorage, 5000); // Save every 5 seconds
+    return () => clearInterval(backupCodeIntervalId.current!);
   }, []);
 
   return isSmallScreen ? (

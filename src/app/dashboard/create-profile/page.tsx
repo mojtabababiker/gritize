@@ -6,7 +6,6 @@ import { z } from "zod";
 import { Code2, FileWarning } from "lucide-react";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 
-import { TechnicalProblemSchema } from "@/models/schemas";
 import { useAuth } from "@/context/AuthProvider";
 
 import Heading from "@/components/common/Heading";
@@ -106,7 +105,7 @@ export default function Page() {
   };
 
   const handleError = (error: Error) => {
-    const { message, cause } = error;
+    const { message } = error;
     console.error("Error:", message);
     setErrorMessage(
       error.message ||
@@ -115,7 +114,7 @@ export default function Page() {
   };
 
   const prompt = `Create a program for a ${user?.skillLevel} software engineer`;
-  const { object, submit, error } = useObject({
+  const { submit, error } = useObject({
     api: "/api/generate_program",
     schema: z.object({
       algorithms: z.array(z.string()),
@@ -137,7 +136,7 @@ export default function Page() {
       console.log("initialRenderCompleted");
       createProgram();
     }
-  }, [user]);
+  });
 
   return isLoading ? (
     // loading message shows up when the program is being created

@@ -1,6 +1,6 @@
 "use client";
 import { HistoryIcon } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
   minutes: number;
@@ -46,21 +46,25 @@ function Timer({
       setRemainingTime((prev) => {
         // If counting up, increment the time
         if (upTimer) {
-          onChange && onChange((prev + 1) / 60); // Call onChange with the new time in minutes
+          if (onChange) {
+            onChange((prev + 1) / 60); // Call onChange with the new time in minutes
+          }
           return prev + 1;
         }
         // Countdown logic
         // If the time is up, clear the interval and call the onTimeUp function
         if (prev <= 0) {
           clearInterval(intervalRef.current!);
-          onTimeUp && onTimeUp();
+          if (onTimeUp) {
+            onTimeUp();
+          }
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(intervalRef.current!);
-  }, []);
+  }, [upTimer, onTimeUp, onChange]);
 
   /**
    * Formats the given time in seconds into an object containing minutes and seconds divided into 2 segments.
@@ -108,7 +112,9 @@ function Timer({
           className="size-6 text-surface cursor-pointer"
           onClick={() => {
             setRemainingTime(0);
-            onChange && onChange(0);
+            if (onChange) {
+              onChange(0);
+            }
           }}
           strokeWidth={1}
         >

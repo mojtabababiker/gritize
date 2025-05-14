@@ -62,11 +62,12 @@ export async function getQuiz(
     await saveQuiz(quiz);
 
     return { data: result.object as Quiz, error: null };
-  } catch (error: any) {
+  } catch (error) {
     console.log("Execution time:", Date.now() - startTime, "ms");
     console.error("Error in API:", error);
     return {
       data: null,
+      // @ts-expect-error to expensive to type it
       error: error.message || "Failed to generate quiz, please try again",
     };
   }

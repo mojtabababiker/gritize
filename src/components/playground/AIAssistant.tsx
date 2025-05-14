@@ -1,5 +1,5 @@
 import { GitCompareIcon, MessageCircleWarningIcon } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Button from "../common/Button";
 import { Message, UIMessage } from "ai";
 import { RenderMarkdown } from "../common/RenderMarkdown";
@@ -85,14 +85,6 @@ function AIAssistant({
     handleReviewSubmit();
     scrollToBottom(reviewScrollRef);
   };
-
-  useEffect(() => {
-    setReviewInput(editorCodeText || "");
-  }, [editorCodeText]);
-  useEffect(() => {
-    setHintInput(DEFAULT_HINT_PROMPT);
-  }, [problem]);
-
   // AI assistant to get hints
   const {
     messages: hintMessages,
@@ -144,6 +136,13 @@ function AIAssistant({
     onError: (error: Error) => handleError(error, "review"),
     onFinish: handleReview,
   });
+
+  useEffect(() => {
+    setReviewInput(editorCodeText || "");
+  }, [editorCodeText, setReviewInput]);
+  useEffect(() => {
+    setHintInput(DEFAULT_HINT_PROMPT);
+  }, [problem, setHintInput]);
 
   return (
     <>

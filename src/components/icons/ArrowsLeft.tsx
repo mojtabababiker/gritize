@@ -1,6 +1,4 @@
-import * as React from "react";
-
-const ArrowsLeft: React.FC<React.SVGProps<SVGElement>> = (props) => (
+const ArrowsLeft: React.FC<React.SVGProps<SVGElement>> = () => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 37 33">
     <path
       fill="#000"

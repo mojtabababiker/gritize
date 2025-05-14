@@ -1,5 +1,3 @@
-import React from "react";
-
 function ThinkingLoader() {
   return (
     <div className="w-full flex gap-1">

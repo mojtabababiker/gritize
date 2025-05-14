@@ -1,8 +1,6 @@
 "use server";
 import Bounded from "../common/Bounded";
 import Heading from "../common/Heading";
-import TestimonialCard from "../cards/TestimonialCard";
-import Button from "../common/Button";
 import { TestimonialsContainer } from "./TestimonialsContainer";
 import { listTestimonials } from "@/utils/appwrite/database-actions/testimonials";
 

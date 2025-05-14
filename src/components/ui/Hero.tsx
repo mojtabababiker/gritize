@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 
 import Button from "@/components/common/Button";
@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 function Hero() {
   const [startQuiz, setStartQuiz] = useState(false);
   const [requireLogin, setRequireLogin] = useState(false);
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn } = useAuth();
 
   const router = useRouter();
 
@@ -63,8 +63,8 @@ function Hero() {
                 variant="quote"
                 className="w-full max-w-[36ch] text-bg/75 font-heading font-semibold"
               >
-                Whether you're breaking into tech or leveling up for your next
-                role...
+                {`Whether you're breaking into tech or leveling up for your next
+                role...`}
               </Paragraph>
             </div>
 

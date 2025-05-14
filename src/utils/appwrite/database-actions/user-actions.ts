@@ -5,11 +5,8 @@ import { createAdminClient } from "@/config/appwrite";
 import { UserDTO } from "@/models/dto/user-dto";
 import { Settings } from "@/constant/setting";
 
-import {
-  listCodingPatternsById,
-  listUserProblemsById,
-} from "./user-program-actions";
 import { checkAuth } from "../auth-action";
+import { stripAppwriteFields } from "./stripAppwriteFields";
 
 /**
  * Retrieves a user by their ID from the database along with their associated general algorithms and coding patterns.
@@ -49,33 +46,7 @@ export const getUserById = async (userId: string) => {
     if (!userDoc) {
       return null;
     }
-
-    // remove the unwanted properties from the user object
-    const {
-      $id: id,
-      $collectionId,
-      $databaseId,
-      $createdAt,
-      $updatedAt,
-      $permissions,
-      // codingPatterns: userCodingPatterns,
-      // generalAlgorithms: userGeneralAlgorithms,
-      ...rest
-    } = userDoc;
-    // const codingPatterns = await listCodingPatternsById(userCodingPatterns);
-    // const generalAlgorithms = await listUserProblemsById(userGeneralAlgorithms);
-    const user = {
-      id,
-      ...rest,
-      // codingPatterns,
-      // generalAlgorithms,
-    } as unknown as UserDTO;
-
-    // this never happens, only for typescript eslinting
-    if (!user.id) {
-      return null;
-    }
-    // console.log("User from DB: ", JSON.stringify(user, null, 2));
+    const user = stripAppwriteFields<UserDTO>(userDoc);
 
     return user;
   } catch (error) {
@@ -122,16 +93,8 @@ export const createUser = async (userObj: UserDTO) => {
         codingPatterns,
       }
     );
-    const {
-      $id: id,
-      $collectionId,
-      $databaseId,
-      $createdAt,
-      $updatedAt,
-      $permissions,
-      ...rest
-    } = userDoc;
-    const data = { id, ...rest } as UserDTO;
+
+    const data = stripAppwriteFields<UserDTO>(userDoc);
     return { data, error: null };
   } catch (error) {
     console.error("Error creating user", error);
@@ -143,7 +106,10 @@ export const createUser = async (userObj: UserDTO) => {
 };
 
 export const updateUser = async (userId: string, userObj: Partial<UserDTO>) => {
-  const { id, email, name, ...cleanUserObject } = userObj;
+  const { ...cleanUserObject } = userObj;
+  delete cleanUserObject.id;
+  delete cleanUserObject.email;
+  delete cleanUserObject.name;
   const { user } = await checkAuth();
   if (!user || user.id !== userId) {
     return {
@@ -161,16 +127,16 @@ export const updateUser = async (userId: string, userObj: Partial<UserDTO>) => {
         ...cleanUserObject,
       }
     );
-    const {
-      $id: id,
-      $collectionId,
-      $databaseId,
-      $createdAt,
-      $updatedAt,
-      $permissions,
-      ...rest
-    } = userDoc;
-    const data = { id, ...rest } as UserDTO;
+    // const {
+    //   $id: id,
+    //   $collectionId,
+    //   $databaseId,
+    //   $createdAt,
+    //   $updatedAt,
+    //   $permissions,
+    //   ...rest
+    // } = userDoc;
+    const data = stripAppwriteFields<UserDTO>(userDoc);
     return { data, error: null };
   } catch (error) {
     console.error("Error updating user", error);

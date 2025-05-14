@@ -11,10 +11,10 @@ export const ProjectDescription = () => {
       </Heading>
       <div className="flex flex-col gap-2 max-w-[82ch]">
         <Paragraph>
-          We’re open-source, community-driven, and absolutely free—because we
+          {` We’re open-source, community-driven, and absolutely free—because we
           know how hard it is to find real, practical resources when you're just
           starting out. This is a battleground where you build skill and prove
-          your grit.
+          your grit.`}
         </Paragraph>
         <Paragraph variant="quote">
           Together, we can make software development a path for every

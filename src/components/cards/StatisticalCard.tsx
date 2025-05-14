@@ -13,7 +13,7 @@ type Props = {
 function StatisticalCard({ value, title, className }: Props) {
   const cardRef = useRef<HTMLDivElement | null>(null);
   const endValue = useRef<number>(value);
-  const [currentValue, setCurrentValue] = useState<number>(endValue.current); // update it to 0 b3den
+  const [currentValue] = useState<number>(endValue.current); // update it to 0 b3den
 
   useEffect(() => {
     if (!cardRef.current) return;

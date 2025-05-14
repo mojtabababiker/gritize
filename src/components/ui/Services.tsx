@@ -36,9 +36,9 @@ function Services() {
         {/* body */}
         <div className="w-full flex flex-col items-center gap-2">
           <Paragraph className="max-w-[82ch] text-center">
-            Solving problems isn't about brute-forcing answers—it's about seeing
+            {`Solving problems isn't about brute-forcing answers—it's about seeing
             the patterns. Gritize helps you internalize the “how” and “why” of
-            algorithms, guiding you through:
+            algorithms, guiding you through:`}
           </Paragraph>
           <ul className="w-full list-disc flex flex-wrap pl-6 font-medium text-base md:text-sm font-heading justify-between items-center gap-6">
             <li>Pattern recognition over memorization</li>

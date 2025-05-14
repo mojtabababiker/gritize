@@ -4,6 +4,7 @@ import { ID, AppwriteException, Query, Models } from "node-appwrite";
 import { createAdminClient } from "@/config/appwrite";
 import { TechnicalProblemSchema } from "@/models/schemas";
 import { Settings } from "@/constant/setting";
+import { stripAppwriteFields } from "./stripAppwriteFields";
 
 /**
  * Creates a new technical problem document in the database.
@@ -22,7 +23,7 @@ export const createProblem = async (problemObj: TechnicalProblemSchema) => {
     const resultDoc = await databases.createDocument(
       Settings.databaseId,
       Settings.problemsCollectionId,
-      problemObj.id || ID.unique(),
+      id || ID.unique(),
       {
         ...cleanProblemObj,
       }
@@ -62,16 +63,17 @@ export const getProblemById = async (
       Settings.problemsCollectionId,
       problemId
     );
-    const {
-      $id: id,
-      $collectionId,
-      $databaseId,
-      $createdAt,
-      $updatedAt,
-      $permissions,
-      ...rest
-    } = problemDoc;
-    const cleanProblemObj = { id, ...rest } as TechnicalProblemSchema;
+    // const {
+    //   $id: id,
+    //   $collectionId,
+    //   $databaseId,
+    //   $createdAt,
+    //   $updatedAt,
+    //   $permissions,
+    //   ...rest
+    // } = problemDoc;
+    const cleanProblemObj =
+      stripAppwriteFields<TechnicalProblemSchema>(problemDoc);
     return cleanProblemObj;
   } catch (error) {
     console.error(`Error getting problem by ID : ${problemId}\n`, error);
@@ -106,16 +108,17 @@ export const getProblemBySlug = async (
       return null;
     }
     const problem = documents[0];
-    const {
-      $id: id,
-      $collectionId,
-      $databaseId,
-      $createdAt,
-      $updatedAt,
-      $permissions,
-      ...rest
-    } = problem;
-    const cleanProblemObj = { id, ...rest } as TechnicalProblemSchema;
+    // const {
+    //   $id: id,
+    //   $collectionId,
+    //   $databaseId,
+    //   $createdAt,
+    //   $updatedAt,
+    //   $permissions,
+    //   ...rest
+    // } = problem;
+    const cleanProblemObj =
+      stripAppwriteFields<TechnicalProblemSchema>(problem);
     return cleanProblemObj;
   } catch (error) {
     console.error("Error getting problem by slug", error);

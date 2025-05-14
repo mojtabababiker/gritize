@@ -5,12 +5,9 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import CustomToast from "../common/CustomToast";
 import Heading from "../common/Heading";
-import Paragraph from "../common/Paragraph";
 import Button from "../common/Button";
 import TestimonialInfo from "./TestimonialInfo";
-import { StarCircle } from "../icons/Star";
 import Input from "../common/Input";
-import ArrowsLeft from "../icons/ArrowsLeft";
 import TestimonialReview from "./TestimonialReview";
 
 type Props = {
@@ -75,7 +72,7 @@ export default function TestimonialProvider({ show, onClose }: Props) {
         />
       ));
       onClose();
-    } catch (error) {
+    } catch {
       setError(
         "Oops!, An error occurred while submitting your review. Please try again."
       );
@@ -97,7 +94,7 @@ export default function TestimonialProvider({ show, onClose }: Props) {
         }
       });
     };
-  }, []);
+  }, [onClose]);
 
   useEffect(() => {
     if (!user?.id) return;

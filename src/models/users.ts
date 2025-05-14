@@ -445,7 +445,7 @@ export class User {
     data: Omit<UserProblemSchema, "problem" | "id">,
     codingPatternId: string | null = null,
     isFirstSubmission: boolean = false
-  ): Promise<{ data: UserProblemSchema | null; error: any }> {
+  ): Promise<{ data: UserProblemSchema | null; error: unknown }> {
     if (!this.id) {
       return { error: "User not logged in", data: null };
     }

@@ -1,9 +1,6 @@
 "use server";
 
-import { UserDTO } from "@/models/dto/user-dto";
-import { User } from "@/models/users";
 import { z, ZodError } from "zod";
-import { registerUser } from "../appwrite/auth-action";
 
 const signupSchema = z.object({
   email: z

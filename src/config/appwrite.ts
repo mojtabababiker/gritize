@@ -1,6 +1,5 @@
 "use server";
 import { Client, Account, Databases, Storage } from "node-appwrite";
-import { cookies } from "next/headers";
 import { Settings } from "@/constant/setting";
 
 /**

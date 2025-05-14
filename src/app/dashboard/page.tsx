@@ -1,9 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-
-import { TechnicalProblemSchema } from "@/models/schemas";
 
 import { useAuth } from "@/context/AuthProvider";
 
@@ -13,9 +11,9 @@ import Bounded from "@/components/common/Bounded";
 import Heading from "@/components/common/Heading";
 import Loading from "@/components/common/Loading";
 
-function page() {
+function Page() {
   const router = useRouter();
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!user) {
@@ -51,7 +49,7 @@ function page() {
             Welcome, {user.name}!
           </Heading>
           <Heading as="h3" size="lg" className="text-fg sm:-mt-10">
-            Let's Keep The{" "}
+            {`Let's Keep The `}
             <Heading as="span" size="title" className="text-accent">
               Grit Up
             </Heading>
@@ -102,4 +100,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

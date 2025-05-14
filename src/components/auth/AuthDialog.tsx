@@ -38,7 +38,7 @@ function AuthDialog({ message, onClose, onComplete }: Props) {
         }
       });
     };
-  }, [containerRef]);
+  }, [containerRef, onClose]);
 
   return (
     <div

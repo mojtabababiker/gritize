@@ -8,6 +8,7 @@ import { Settings } from "@/constant/setting";
 import { checkAuth } from "@/utils/appwrite/auth-action";
 import { getProblemById } from "./tech-problems-action";
 import { Languages } from "@/models/types/indext";
+import { stripAppwriteFields } from "./stripAppwriteFields";
 
 /**
  * Creates a new user problem record in the database, if the problem does not already exist.
@@ -59,19 +60,21 @@ export const createUserProblem = async (
           `Attempt to create problem already exists for user ${userId} and problem ${problemId}`
         );
         const existingProblem = existingUserProblem.documents[0];
-        const {
-          $id: id,
-          $collectionId,
-          $databaseId,
-          $createdAt,
-          $updatedAt,
-          $permissions,
-          userId: userIdFromDoc,
-          problemId: problemIdFromDoc,
-          ...rest
-        } = existingProblem;
-        const result = { id, problem, ...rest } as UserProblemSchema;
-        return { data: result, error: null };
+        // const {
+        //   $id: id,
+        //   $collectionId,
+        //   $databaseId,
+        //   $createdAt,
+        //   $updatedAt,
+        //   $permissions,
+        //   userId: userIdFromDoc,
+        //   problemId: problemIdFromDoc,
+        //   ...rest
+        // } = existingProblem;
+
+        // const result = { id, problem, ...rest } as UserProblemSchema;
+        const result = stripAppwriteFields<UserProblemSchema>(existingProblem);
+        return { data: { ...result, problem }, error: null };
       }
     }
     const resultDoc = await databases.createDocument(
@@ -87,19 +90,10 @@ export const createUserProblem = async (
       }
     );
 
-    const {
-      $id: id,
-      $collectionId,
-      $databaseId,
-      $createdAt,
-      $updatedAt,
-      $permissions,
-      problemId: problemIdFromDoc,
-      userId: userIdFromDoc,
-      ...rest
-    } = resultDoc;
-    const result = { id, problem, ...rest } as UserProblemSchema;
-    return { data: result, error: null };
+    // Then in place of the $SELECTION_PLACEHOLDER$, use:
+    const result = stripAppwriteFields<UserProblemSchema>(resultDoc);
+    // const result = { id, problem, ...rest } as UserProblemSchema;
+    return { data: { ...result, problem }, error: null };
   } catch (error) {
     console.log(
       `\nError creating user Problem: ${userProblemId}\nWith Problem: ${problemId}\nFor user ${userId}\n`
@@ -150,19 +144,20 @@ export const getUserProblemById = async (userProblemId: string) => {
       console.error("User problem not found");
       return null;
     }
-    const {
-      $id: id,
-      $collectionId,
-      $databaseId,
-      $createdAt,
-      $updatedAt,
-      $permissions,
-      userId,
-      problemId,
-      ...rest
-    } = userProblemDoc;
-    const problem = await getProblemById(problemId);
-    return { id, problem, ...rest } as UserProblemSchema;
+    // const {
+    //   $id: id,
+    //   $collectionId,
+    //   $databaseId,
+    //   $createdAt,
+    //   $updatedAt,
+    //   $permissions,
+    //   userId,
+    //   problemId,
+    //   ...rest
+    // } = userProblemDoc;
+    const result = stripAppwriteFields<UserProblemSchema>(userProblemDoc);
+    const problem = await getProblemById(userProblemDoc.problemId);
+    return { ...result, problem };
   } catch (error) {
     console.error("Error getting user problem by ID", error);
     return null;
@@ -270,18 +265,19 @@ export const updateUserProblem = async (
       }
     );
 
-    const {
-      $id: id,
-      $collectionId,
-      $databaseId,
-      $createdAt,
-      $updatedAt,
-      $permissions,
-      userId: userIdFromDoc,
-      problemId: problemIdFromDoc,
-      ...rest
-    } = resultDoc;
-    const result = { id, ...rest } as UserProblemSchema;
+    // const {
+    //   $id: id,
+    //   $collectionId,
+    //   $databaseId,
+    //   $createdAt,
+    //   $updatedAt,
+    //   $permissions,
+    //   userId: userIdFromDoc,
+    //   problemId: problemIdFromDoc,
+    //   ...rest
+    // } = resultDoc;
+
+    const result = stripAppwriteFields<UserProblemSchema>(resultDoc);
     return { data: result, error: null };
   } catch (error) {
     console.error("Error updating user problem", error);
@@ -419,19 +415,20 @@ export const getCodingPatternById = async (codingPatternId: string) => {
       console.error("Coding pattern not found");
       return null;
     }
-    const {
-      $id: id,
-      $collectionId,
-      $databaseId,
-      $createdAt,
-      $updatedAt,
-      $permissions,
-      userId,
-      problems: problemsIds,
-      ...rest
-    } = codPDoc;
-    const problems = await listUserProblemsById(problemsIds);
-    return { id, problems, ...rest } as CodingPatternSchema;
+    // const {
+    //   $id: id,
+    //   $collectionId,
+    //   $databaseId,
+    //   $createdAt,
+    //   $updatedAt,
+    //   $permissions,
+    //   userId,
+    //   problems: problemsIds,
+    //   ...rest
+    // } = codPDoc;
+    const result = stripAppwriteFields<CodingPatternSchema>(codPDoc);
+    const problems = await listUserProblemsById(codPDoc.problems);
+    return { ...result, problems };
   } catch (error) {
     console.error("Error getting coding pattern by ID", error);
     return null;
@@ -502,16 +499,17 @@ export const updateCodingPattern = async (
         ...data,
       }
     );
-    const {
-      $collectionId,
-      $createdAt,
-      $updatedAt,
-      $databaseId,
-      $id,
-      $permissions,
-      ...rest
-    } = updatedDoc;
-    return { error: null, data: { ...(rest as CodingPatternDTO) } };
+    // const {
+    //   $collectionId,
+    //   $createdAt,
+    //   $updatedAt,
+    //   $databaseId,
+    //   $id,
+    //   $permissions,
+    //   ...rest
+    // } = updatedDoc;
+    const result = stripAppwriteFields<CodingPatternDTO>(updatedDoc);
+    return { error: null, data: { ...result } };
   } catch (error) {
     if (error instanceof AppwriteException) {
       return { error, data: null };
@@ -566,16 +564,17 @@ export const createProblemSolution = async (
       }
     );
 
-    const {
-      $id: id,
-      $collectionId,
-      $databaseId,
-      $createdAt,
-      $updatedAt,
-      $permissions,
-      ...rest
-    } = resultDoc;
-    const result = { id, ...rest } as ProblemSolutionDTO;
+    // const {
+    //   $id: id,
+    //   $collectionId,
+    //   $databaseId,
+    //   $createdAt,
+    //   $updatedAt,
+    //   $permissions,
+    //   ...rest
+    // } = resultDoc;
+    const result = stripAppwriteFields<ProblemSolutionDTO>(resultDoc);
+    // const result = { id, ...rest } as ProblemSolutionDTO;
     return { data: result, error: null };
   } catch (error) {
     console.error("Error creating problem solution", error);
@@ -629,16 +628,19 @@ export const getProblemSolution = async (
       console.error("Problem solution not found");
       return null;
     }
-    const {
-      $id: id,
-      $collectionId,
-      $databaseId,
-      $createdAt,
-      $updatedAt,
-      $permissions,
-      ...rest
-    } = problemSolutionDoc.documents[0];
-    return { id, ...rest } as ProblemSolutionDTO;
+    // const {
+    //   $id: id,
+    //   $collectionId,
+    //   $databaseId,
+    //   $createdAt,
+    //   $updatedAt,
+    //   $permissions,
+    //   ...rest
+    // } = problemSolutionDoc.documents[0];
+    const result = stripAppwriteFields<ProblemSolutionDTO>(
+      problemSolutionDoc.documents[0]
+    );
+    return { ...result };
   } catch (error) {
     console.error("Error getting problem solution by ID", error);
     return null;
@@ -691,15 +693,16 @@ export const listProblemSolutions = async (
     const docs = problemSolutionDoc.documents;
 
     return docs.map((doc) => {
-      const {
-        $id: id,
-        $collectionId,
-        $databaseId,
-        $updatedAt,
-        $permissions,
-        ...rest
-      } = doc;
-      return { id, ...rest } as ProblemSolutionDTO;
+      // const {
+      //   $id: id,
+      //   $collectionId,
+      //   $databaseId,
+      //   $updatedAt,
+      //   $permissions,
+      //   ...rest
+      // } = doc;
+      const result = stripAppwriteFields<ProblemSolutionDTO>(doc);
+      return { ...result, $createdAt: doc.$createdAt };
     });
   } catch (error) {
     console.error("Error getting problem solutions", error);

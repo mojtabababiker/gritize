@@ -25,7 +25,14 @@ import QuestionMCs from "./QuestionMCs";
  * This object maps each question type to its corresponding React component,
  * allowing for dynamic rendering of different question formats in the quiz.
  */
-const Q_COMPONENTS: Record<Question["type"], React.FC<any>> = {
+type Q_COMPONENTS_Props = {
+  question: string;
+  options: string[];
+  setAnswer: (answer: string | string[]) => void;
+  lastQuestion?: boolean;
+};
+
+const Q_COMPONENTS: Record<Question["type"], React.FC<Q_COMPONENTS_Props>> = {
   TOF: QuestionTrueFalse,
   singleChoice: QuestionSC,
   multipleChoice: QuestionMCs,
@@ -123,15 +130,19 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
       let isCorrect = false;
       if (typeof question.userAnswer === typeof question.answer) {
         if (Array.isArray(question.userAnswer)) {
-          isCorrect =
+          if (
             question.userAnswer.length === question.answer?.length &&
-            question.userAnswer.every((ans) => question.answer?.includes(ans));
+            question.userAnswer.every((ans) => question.answer?.includes(ans))
+          ) {
+            isCorrect = true;
+          }
         } else {
           isCorrect = question.userAnswer === question.answer;
         }
       }
-
-      isCorrect && result++;
+      if (isCorrect) {
+        result++;
+      }
     }
 
     let level: SkillLevel = "entry-level";
@@ -210,7 +221,7 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
           <div className="w-full max-w-[625px] flex flex-col gap-5 mt-5">
             <QuestionComponent
               question={question.question}
-              options={question.options}
+              options={question.options || []}
               setAnswer={handleAnswer}
               lastQuestion={lastQuestion}
             />
