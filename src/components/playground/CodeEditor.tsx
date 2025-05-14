@@ -32,6 +32,7 @@ type Props = EditorProps & {
   onChange: (value: string) => void;
   problem: UserProblemSchema | null;
   setShowSubmission?: (show: boolean) => void;
+  setAskForTestimonial: (show: boolean) => void;
   codingPatternId: string | null;
 };
 
@@ -42,10 +43,11 @@ function CodeEditor({
   options = {},
   problem,
   setShowSubmission,
+  setAskForTestimonial,
   codingPatternId,
   ...props
 }: Props) {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const editorRef = useRef<any>(null);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -214,6 +216,15 @@ function CodeEditor({
     setResult("Solution submitted successfully!");
     setShowSubmission?.(true);
     setError(null);
+
+    // Update the user to indicate that they need to review
+    user.mustReview = true;
+    setUser(user);
+
+    // Ask for a testimonial/review after 3 seconds from successful submission
+    setTimeout(() => {
+      setAskForTestimonial(true);
+    }, 3000);
   };
 
   /**

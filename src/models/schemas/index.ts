@@ -22,6 +22,10 @@ export interface UserSchema {
   totalSolvedProblems?: number;
   generalAlgorithms?: Record<string, UserProblemSchema>;
   codingPatterns?: Record<string, CodingPatternSchema>;
+
+  mustReview?: boolean;
+  hasReviewed?: boolean;
+  lastAskedReview?: string;
 }
 
 export interface UserProblemSchema {
@@ -38,4 +42,12 @@ export interface CodingPatternSchema {
   problems: UserProblemSchema[];
   totalProblems: number;
   solvedProblems: number;
+}
+
+export interface TestimonialSchema {
+  avatar?: string;
+  name: string;
+  userTitle: string;
+  review: string;
+  rating: number;
 }

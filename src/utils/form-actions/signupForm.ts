@@ -6,7 +6,10 @@ import { z, ZodError } from "zod";
 import { registerUser } from "../appwrite/auth-action";
 
 const signupSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z
+    .string()
+    .email("Invalid email address")
+    .max(32, "Email can't be larger than 32 characters long"),
   password: z.string().min(8, "invalid password"),
   confirmPassword: z.string().min(8, "Passwords must match"),
   username: z.string().min(3, "Username must be at least 3 characters long"),

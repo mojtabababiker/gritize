@@ -3,7 +3,7 @@ import clsx from "clsx";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode;
-  variant?: "primary" | "accent" | "ghost";
+  variant?: "primary" | "accent" | "ghost" | "ghost-2";
   size?: "sm" | "md" | "lg";
   isSimple?: boolean;
   isLoading?: boolean;
@@ -36,7 +36,7 @@ function Button({
         variant === "ghost" && " text-bg border border-primary",
         variant,
         className,
-        disabled && "pointer-events-none opacity-85"
+        disabled && "pointer-events-none opacity-65"
       )}
       onClick={onClick}
       {...props}

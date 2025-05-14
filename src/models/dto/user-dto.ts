@@ -12,6 +12,10 @@ export interface UserDTO {
   totalSolvedProblems?: number;
   generalAlgorithms: string[];
   codingPatterns: string[];
+
+  mustReview?: boolean;
+  hasReviewed?: boolean;
+  lastAskedReview?: string;
 }
 
 export interface UserProblemDTO {

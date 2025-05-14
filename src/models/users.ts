@@ -38,6 +38,10 @@ export class User {
   isNewUser?: boolean;
   totalSolvedProblems?: number;
 
+  mustReview?: boolean;
+  hasReviewed?: boolean;
+  lastAskedReview?: string;
+
   /**
    * general algorithms and coding patterns are a private property that
    * contains the general algorithms and coding pattern problems for the user
@@ -64,6 +68,10 @@ export class User {
     onboarding = false,
     isNewUser = true,
     totalSolvedProblems = 0,
+
+    hasReviewed,
+    mustReview,
+    lastAskedReview,
   }: UserSchema) {
     this.id = id;
     this.name = name;
@@ -74,6 +82,10 @@ export class User {
     this.onboarding = onboarding;
     this.isNewUser = isNewUser;
     this.totalSolvedProblems = totalSolvedProblems;
+
+    this.hasReviewed = hasReviewed;
+    this.mustReview = mustReview;
+    this.lastAskedReview = lastAskedReview;
   }
 
   /**
@@ -163,6 +175,7 @@ export class User {
 
     this.id = userId ?? undefined;
     this.name = username;
+    this.email = email;
     this.isNewUser = true;
 
     const { data: user, error: dbError } = await createUser(this.json);
@@ -211,6 +224,9 @@ export class User {
       onboarding: data.onboarding || false,
       totalSolvedProblems: data.totalSolvedProblems || 0,
       isNewUser: data.isNewUser || false,
+      mustReview: data.mustReview,
+      hasReviewed: data.hasReviewed,
+      lastAskedReview: data.lastAskedReview,
     });
 
     const userProblems = await listUserProblemsById(data.generalAlgorithms);
@@ -251,6 +267,10 @@ export class User {
       totalSolvedProblems: this.totalSolvedProblems,
       generalAlgorithms: Object.keys(this.generalAlgorithms),
       codingPatterns: Object.keys(this.codingPatterns),
+
+      mustReview: this.mustReview,
+      hasReviewed: this.hasReviewed,
+      lastAskedReview: this.lastAskedReview,
     };
   }
 
