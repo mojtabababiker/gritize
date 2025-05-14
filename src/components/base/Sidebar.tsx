@@ -57,7 +57,7 @@ function Sidebar() {
   //     },
   //   ],
   // };
-  const { user, setUser, setIsLoggedIn } = useAuth();
+  const { user, setUser, setIsLoggedIn, isLoggedIn } = useAuth();
 
   const closeSidebar = (e: MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -101,6 +101,11 @@ function Sidebar() {
       });
     };
   });
+
+  if (!isLoggedIn) {
+    return null;
+  }
+
   return (
     <aside
       className={clsx(
