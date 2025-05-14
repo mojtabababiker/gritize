@@ -1,38 +1,59 @@
 "use client";
+import { HistoryIcon } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 type Props = {
   minutes: number;
   seconds: number;
-  onTimeUp: VoidFunction;
+  onTimeUp?: VoidFunction;
+  onChange?: (time: number) => void;
+  upTimer?: boolean;
 };
 
 /**
- * A countdown timer component that displays minutes and seconds in a segmented format.
+ * A timer component that counts down or up from a specified time.
  *
  * @component
- * @param {Object} props - The component props
- * @param {number} props.minutes - Initial minutes to start countdown from
- * @param {number} props.seconds - Initial seconds to start countdown from
- * @param {VoidFunction} props.onTimeUp - Callback function executed when timer reaches zero
- *
- * @returns A timer display with separated digit segments for minutes and seconds
+ * @param {Object} props - Component props
+ * @param {number} props.minutes - Initial minutes to start from
+ * @param {number} props.seconds - Initial seconds to start from
+ * @param {() => void} props.onTimeUp - Callback function to execute when timer reaches zero (in countdown mode)
+ * @param {boolean} [props.up=false] - If true, timer counts up instead of down
  *
  * @example
  * ```tsx
- * <Timer minutes={5} seconds={30} onTimeUp={() => console.log('Time is up!')} />
+ * // Countdown timer for 5 minutes
+ * <Timer minutes={5} seconds={0} onTimeUp={() => console.log('Time is up!')} />
+ *
+ * // Count up timer starting from 0
+ * <Timer minutes={0} seconds={0} onTimeUp={() => {}} up={true} />
  * ```
+ *
+ * @returns A timer display showing minutes and seconds in a segmented format
  */
-function Timer({ minutes, seconds, onTimeUp }: Props) {
+function Timer({
+  minutes,
+  seconds,
+  onTimeUp,
+  onChange,
+  upTimer = false,
+}: Props) {
   const [remainingTime, setRemainingTime] = useState(minutes * 60 + seconds);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     intervalRef.current = setInterval(() => {
       setRemainingTime((prev) => {
+        // If counting up, increment the time
+        if (upTimer) {
+          onChange && onChange((prev + 1) / 60); // Call onChange with the new time in minutes
+          return prev + 1;
+        }
+        // Countdown logic
+        // If the time is up, clear the interval and call the onTimeUp function
         if (prev <= 0) {
           clearInterval(intervalRef.current!);
-          onTimeUp();
+          onTimeUp && onTimeUp();
           return 0;
         }
         return prev - 1;
@@ -63,23 +84,37 @@ function Timer({ minutes, seconds, onTimeUp }: Props) {
     <div className="flex items-stretch gap-2 min-w-[112px]">
       {/* minutes segments */}
       <div className="flex gap-1">
-        <div className="w-[24px] h-[24px] bg-fg rounded-2xl flex items-center justify-center">
+        <div className="w-[24px] h-[24px] bg-fg rounded flex items-center justify-center">
           {formatTime(remainingTime).mins[0]}
         </div>
-        <div className="w-[24px] h-[24px] bg-fg rounded-2xl flex items-center justify-center">
+        <div className="w-[24px] h-[24px] bg-fg rounded flex items-center justify-center">
           {formatTime(remainingTime).mins[1]}
         </div>
       </div>
       <div className="text-bg text-sm font-heading font-semibold">:</div>
       {/* seconds segments */}
       <div className="flex gap-1">
-        <div className="w-[24px] h-[24px] bg-fg rounded-2xl flex items-center justify-center">
+        <div className="w-[24px] h-[24px] bg-fg rounded flex items-center justify-center">
           {formatTime(remainingTime).secs[0]}
         </div>
-        <div className="w-[24px] h-[24px] bg-fg rounded-2xl flex items-center justify-center">
+        <div className="w-[24px] h-[24px] bg-fg rounded flex items-center justify-center">
           {formatTime(remainingTime).secs[1]}
         </div>
       </div>
+
+      {upTimer && (
+        /* reset timer */
+        <HistoryIcon
+          className="size-6 text-surface cursor-pointer"
+          onClick={() => {
+            setRemainingTime(0);
+            onChange && onChange(0);
+          }}
+          strokeWidth={1}
+        >
+          <span className="sr-only">Reset Timer</span>
+        </HistoryIcon>
+      )}
     </div>
   );
 }

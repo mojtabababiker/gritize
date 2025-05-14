@@ -5,15 +5,10 @@ import Button from "../common/Button";
 import AuthDialog from "../auth/AuthDialog";
 import { useAuth } from "@/context/AuthProvider";
 import { useRouter } from "next/navigation";
+import { TestimonialSchema } from "@/models/schemas";
 
 type Props = {
-  testimonials: {
-    name: string;
-    title: string;
-    avatar: string;
-    stars: number;
-    review: string;
-  }[];
+  testimonials: TestimonialSchema[];
 };
 
 export function TestimonialsContainer({ testimonials }: Props) {
@@ -36,8 +31,8 @@ export function TestimonialsContainer({ testimonials }: Props) {
             key={`testimonial-${index}`}
             userImageUrl={testimonial.avatar}
             userName={testimonial.name}
-            userTitle={testimonial.title}
-            stars={testimonial.stars}
+            userTitle={testimonial.userTitle}
+            stars={testimonial.rating}
             testimonial={testimonial.review}
             className="flex-1 self-stretch min-w-[340px]"
           />

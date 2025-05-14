@@ -1,7 +1,7 @@
+import { HTMLAttributes } from "react";
 import clsx from "clsx";
-import React from "react";
 
-type Props = {
+type Props = HTMLAttributes<HTMLDivElement> & {
   children?: React.ReactNode;
   className?: string;
 };

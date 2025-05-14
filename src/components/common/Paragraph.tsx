@@ -24,7 +24,7 @@ function Paragraph({
       className={clsx(
         "font-body",
         size === "sm" &&
-          "text-[clamp(0.875rem,5vw_+_0.43rem,1rem)] leading-[clamp(0.875rem,5vw_+_0.43rem,1rem)]",
+          "text-[clamp(0.875rem,5vw_+_0.43rem,1rem)] leading-[clamp(0.875rem,5vw_+_0.43rem,1.5rem)]",
         size === "md" &&
           "text-[clamp(1.25rem,5vw_+_0.686rem,1.5rem)] leading-[clamp(1.25rem,5vw_+_0.686rem,1.5rem)]",
         size === "lg" &&

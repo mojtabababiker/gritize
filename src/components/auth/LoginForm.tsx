@@ -54,9 +54,14 @@ function LoginForm({ onComplete, changeFormType }: Props) {
   const { setIsLoggedIn, setUser } = useAuth();
 
   useEffect(() => {
-    if (state.ok && state.data) {
-      const user = state.data;
-      setUser(User.fromJson(user));
+    const completeLogin = async () => {
+      const userObj = state.data;
+      if (!userObj) {
+        console.error("User object is null");
+        return;
+      }
+      const user = await User.fromJson(userObj);
+      setUser(user);
       setIsLoggedIn(true);
       toast.custom((t) => (
         <CustomToast t={t} type="success" message="Login successful" />
@@ -67,6 +72,10 @@ function LoginForm({ onComplete, changeFormType }: Props) {
       } else {
         router.replace("/dashboard");
       }
+    };
+
+    if (state.ok && state.data) {
+      completeLogin();
     } else if (state.errors && state.errors.type === "server") {
       const errorMessage = state.errors.message || "Error logging in";
       toast.custom((t) => (

@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# AI prompts
+assistant-ai.ts
+
+
+# vscode
+settings.json
+client_secret.json
+
+# local dev files
+*.local*

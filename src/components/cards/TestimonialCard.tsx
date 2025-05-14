@@ -7,7 +7,7 @@ import { StarCircle } from "../icons/Star";
 import clsx from "clsx";
 
 type Props = {
-  userImageUrl: string;
+  userImageUrl?: string;
   userName: string;
   userTitle: string;
   stars: number;
@@ -46,13 +46,19 @@ function TestimonialCard({
         <div className="flex z-20 flex-col justify-between items-center py-3">
           {/* image */}
           <div className="w-24 h-24 rounded-full overflow-hidden flex items-center justify-center">
-            <Image
-              src={userImageUrl}
-              alt={userName}
-              width={144}
-              height={144}
-              className="w-full h-full object-cover"
-            />
+            {userImageUrl ? (
+              <Image
+                src={userImageUrl}
+                alt={userName}
+                width={144}
+                height={144}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center rounded-full font-heading font-bold text-2xl sm:text-4xl text-bg/75 bg-surface">
+                {userName?.at(0) || ""}
+              </div>
+            )}
           </div>
 
           {/* info */}

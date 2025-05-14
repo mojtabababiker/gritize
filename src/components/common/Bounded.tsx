@@ -19,7 +19,7 @@ function Bounded({
   ...props
 }: Props) {
   return (
-    <Component className={clsx("w-svw h-full", className)} {...props}>
+    <Component className={clsx("w-svw", className)} {...props}>
       <div className="w-full max-w-[1440px] px-2 sm:px-4 mx-auto">
         {children}
       </div>

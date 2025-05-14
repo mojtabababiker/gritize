@@ -61,6 +61,7 @@ function SignupForm({ onComplete, changeFormType }: Props) {
   const signup = async (email: string, password: string, username: string) => {
     try {
       setIsLoading(true);
+      if (!user) return;
       const newUser = await user.register(email, password, username);
       setUser(newUser);
       setIsLoggedIn(true);
@@ -87,11 +88,13 @@ function SignupForm({ onComplete, changeFormType }: Props) {
   };
 
   useEffect(() => {
+    if (!user) return;
+
     if (state.ok && state.data) {
       const { email, password, username } = state.data;
       signup(email, password, username);
     }
-  }, [state]);
+  }, [state, user]);
 
   return (
     <div className="w-full flex flex-col gap-6 items-center justify-center">

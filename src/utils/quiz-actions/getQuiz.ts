@@ -1,77 +1,73 @@
+import { QUIZ_GENERATION } from "@/constant/assistant-ai";
+import { Settings } from "@/constant/setting";
 import { Quiz } from "@/utils/quiz-actions/types";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { generateObject } from "ai";
+import { saveQuiz } from "../appwrite/database-actions";
 
-export async function getQuiz(language: string): Promise<Quiz> {
-  return {
-    id: Date.now(),
-    questions: [
-      {
-        type: "multipleChoice",
-        question: "Which of these are primitive types in JavaScript?",
-        options: ["object", "null", "undefined", "number"],
-      },
-      {
-        type: "TOF",
-        question: "JavaScript is a compiled language.",
-      },
-      {
-        type: "singleChoice",
-        question: "What is the output of `console.log(typeof null)`?",
-        options: ["object", "null", "undefined", "number"],
-      },
-      {
-        type: "singleChoice",
-        question: "What is the output of `console.log(...'hello')`?",
-        options: ["h", "['hello']", "['h', 'e', 'l', 'l', 'o']", "SyntaxError"],
-      },
-      {
-        type: "TOF",
-        question: "`var` and `let` has the same scope rules.",
-      },
-      {
-        type: "multipleChoice",
-        question: "Which of these methods mutate the original array?",
-        options: ["`slice()`", "`splice()`", "`sort()`", "`map()`"],
-      },
-      {
-        type: "singleChoice",
-        question: "What is the output of `console.log(0.1 + 0.2 === 0.3)`?",
-        options: ["true", "false", "undefined", "NaN"],
-      },
-      {
-        type: "TOF",
-        question:
-          "`this` keyword behaves differently in arrow functions compared to regular functions.",
-      },
-      {
-        type: "TOF",
-        question: "Is `null` a type of object in JavaScript?",
-      },
-      {
-        type: "multipleChoice",
-        question:
-          "Which of the following are valid ways to create a private variable in JavaScript?",
-        options: [
-          "Using `var` in a closure",
-          "Using `#` in a class",
-          "Using `WeakMap`",
-          "Using `Object.freeze()`",
-        ],
-      },
-      {
-        type: "TOF",
-        question: "WeakMap keys can only be objects?",
-      },
-      {
-        type: "singleChoice",
-        question:
-          "What is the primary reason to use `Symbol` in JavaScript object?",
-        options: [
-          "They are easier to read",
-          "They are globally accessible",
-          "They avoid name collisions",
-          "They are faster",
-        ],
-      },
-    ],
-  };
+export const runtime = "edge";
+
+const google = createGoogleGenerativeAI({
+  apiKey: Settings.googleApiKey,
+});
+const model = google("gemini-2.0-flash-thinking-exp-01-21");
+
+/**
+ * Retrieves or generates (using AI assistance) a quiz based on the specified language.
+ *
+ * @param language - The language for which to generate the quiz
+ * @returns A promise that resolves to an object containing either:
+ *          - data: The generated Quiz object if successful, null if failed
+ *          - error: Error message string if failed, null if successful
+ *
+ * @remarks
+ * The uses AI to generate a quiz based on the provided language.
+ * It constructs a prompt using the QUIZ_GENERATION template, replacing
+ * {{SELECTED_LANGUAGE}} with the provided language.
+ * Using the vercel ai-sdk, it generates a quiz object.
+ * It uses the QUIZ_GENERATION template, replacing {{SELECTED_LANGUAGE}} with the provided language.
+ *
+ * @throws Will not throw directly, but captures and returns errors in the result object
+ *
+ * @example
+ * ```typescript
+ * const result = await getQuiz("JavaScript");
+ * if (result.error) {
+ *   console.error(result.error);
+ * } else {
+ *   console.log(result.data);
+ * }
+ * ```
+ */
+export async function getQuiz(
+  language: string
+): Promise<{ data: Quiz | null; error: string | null }> {
+  const startTime = Date.now();
+  const prompt = QUIZ_GENERATION.replace("{{SELECTED_LANGUAGE}}", language);
+
+  // console.log("prompt from API", prompt);
+
+  try {
+    const result = await generateObject({
+      model,
+      temperature: 1,
+      prompt,
+      output: "no-schema",
+    });
+
+    console.log("Execution time:", Date.now() - startTime, "ms");
+    // console.log("result from API", result.object);
+    // saving the quiz to the database
+    const quiz = result.object as Quiz;
+    await saveQuiz(quiz);
+
+    return { data: result.object as Quiz, error: null };
+  } catch (error: any) {
+    console.log("Execution time:", Date.now() - startTime, "ms");
+    console.error("Error in API:", error);
+    return {
+      data: null,
+      error: error.message || "Failed to generate quiz, please try again",
+    };
+  }
 }

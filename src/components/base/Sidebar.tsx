@@ -9,6 +9,8 @@ import { useAuth } from "@/context/AuthProvider";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import CustomToast from "../common/CustomToast";
+import SidebarItem from "../cards/SidebarItem";
+import SidebarCPItems from "../cards/SidebarCPItems";
 
 function Sidebar() {
   const router = useRouter();
@@ -55,7 +57,7 @@ function Sidebar() {
   //     },
   //   ],
   // };
-  const { user, setUser, setIsLoggedIn } = useAuth();
+  const { user, setUser, setIsLoggedIn, isLoggedIn } = useAuth();
 
   const closeSidebar = (e: MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -67,6 +69,9 @@ function Sidebar() {
   };
 
   const logout = async () => {
+    if (!user) {
+      return;
+    }
     await user.logout();
     setIsLoggedIn(false);
     setUser(user);
@@ -96,10 +101,15 @@ function Sidebar() {
       });
     };
   });
+
+  if (!isLoggedIn) {
+    return null;
+  }
+
   return (
     <aside
       className={clsx(
-        "sidebar fixed z-40 top-22 2xl:top-0 left-0 2xl:min-h-screen 2xl:min-w-[86px] max-w-[420px] flex flex-col justify-between px-4 bg-fg/5 backdrop-blur-md overflow-x-hidden drop-shadow-sm shadow-fg/10 shadow-xl ",
+        "sidebar fixed z-40 top-22 2xl:top-0 left-0 2xl:min-h-screen 2xl:min-w-[86px] max-w-[420px] flex flex-col justify-between gap-8 px-4 bg-bg/60 backdrop-blur-md overflow-x-hidden drop-shadow-sm shadow-bg/50 shadow-xl",
         open
           ? "w-full h-[calc(100dvh-90px)] py-12 overflow-y-auto"
           : "w-12 h-12 rounded-full 2xl:rounded-none overflow-hidden"
@@ -135,29 +145,13 @@ function Sidebar() {
             !open && "opacity-0 scale-x-0"
           )}
         >
-          {user.algorithmProblems.length > 0 ? (
+          {user && user.algorithmProblems.length > 0 ? (
             user.algorithmProblems.map((algo) => (
-              <div
-                key={algo.problem.title}
-                className="flex items-center justify-between w-full px-4 py-2 rounded-2xl bg-primary/25 shadow shadow-fg/10 shadow-b"
-              >
-                <div className="flex gap-2 items-center">
-                  <Image
-                    src={"/icons/list-icon.png"}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className="w-3 h-3 object-contain"
-                  />
-                  <Link
-                    href={`/playground?problem=${algo.id}`}
-                    className="text-lg  capitalize text-surface hover:text-accent"
-                  >
-                    {algo.problem.title}
-                  </Link>
-                </div>
-                <span className="text-fg/50">{algo.score}/10</span>
-              </div>
+              <SidebarItem
+                key={algo.id}
+                problem={algo}
+                href={`/playground?problem=${algo.id}`}
+              />
             ))
           ) : (
             <Paragraph className="text-fg/70 w-full text-center">
@@ -197,32 +191,33 @@ function Sidebar() {
             !open && "opacity-0 scale-x-0"
           )}
         >
-          {user.codingTechniques.length > 0 ? (
-            user.codingTechniques.map((tech) => (
-              <div
-                key={tech.title}
-                className="flex items-center justify-between w-full px-4 py-2 rounded-2xl bg-primary/25 shadow shadow-fg/10 shadow-b"
-              >
-                <div className="flex gap-2 items-center">
-                  <Image
-                    src={"/icons/list-icon.png"}
-                    alt=""
-                    width={20}
-                    height={20}
-                    className="w-3 h-3 object-contain"
-                  />
-                  <Link
-                    href={`/playground?problem=${tech.id}`}
-                    className="text-lg  capitalize text-surface hover:text-accent truncate"
-                  >
-                    {tech.title}
-                  </Link>
-                </div>
-                <span className="text-fg/50">
-                  {tech.solvedProblems}/{tech.totalProblems}
-                </span>
-              </div>
-            ))
+          {user && user.codingTechniques.length > 0 ? (
+            // user.codingTechniques.map((tech) => (
+            //   <div
+            //     key={tech.title}
+            //     className="flex items-center justify-between w-full px-4 py-2 rounded-2xl bg-primary/25 shadow shadow-fg/10 shadow-b"
+            //   >
+            //     <div className="flex gap-2 items-center">
+            //       <Image
+            //         src={"/icons/list-icon.png"}
+            //         alt=""
+            //         width={20}
+            //         height={20}
+            //         className="w-3 h-3 object-contain"
+            //       />
+            //       <Link
+            //         href={`/playground?problem=${tech.id}`}
+            //         className="text-lg  capitalize text-surface hover:text-accent truncate"
+            //       >
+            //         {tech.title}
+            //       </Link>
+            //     </div>
+            //     <span className="text-fg/50">
+            //       {tech.solvedProblems}/{tech.totalProblems}
+            //     </span>
+            //   </div>
+            // ))
+            <SidebarCPItems codingPatterns={user.codingTechniques} />
           ) : (
             <Paragraph className="text-fg/70 w-full text-center">
               No techniques solved yet

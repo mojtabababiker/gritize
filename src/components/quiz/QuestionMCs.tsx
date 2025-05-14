@@ -35,16 +35,18 @@ const QuestionMCs = ({
             key={option}
             onClick={() => handleOptionClick(option)}
             className={clsx(
-              "min-w-[180px] h-[40px] flex items-stretch  gap-5 rounded-lg cursor-pointer transition-all duration-200"
+              "w-fit min-w-[180px] h-[40px] flex items-stretch  gap-5 rounded-lg cursor-pointer transition-all duration-200"
             )}
           >
             <div
               className={clsx(
-                "size-7 rounded-full border-2 border-accent",
+                "size-7 min-h-7 min-w-7 rounded-full border-2 border-accent",
                 selected.includes(option) ? "bg-accent" : "bg-fg"
               )}
             />
-            <div className="min-w-fit flex-1 text-xl font-body">{option}</div>
+            <div className="w-full  flex-1 text-xl leading-4 font-body">
+              {option}
+            </div>
           </div>
         ))}
       </div>

@@ -62,6 +62,11 @@
 
   /* animations */
   --animate-slide-text: slideText linear infinite;
+  --animate-slide-left: slideLeft 500ms ease-in-out forwards;
+  --animate-slide-right: slideRight 500ms ease-in-out forwards;
+  --animate-slide-from-left: slideLeft 500ms ease-in-out reverse forwards;
+  --animate-slide-from-right: slideRight 500ms ease-in-out reverse forwards;
+  --animate-slide-up: slideUp 500ms ease-in-out forwards;
 
   /* Add these new custom properties */
   --sliding-text-play-state: running;
@@ -77,6 +82,36 @@
       transform: translateX(110%);
     }
   }
+
+  @keyframes slideLeft {
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(-110%);
+    }
+  }
+
+  @keyframes slideRight {
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(110%);
+    }
+  }
+
+  @keyframes slideUp {
+    0% {
+      bottom: -100%;
+    }
+
+    100% {
+      bottom: 0;
+    }
+  }
 }
 
 body {
@@ -84,6 +119,32 @@ body {
   color: var(--color-fg);
   font-family: var(--font-body);
   overflow-x: hidden;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+.terminal::-webkit-scrollbar {
+  width: 6px;
+}
+.terminal.scroll-error::-webkit-scrollbar-thumb {
+  background: var(--color-red-900);
 }
 
 .button-cutout.primary {
@@ -118,6 +179,20 @@ body {
   }
 }
 
+.button-cutout.ghost-2 {
+  filter: drop-shadow(1px 0 var(--color-fg)) drop-shadow(-1px 0 var(--color-fg))
+    drop-shadow(0 1px var(--color-fg)) drop-shadow(0 -1px var(--color-fg))
+    drop-shadow(3px 0 var(--color-fg)) drop-shadow(0 3px var(--color-fg));
+  &:hover,
+  &:focus,
+  &:active {
+    filter: drop-shadow(1px 0 var(--color-fg))
+      drop-shadow(-1px 0 var(--color-fg)) drop-shadow(0 1px var(--color-fg))
+      drop-shadow(0 -1px var(--color-fg)) drop-shadow(2px 0 var(--color-fg))
+      drop-shadow(0 2px var(--color-fg));
+  }
+}
+
 .brief-container {
   background-image: linear-gradient(
     to bottom,
@@ -149,8 +224,8 @@ body {
   background-image: linear-gradient(
     to bottom,
     var(--color-bg) 0%,
-    #1d2216 38%,
-    #313d24 100%
+    #0c0e09 64%,
+    #191e13 100%
   );
 }
 .auth-popup {
@@ -180,6 +255,14 @@ body {
   );
 }
 
+.testimonial-popup {
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-bg) 33%,
+    var(--color-surface) 100%
+  );
+}
+
 .toast-success {
   background-image: linear-gradient(
     to bottom,
@@ -203,6 +286,10 @@ body {
     var(--color-bg) 13%,
     var(--color-accent) 26%
   );
+}
+
+.problem-article {
+  background-image: linear-gradient(to bottom, #212121 0%, #21212175 96%);
 }
 
 @theme inline {

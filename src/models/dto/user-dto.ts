@@ -1,15 +1,45 @@
-import { UserProblemSchema, CodingPatternSchema } from "../schemas";
-import { SkillLevel } from "../types/indext";
+import { Languages, SkillLevel } from "../types/indext";
 
 export interface UserDTO {
   id?: string;
   name: string;
   email: string;
-  skillLevel: SkillLevel;
   avatar?: string;
+  skillLevel: SkillLevel;
+  preferredLanguage?: Languages;
   onboarding?: boolean;
   isNewUser?: boolean;
   totalSolvedProblems?: number;
-  generalAlgorithms: UserProblemSchema[];
-  codingPatterns: CodingPatternSchema[];
+  generalAlgorithms: string[];
+  codingPatterns: string[];
+
+  mustReview?: boolean;
+  hasReviewed?: boolean;
+  lastAskedReview?: string;
+}
+
+export interface UserProblemDTO {
+  id: string;
+  problemId: string;
+  solved: boolean;
+  score: number;
+}
+
+export interface CodingPatternDTO {
+  title: string;
+  info: string;
+  problems: string[];
+  totalProblems: number;
+  solvedProblems?: number;
+}
+
+export interface ProblemSolutionDTO {
+  id: string;
+  userId: string;
+  problemId: string;
+  solution: string;
+  score: number;
+  language: Languages;
+  time: number;
+  $createdAt?: string;
 }

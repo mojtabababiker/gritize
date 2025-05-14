@@ -11,7 +11,7 @@ function DashboardHeader() {
   return (
     <Bounded
       as="header"
-      className="sticky top-0 py-4 z-40 bg-bg/60 backdrop-blur-md drop-shadow-sm shadow-bg/50 shadow-xl"
+      className="sticky top-0 py-4 z-40 bg-bg/60  backdrop-blur-md drop-shadow-sm shadow-bg/50 shadow-xl"
     >
       {/* header */}
       <div className="flex items-center justify-between">
@@ -28,11 +28,11 @@ function DashboardHeader() {
         <div className="flex items-center justify-end gap-2">
           {/* name */}
           <Heading as="span" size="sm" className="text-fg">
-            {user.name}
+            {user?.name || "..."}
           </Heading>
           {/* user image */}
           <div className="flex-items-center justify-center rounded-full w-14 h-14 p-0 bg-surface">
-            {user.avatar ? (
+            {user?.avatar ? (
               <Image
                 src={user.avatar}
                 width={64}
@@ -42,7 +42,7 @@ function DashboardHeader() {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center rounded-full font-heading font-bold text-2xl sm:text-4xl text-bg/75 bg-accent/30">
-                {user.name?.at(0)}
+                {user?.name?.at(0) || "?"}
               </div>
             )}
           </div>
