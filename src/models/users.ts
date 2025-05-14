@@ -474,6 +474,17 @@ export class User {
         }
       }
     }
+
+    // update user total solved problems
+    if (isFirstSubmission) {
+      this.totalSolvedProblems = (this.totalSolvedProblems || 0) + 1;
+      const { error } = await updateUser(this.id, {
+        totalSolvedProblems: this.totalSolvedProblems,
+      });
+      if (error) {
+        console.error("Error updating user total solved problems", error);
+      }
+    }
     return { data: updateProblem, error: null };
   }
 

@@ -216,6 +216,7 @@ function CodeEditor({
     setResult("Solution submitted successfully!");
     setShowSubmission?.(true);
     setError(null);
+    setUser(user);
 
     // ask for review if the user has not reviewed yet
     if (!user.hasReviewed) {

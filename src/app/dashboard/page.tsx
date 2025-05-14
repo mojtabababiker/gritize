@@ -62,13 +62,13 @@ function page() {
         <div className="flex flex-wrap items-center justify-center gap-4 my-6">
           {/* total problems card */}
           <StatisticalCard
-            title="Total Problems"
+            title="Total Solved Problems"
             value={user.totalSolvedProblems || 0}
             className="flex-1"
           />
           {/* total algorithms card */}
           <StatisticalCard
-            title="Mastered Algorithms"
+            title="Solved Algorithms"
             value={
               user.algorithmProblems.filter((algo) => algo.solved).length || 0
             }
