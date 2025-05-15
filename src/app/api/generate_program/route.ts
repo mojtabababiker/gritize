@@ -10,6 +10,7 @@ import {
   createProblemsTool,
   searchProblemsBySlugTool,
 } from "@/utils/assistant-tools";
+import { NextRequest } from "next/server";
 
 const google = createGoogleGenerativeAI({
   apiKey: Settings.googleApiKey,
@@ -65,86 +66,74 @@ const options = {
  * console.log(result);
  * ```
  */
-export async function POST(request: Request): Promise<Response> {
+export async function POST(request: NextRequest): Promise<Response> {
   const startTime = Date.now();
   const { prompt } = await request.json();
-  console.log("prompt from API", prompt);
+  const searchParams = request.nextUrl.searchParams;
+  const programType = searchParams.get("programType");
 
-  // Generate the general algorithms
-  console.log("Generating algorithms...");
-  const algorithmsResult = await generateText({
+  if (
+    !programType ||
+    !["algorithms", "coding-patterns"].includes(programType)
+  ) {
+    return Response.json(
+      {
+        error:
+          "Invalid program type. Must be either 'algorithms' or 'coding-patterns'.",
+      },
+      { status: 400 }
+    );
+  }
+
+  // Generate the program
+  const programResult = await generateText({
     ...options,
-    system: SYSTEM_INSTRUCTION_ALGORITHM,
+    system:
+      programType === "algorithms"
+        ? SYSTEM_INSTRUCTION_ALGORITHM
+        : SYSTEM_INSTRUCTION_CODING_PATTERN,
     prompt: prompt,
   });
-  console.log("Algorithms generated.");
-  console.log("Prompt Tokens used:", algorithmsResult.usage.promptTokens);
-  console.log(
-    "Completion Tokens used:",
-    algorithmsResult.usage.completionTokens
-  );
-
-  // Generate the coding patterns
-  console.log("Generating coding patterns...");
-  const codingPatternsResult = await generateText({
-    ...options,
-    system: SYSTEM_INSTRUCTION_CODING_PATTERN,
-    prompt: prompt,
-  });
-  console.log("Coding patterns generated.");
-  console.log("Prompt Tokens used:", codingPatternsResult.usage.promptTokens);
-  console.log(
-    "Completion Tokens used:",
-    codingPatternsResult.usage.completionTokens
-  );
+  console.log(`${programType.toUpperCase()} generated.`);
+  console.log("Prompt Tokens used:", programResult.usage.promptTokens);
+  console.log("Completion Tokens used:", programResult.usage.completionTokens);
 
   const endTime = Date.now();
   const totalTime = (endTime - startTime) / 1000; // in seconds
   console.log(
-    `\n** Total time taken to generate the program: ${totalTime} seconds\n`
+    `\n** Total time taken to generate the program: ${totalTime} seconds**\n`
   );
 
-  // Combine the results
-  console.log("Combining results...");
-  const result = combine(codingPatternsResult.text, algorithmsResult.text);
+  const cleanResult = cleanJsonResponse(programResult.text);
 
-  return Response.json(result);
+  return Response.json(cleanResult);
 }
 
 /**
- * A helper function to combine two JSON strings into a single object.
- * @param object1 - The first JSON string.
- * @param object2 - The second JSON string.
- * @returns The combined object.
+ * Cleans the JSON response by removing unnecessary characters and parsing it.
+ *
+ * @param {string} response - The JSON response string to be cleaned
+ * @returns Parsed JSON object
+ *
+ * @throws {Error} If the response cannot be parsed as JSON
+ *
+ * @example
+ * ```typescript
+ * const jsonResponse = cleanJsonResponse('{"key": "value"}');
+ * console.log(jsonResponse.key); // Output: value
+ * ```
  */
-const combine = (object1: string, object2: string) => {
+const cleanJsonResponse = (response: string) => {
   try {
-    const parsedObject1 = JSON.parse(object1);
-    const parsedObject2 = JSON.parse(object2);
-    const combined = { ...parsedObject1, ...parsedObject2 };
-    return combined;
+    return JSON.parse(response);
   } catch {
-    const cleanObject1 = object1.slice(
-      8, // remove the ```json\n
-      object1.length - 4 // remove the \n```
-    );
-    const cleanObject2 = object2.slice(
-      8, // remove the ```json\n
-      object2.length - 4 // remove the \n```
-    );
-    console.log("\n\ncleanObject1", cleanObject1);
-    console.log("cleanObject2", cleanObject2);
-    console.log("\n\n");
-    try {
-      const combined = {
-        ...JSON.parse(cleanObject1),
-        ...JSON.parse(cleanObject2),
-      };
-      console.log("combined", combined);
-      return combined;
-    } catch (error) {
-      console.error("Error parsing combined JSON:", error);
-      throw new Error("Output generation failed.");
+    if (response.startsWith("```json")) {
+      const cleanResponse = response.slice(
+        8, // remove the ```json\n
+        response.length - 4 // remove the \n```
+      );
+      return JSON.parse(cleanResponse);
     }
+    throw new Error("Output generation failed.");
   }
 };

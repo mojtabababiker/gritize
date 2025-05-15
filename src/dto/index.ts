@@ -1,6 +1,6 @@
 export interface ProgramDto {
-  algorithms: string[];
-  codingPatterns: {
+  algorithms?: string[];
+  codingPatterns?: {
     title: string;
     totalProblems: number;
     info: string;
