@@ -1,24 +1,119 @@
 import Image from "next/image";
-import Bounded from "../common/Bounded";
-import Heading from "../common/Heading";
-import { ProjectDescription } from "../base/Projectdescription";
 
-const stats = Promise.resolve({
-  totalStars: 27,
-  openedIssues: 13,
-  totalCommits: 324,
-  totalContributors: 7,
-  totalPullRequest: 11,
-});
+import { Settings } from "@/constant/setting";
+
+import Bounded from "@/components/common/Bounded";
+import Heading from "@/components/common/Heading";
+import { ProjectDescription } from "@/components/base/Projectdescription";
+
+/**
+ * lastStats is an object that stores the last fetched statistics of the GitHub repository. which act as simple in memory cache
+ * Need to be replaced with a better solution, but for now it works
+ */
+const lastStats = {
+  totalStars: 0,
+  openedIssues: 0,
+  totalCommits: 0,
+  totalContributors: 0,
+  totalPullRequest: 0,
+};
+
+/**
+ * A helper function to fetch data from the GitHub API, abstracting the process of authentication, error handling, and response parsing.
+ * @param uri the uri to fetch data from
+ * @returns a promise that resolves to the response and data
+ * @throws an error if the response is not ok
+ * @description fetches data from the github api for specified uri and returns the response and data if successful, otherwise throws an error
+ */
+const fetchData = async (uri: string) => {
+  const response = await fetch(
+    `https://api.github.com/repos/mojtabababiker/gritize${uri}`,
+    {
+      headers: {
+        Authorization: `Bearer ${Settings.githubAccessToken}`,
+      },
+    }
+  );
+  if (!response.ok) {
+    console.error(response.statusText);
+    throw new Error(
+      `Network response was not ok for ${uri}\nError: ${response.status} ${response.statusText}`
+    );
+  }
+  const data = await response.json();
+  return { response, data };
+};
 
 async function Brief() {
-  const {
-    totalStars,
-    totalCommits,
-    totalPullRequest,
-    openedIssues,
-    totalContributors,
-  } = await stats;
+  let totalStars: number;
+  let totalCommits: number;
+  let totalPullRequest: number;
+  let openedIssues: number;
+  let totalContributors: number;
+
+  /* 
+    const { totalStars, openedIssues, totalCommits, totalContributors } =
+      await getProjectStats();
+
+    getProjectStats:
+    fetch https://api.github.com/repos/mojtabababiker/gritize
+    - then get the `stargazers_count`, `open_issues`, `pull_requests` from the response.
+
+    - fetch commit count:
+      - fetch https://api.github.com/repos/mojtabababiker/gritize/commits?sha=main&per_page=1&page=1
+      - then get the `Link` header from the response.
+      - parse the `Link` searching for the `&page=/d+>rel=last` pattern.
+      - then get the page number from the `&page=/d+>rel=last` pattern.
+
+    - fetch contributors count:
+      - fetch https://api.github.com/repos/mojtabababiker/gritize/contributors
+      - then get the length of the response.
+
+    totalStars => stargazers_count
+    totalCommits => fetch commit count
+    totalPullRequest => pull_requests
+    openedIssues => open_issues
+    totalContributors => fetch contributors count
+
+
+  */
+  try {
+    const { data: repoData } = await fetchData("");
+    totalStars = repoData.stargazers_count;
+    openedIssues = repoData.open_issues_count;
+
+    // update the lastStats object
+    lastStats.totalStars = totalStars;
+    lastStats.openedIssues = openedIssues;
+
+    const { data: pullData } = await fetchData("/pulls?state=all");
+    totalPullRequest = pullData.length;
+    // update the lastStats object
+    lastStats.totalPullRequest = totalPullRequest;
+
+    const { response: commitResponse } = await fetchData(
+      "/commits?sha=main&per_page=1&page=1"
+    );
+    const commitLinkHeader = commitResponse.headers.get("Link");
+    const commitLink = commitLinkHeader?.match(/&page=(\d+)>; rel="last"/);
+    const commitPage = commitLink
+      ? parseInt(commitLink[1], 10)
+      : lastStats.totalCommits;
+    totalCommits = commitPage;
+    // update the lastStats object
+    lastStats.totalCommits = totalCommits;
+
+    const { data: contributorsData } = await fetchData("/contributors");
+    totalContributors = contributorsData.length;
+    lastStats.totalContributors = totalContributors;
+  } catch (error) {
+    console.error("Error fetching GitHub repository data:", error);
+    totalStars = lastStats.totalStars;
+    openedIssues = lastStats.openedIssues;
+    totalCommits = lastStats.totalCommits;
+    totalPullRequest = lastStats.totalPullRequest;
+    totalContributors = lastStats.totalContributors;
+  }
   return (
     <Bounded as="section" className="brief-container">
       <div className="flex flex-col pt-32 pb-16 gap-3">
