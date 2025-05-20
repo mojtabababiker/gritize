@@ -1,26 +1,42 @@
-import React from "react";
-import Bounded from "../common/Bounded";
-import Heading from "../common/Heading";
-import Paragraph from "../common/Paragraph";
-import ServiceCard from "../cards/ServiceCard";
+"use client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+import { useAuth } from "@/context/AuthProvider";
+
+import Bounded from "@/components/common/Bounded";
+import Heading from "@/components/common/Heading";
+import Paragraph from "@/components/common/Paragraph";
+import ServiceCard from "@/components/cards/ServiceCard";
+import AuthDialog from "@/components/auth/AuthDialog";
+import QuizRunner from "@/components/quiz/QuizRunner";
 
 const SERVICES = [
   {
     title: "General Algorithms",
     description:
       "Practice general algorithm and familiarize yourself with them, from simple sort search algorithms, to solving real-world scenarios.",
-    href: "#",
+    href: "/dashboard",
     hrefText: "Explore Patterns",
   },
   {
     title: "Coding Techniques",
     description:
       "Understand when (and why) to use sliding windows, binary search, dynamic programming, and more — one concept at a time.",
-    href: "#",
+    href: "/dashboard",
     hrefText: "Start Practicing",
   },
 ];
 function Services() {
+  const router = useRouter();
+  const [startQuiz, setStartQuiz] = useState(false);
+  const [requireLogin, setRequireLogin] = useState(false);
+  const { isLoggedIn } = useAuth();
+
+  const onQuizFinish = () => {
+    setStartQuiz(false);
+    setRequireLogin(true);
+  };
   return (
     <Bounded className="services-container">
       <div className="flex flex-col h-full pt-24 pb-8 gap-8">
@@ -63,7 +79,13 @@ function Services() {
                 <ServiceCard
                   title={service.title}
                   description={service.description}
-                  href={service.href}
+                  onClick={() => {
+                    if (isLoggedIn) {
+                      router.push(service.href);
+                    } else {
+                      setStartQuiz(true);
+                    }
+                  }}
                   hrefText={service.hrefText}
                   className="self-stretch"
                 />
@@ -72,6 +94,16 @@ function Services() {
           </div>
         </div>
       </div>
+
+      {/* login dialog */}
+      {requireLogin && (
+        <AuthDialog
+          message="Excellent work! now please signup to save your progress"
+          onClose={() => setRequireLogin(false)}
+        />
+      )}
+
+      {startQuiz && <QuizRunner onFinish={onQuizFinish} />}
     </Bounded>
   );
 }

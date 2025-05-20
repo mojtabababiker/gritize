@@ -11,13 +11,19 @@ type Props = {
   // For example, you might want to pass a title, description, or image URL
   title?: string;
   description?: string;
-  href?: string;
+  onClick: () => void;
   hrefText?: string;
   className?: string;
   // Add any other props you need
 };
 
-function ServiceCard({ title, description, href, hrefText, className }: Props) {
+function ServiceCard({
+  title,
+  description,
+  onClick,
+  hrefText,
+  className,
+}: Props) {
   return (
     <div
       className={clsx(
@@ -50,10 +56,13 @@ function ServiceCard({ title, description, href, hrefText, className }: Props) {
       <div className="absolute z-30 left-0 right-0 -bottom-30 h-[32%] flex items-center justify-center group-[:hover]:bottom-0 transition-all duration-300 ease-in-out">
         {/* overlay */}
         <div className="absolute inset-0 bg-bg/30 backdrop-blur-xs blur-sm shadow-xl drop-shadow-2xl " />
-        <Button variant="accent" size="md" className="text-center">
-          <Link href={href ? href : "/dashboard"} className="text-center">
-            {hrefText || "Start Now"}
-          </Link>
+        <Button
+          variant="accent"
+          size="md"
+          className="text-center"
+          onClick={onClick}
+        >
+          {hrefText || "Start Now"}
         </Button>
       </div>
 
