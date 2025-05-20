@@ -3,12 +3,14 @@
 "use server";
 import { cookies } from "next/headers";
 
-import { AppwriteException, Models } from "node-appwrite";
+import { AppwriteException, Models, OAuthProvider } from "node-appwrite";
 
 import { createAdminClient, createUserClient } from "@/config/appwrite";
 import { UserDTO } from "@/models/dto/user-dto";
 
 import { getUserById } from "./database-actions";
+import { Settings } from "@/constant/setting";
+import { redirect, RedirectType } from "next/navigation";
 
 /**
  * Checks the authentication status of the user and retrieves their information.
@@ -142,10 +144,37 @@ export const registerUser = async (
 };
 
 /**
+ * Initiates the OAuth sign-in process with the specified provider.
+ *
+ * @param provider - The OAuth provider to use for authentication (e.g., "google", "github")
+ * @returns A promise that resolves to redirect the user for either the OAuth
+ * api endpoint to complete session creation or auth page with error message if
+ * the provider is not specified or an error occurs
+ *
+ * @remarks
+ * This function creates an OAuth2 token using the Appwrite account client.
+ * It redirects the user to the OAuth provider's authorization page.
+ */
+export const oauthSignIn = async (provider: OAuthProvider) => {
+  if (!provider) {
+    throw new Error("Provider is required");
+  }
+  const { account } = await createAdminClient();
+  console.log("Called with: ", provider);
+  const redirectUrl = await account.createOAuth2Token(
+    provider,
+    `${Settings.appURL}/api/auth/oauth?provider=${provider}`,
+    `${Settings.appURL}/auth?msg=oauth-field&provider=${provider}`
+  );
+  console.log("Redirect URL: ", redirectUrl);
+  return redirect(redirectUrl);
+};
+
+/**
  * helper function that saves the session to the cookies with some default options
  * @param session - The session object containing user session information
  */
-const saveSession = async (session: Models.Session) => {
+export const saveSession = async (session: Models.Session) => {
   const cookiesStore = await cookies();
   cookiesStore.set("appwrite-session", session.secret, {
     path: "/",
@@ -154,4 +183,12 @@ const saveSession = async (session: Models.Session) => {
     sameSite: "strict",
     expires: new Date(session.expire),
   });
+};
+
+/**
+ * Deletes the session cookie
+ */
+export const deleteSession = async () => {
+  const cookiesStore = await cookies();
+  cookiesStore.delete("appwrite-session");
 };
