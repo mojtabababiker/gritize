@@ -43,7 +43,7 @@ const CONTAINER_CLS =
   "fixed z-50 inset-0 backdrop-blur-2xl flex items-center justify-center overflow-hidden";
 // popup div tailwind classes for abstraction
 const CLASS_NAME =
-  "quiz-popup relative w-full max-w-[640px] flex flex-col items-center justify-between px-3 py-5 rounded-xl ";
+  "quiz-popup relative w-full max-w-[640px] flex flex-col items-center justify-between px-3 py-5 rounded-xl animate-slide-up";
 
 type QuizRunnerProps = {
   onFinish: () => void;
