@@ -10,7 +10,7 @@ import { UserDTO } from "@/models/dto/user-dto";
 
 import { getUserById } from "./database-actions";
 import { Settings } from "@/constant/setting";
-import { redirect, RedirectType } from "next/navigation";
+import { redirect } from "next/navigation";
 
 /**
  * Checks the authentication status of the user and retrieves their information.
