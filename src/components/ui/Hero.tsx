@@ -11,6 +11,9 @@ import QuizRunner from "@/components/quiz/QuizRunner";
 
 import { useAuth } from "@/context/AuthProvider";
 import { useRouter } from "next/navigation";
+import { Settings } from "@/constant/setting";
+import Link from "next/link";
+import { SquareArrowOutUpRight } from "lucide-react";
 
 function Hero() {
   const [startQuiz, setStartQuiz] = useState(false);
@@ -85,14 +88,17 @@ function Hero() {
               >
                 Try Gritize
               </Button>
-              <Button
-                variant="ghost"
-                size="lg"
-                className="bg-surface"
-                onClick={() => console.log("Learn More")}
-              >
-                Contribute To The Platform
-              </Button>
+              <Link href={`${Settings.githubRepo}/issues`} target="_blank">
+                <Button
+                  variant="ghost"
+                  size="lg"
+                  className="bg-surface flex gap-2 items-center"
+                  onClick={() => console.log("Learn More")}
+                >
+                  Contribute To The Platform
+                  <SquareArrowOutUpRight className="size-6 stroke-2 text-bg" />
+                </Button>
+              </Link>
             </div>
           </div>
           {/* image */}

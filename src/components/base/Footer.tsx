@@ -6,6 +6,7 @@ import Paragraph from "../common/Paragraph";
 import Heading from "../common/Heading";
 import Link from "next/link";
 import ContactForm from "../ui/ContactForm";
+import { Settings } from "@/constant/setting";
 
 const FOOTER_MENU = [
   {
@@ -25,19 +26,15 @@ const FOOTER_MENU = [
 const REPO_LINKS = [
   {
     item: "how to contribute",
-    href: "#repo-cont-doc-here",
+    href: Settings.githubRepo,
   },
   {
     item: "github repository",
-    href: "#github-repo-link",
+    href: Settings.githubRepo,
   },
   {
     item: "opened issues",
-    href: "#open-issues-link-here",
-  },
-  {
-    item: "donate",
-    href: "#donation-link",
+    href: `${Settings.githubRepo}/issues`,
   },
 ];
 
@@ -73,7 +70,7 @@ function Footer() {
           <ul className="flex flex-col gap-4">
             {FOOTER_MENU.map((item, index) => (
               <li key={`footer-link-${index}`}>
-                <Link href={item.href}>
+                <Link href={item.href} target="_blank">
                   <Heading
                     as="h4"
                     size="sm"

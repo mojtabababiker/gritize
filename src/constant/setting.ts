@@ -35,5 +35,6 @@ export const Settings = {
   googleApiKey: process.env.NEXT_GOOGLE_AI_API_KEY || "",
 
   // github settings
+  githubRepo: process.env.NEXT_PUBLIC_GITHUB_REPO_URL || "",
   githubAccessToken: process.env.NEXT_GITHUB_ACCESS_TOKEN || "",
 };
