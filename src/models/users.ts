@@ -32,7 +32,7 @@ export class User {
   name: string;
   email: string;
   avatar?: string;
-  skillLevel: SkillLevel;
+  skillLevel?: SkillLevel;
   preferredLanguage?: Languages;
   onboarding?: boolean;
   isNewUser?: boolean;
@@ -63,8 +63,8 @@ export class User {
     name,
     email,
     avatar,
-    skillLevel = "mid-level",
-    preferredLanguage = "javascript",
+    skillLevel = undefined,
+    preferredLanguage = undefined,
     onboarding = false,
     isNewUser = true,
     totalSolvedProblems = 0,
@@ -136,8 +136,8 @@ export class User {
       this.name = "";
       this.email = "";
       this.avatar = undefined;
-      this.skillLevel = "mid-level";
-      this.preferredLanguage = "javascript";
+      this.skillLevel = undefined;
+      this.preferredLanguage = undefined;
       this.onboarding = false;
       this.totalSolvedProblems = 0;
       this.generalAlgorithms = {};
@@ -180,7 +180,7 @@ export class User {
 
     const { data: user, error: dbError } = await createUser(this.json);
 
-    if (dbError) {
+    if (dbError || !user) {
       console.error("Database error during user registration", dbError);
       throw new Error("User registration failed.");
     }
@@ -188,6 +188,7 @@ export class User {
     // return await User.fromJson(user);
     return new User({
       ...user,
+      skillLevel: user.skillLevel || undefined,
       name: this.name,
       email: this.email,
       generalAlgorithms: {},
@@ -219,8 +220,8 @@ export class User {
       name: data.name,
       email: data.email,
       avatar: data.avatar,
-      skillLevel: data.skillLevel || "mid-level",
-      preferredLanguage: data.preferredLanguage || "javascript",
+      skillLevel: data.skillLevel || undefined,
+      preferredLanguage: data.preferredLanguage || undefined,
       onboarding: data.onboarding || false,
       totalSolvedProblems: data.totalSolvedProblems || 0,
       isNewUser: data.isNewUser || false,
@@ -260,7 +261,7 @@ export class User {
       name: this.name,
       email: this.email,
       avatar: this.avatar,
-      skillLevel: this.skillLevel,
+      skillLevel: this.skillLevel || null,
       preferredLanguage: this.preferredLanguage,
       onboarding: this.onboarding,
       isNewUser: this.isNewUser,

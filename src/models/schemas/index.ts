@@ -15,7 +15,7 @@ export interface UserSchema {
   name: string;
   email: string;
   avatar?: string;
-  skillLevel: SkillLevel;
+  skillLevel?: SkillLevel;
   preferredLanguage?: Languages;
   onboarding?: boolean;
   isNewUser?: boolean;

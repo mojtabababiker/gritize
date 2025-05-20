@@ -5,7 +5,7 @@ export interface UserDTO {
   name: string;
   email: string;
   avatar?: string;
-  skillLevel: SkillLevel;
+  skillLevel: SkillLevel | null;
   preferredLanguage?: Languages;
   onboarding?: boolean;
   isNewUser?: boolean;

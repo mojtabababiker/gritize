@@ -50,7 +50,7 @@ export const getUserById = async (userId: string) => {
 
     return user;
   } catch (error) {
-    console.error("Error getting user by ID", error);
+    // console.error("Error getting user by ID", error);
     return null;
   }
 };
