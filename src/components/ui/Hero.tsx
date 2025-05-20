@@ -121,7 +121,7 @@ function Hero() {
             {/* python */}
             <div className="absolute bottom-[36%] right-[20%] w-[96px] sm:w-[140px] h-auto flex items-center justify-center opacity-65">
               <Image
-                src={"/images/py-image.png"}
+                src={"/images/python-image.png"}
                 alt="Python Icon"
                 className="w-full h-auto"
                 width={200}
@@ -131,7 +131,7 @@ function Hero() {
             {/* ts icon */}
             <div className="absolute bottom-[10%] right-0 w-[96px] sm:w-[140px] h-auto flex items-center justify-center opacity-65">
               <Image
-                src={"/images/ts-image.png"}
+                src={"/images/typescript-image.png"}
                 alt="TypeScript Icon"
                 className="w-full h-auto"
                 width={200}
@@ -141,7 +141,7 @@ function Hero() {
             {/* js icon */}
             <div className="absolute top-10 right-0 w-[96px] sm:w-[140px] h-auto flex items-center justify-center opacity-65">
               <Image
-                src={"/images/js-image.png"}
+                src={"/images/javascript-image.png"}
                 alt="JavaScript Icon"
                 className="w-full h-auto"
                 width={200}
