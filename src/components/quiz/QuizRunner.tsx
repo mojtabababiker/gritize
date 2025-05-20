@@ -393,13 +393,14 @@ type QuizInfoProps = {
  */
 const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
   useEffect(() => {
+    const parent = parentRef.current;
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         closeQuiz();
       }
     });
     window.addEventListener("click", (e) => {
-      if (parentRef.current && e.target === parentRef.current) {
+      if (parent && e.target === parent) {
         closeQuiz();
       }
     });
@@ -411,12 +412,12 @@ const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
         }
       });
       window.removeEventListener("click", (e) => {
-        if (parentRef.current && e.target === parentRef.current) {
+        if (parent && e.target === parent) {
           closeQuiz();
         }
       });
     };
-  }, [closeQuiz]);
+  }, [closeQuiz, parentRef]);
   return (
     <>
       {/* description */}
@@ -455,13 +456,14 @@ type QuizRulesProps = {
 
 const QuizRules = ({ action, closeQuiz, parentRef }: QuizRulesProps) => {
   useEffect(() => {
+    const parent = parentRef.current;
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         closeQuiz();
       }
     });
     window.addEventListener("click", (e) => {
-      if (parentRef.current && e.target === parentRef.current) {
+      if (parent && e.target === parent) {
         closeQuiz();
       }
     });
@@ -472,12 +474,12 @@ const QuizRules = ({ action, closeQuiz, parentRef }: QuizRulesProps) => {
         }
       });
       window.removeEventListener("click", (e) => {
-        if (parentRef.current && e.target === parentRef.current) {
+        if (parent && e.target === parent) {
           closeQuiz();
         }
       });
     };
-  }, [closeQuiz]);
+  }, [closeQuiz, parentRef]);
   return (
     <>
       <div className="w-full flex-1 flex flex-col items-center justify-center mt-10">

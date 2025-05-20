@@ -1,9 +1,8 @@
 import React from "react";
-import Heading from "../common/Heading";
+import Heading from "@/components/common/Heading";
 import Image from "next/image";
-import Paragraph from "../common/Paragraph";
-import Button from "../common/Button";
-import Link from "next/link";
+import Paragraph from "@/components/common/Paragraph";
+import Button from "@/components/common/Button";
 import clsx from "clsx";
 
 type Props = {

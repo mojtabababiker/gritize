@@ -49,7 +49,7 @@ export const getUserById = async (userId: string) => {
     const user = stripAppwriteFields<UserDTO>(userDoc);
 
     return user;
-  } catch (error) {
+  } catch {
     // console.error("Error getting user by ID", error);
     return null;
   }
