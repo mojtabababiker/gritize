@@ -179,7 +179,12 @@ function Hero() {
         />
       )}
 
-      {startQuiz && <QuizRunner onFinish={onQuizFinish} />}
+      {startQuiz && (
+        <QuizRunner
+          closeQuiz={() => setStartQuiz(false)}
+          onFinish={onQuizFinish}
+        />
+      )}
     </>
   );
 }

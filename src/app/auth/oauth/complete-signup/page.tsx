@@ -74,7 +74,12 @@ function Page() {
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center gap-4">
       {loading && <Loading />}
-      {showQuiz && <QuizRunner onFinish={completeSignup} />}
+      {showQuiz && (
+        <QuizRunner
+          closeQuiz={() => setShowQuiz(false)}
+          onFinish={completeSignup}
+        />
+      )}
     </div>
   );
 }

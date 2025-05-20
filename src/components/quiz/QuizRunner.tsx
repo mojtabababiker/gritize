@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
@@ -45,7 +45,12 @@ const CONTAINER_CLS =
 const CLASS_NAME =
   "quiz-popup relative w-full max-w-[640px] flex flex-col items-center justify-between px-3 py-5 rounded-xl ";
 
-export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
+type QuizRunnerProps = {
+  onFinish: () => void;
+  closeQuiz: () => void;
+};
+
+export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentPage, setCurrentPage] = useState<
     "languageSelector" | "info" | "rule" | "submitting"
@@ -56,6 +61,8 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
   const [quizLanguage, setQuizLanguage] = useState<Languages | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const { user, setUser } = useAuth();
 
@@ -233,7 +240,7 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
 
   // display the quiz introduction, rules, and language selector as the first pages
   return (
-    <div className={clsx(CONTAINER_CLS)}>
+    <div className={clsx(CONTAINER_CLS)} ref={containerRef}>
       <div className={clsx(CLASS_NAME)}>
         {/* header */}
 
@@ -249,10 +256,18 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
           </Heading>
         </div>
         {currentPage === "info" && (
-          <QuizInfo action={() => setCurrentPage("rule")} />
+          <QuizInfo
+            closeQuiz={closeQuiz}
+            action={() => setCurrentPage("rule")}
+            parentRef={containerRef}
+          />
         )}
         {currentPage === "rule" && (
-          <QuizRules action={() => setCurrentPage("languageSelector")} />
+          <QuizRules
+            closeQuiz={closeQuiz}
+            action={() => setCurrentPage("languageSelector")}
+            parentRef={containerRef}
+          />
         )}
         {currentPage === "languageSelector" && (
           <div className="w-full flex-1 flex flex-col items-center justify-center my-10">
@@ -356,6 +371,12 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
   );
 }
 
+type QuizInfoProps = {
+  action: () => void;
+  closeQuiz: () => void;
+  parentRef: React.RefObject<HTMLDivElement | null>;
+};
+
 /**
  * A component that displays quiz information and a confirmation button.
  *
@@ -370,7 +391,32 @@ export default function QuizRunner({ onFinish }: { onFinish: () => void }) {
  * <QuizInfo action={() => handleQuizStart()} />
  * ```
  */
-const QuizInfo = ({ action }: { action: () => void }) => {
+const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
+  useEffect(() => {
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeQuiz();
+      }
+    });
+    window.addEventListener("click", (e) => {
+      if (parentRef.current && e.target === parentRef.current) {
+        closeQuiz();
+      }
+    });
+
+    return () => {
+      window.removeEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeQuiz();
+        }
+      });
+      window.removeEventListener("click", (e) => {
+        if (parentRef.current && e.target === parentRef.current) {
+          closeQuiz();
+        }
+      });
+    };
+  }, [closeQuiz]);
   return (
     <>
       {/* description */}
@@ -401,7 +447,37 @@ const QuizInfo = ({ action }: { action: () => void }) => {
   );
 };
 
-const QuizRules = ({ action }: { action: () => void }) => {
+type QuizRulesProps = {
+  action: () => void;
+  closeQuiz: () => void;
+  parentRef: React.RefObject<HTMLDivElement | null>;
+};
+
+const QuizRules = ({ action, closeQuiz, parentRef }: QuizRulesProps) => {
+  useEffect(() => {
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeQuiz();
+      }
+    });
+    window.addEventListener("click", (e) => {
+      if (parentRef.current && e.target === parentRef.current) {
+        closeQuiz();
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeQuiz();
+        }
+      });
+      window.removeEventListener("click", (e) => {
+        if (parentRef.current && e.target === parentRef.current) {
+          closeQuiz();
+        }
+      });
+    };
+  }, [closeQuiz]);
   return (
     <>
       <div className="w-full flex-1 flex flex-col items-center justify-center mt-10">
