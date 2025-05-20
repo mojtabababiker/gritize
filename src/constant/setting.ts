@@ -33,4 +33,7 @@ export const Settings = {
 
   // Google Generative AI Settings
   googleApiKey: process.env.NEXT_GOOGLE_AI_API_KEY || "",
+
+  // github settings
+  githubAccessToken: process.env.NEXT_GITHUB_ACCESS_TOKEN || "",
 };
