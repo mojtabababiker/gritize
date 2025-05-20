@@ -14,7 +14,6 @@ const anonymousUser = new User({
   id: undefined,
   name: "Anonymous",
   email: "",
-  skillLevel: "mid-level",
   avatar: "",
   onboarding: false,
   isNewUser: false,
