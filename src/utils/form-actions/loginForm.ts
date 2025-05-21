@@ -3,7 +3,7 @@
 import { UserDTO } from "@/models/dto/user-dto";
 import { User } from "@/models/users";
 import { AppwriteException } from "node-appwrite";
-import { z, ZodError } from "zod";
+import { z, ZodIssue } from "zod";
 
 const loginSchema = z.object({
   email: z
@@ -17,9 +17,9 @@ const loginSchema = z.object({
 export type LoginActionSchema = {
   ok?: boolean;
   data?: UserDTO;
-  errors?:
+  error?:
     | { type: "server"; message: string }
-    | { type: "validation"; errors: ZodError };
+    | { type: "validation"; errors: ZodIssue[] };
 };
 
 export const loginAction = async (
@@ -32,9 +32,10 @@ export const loginAction = async (
 
   const result = loginSchema.safeParse({ email, password });
   if (!result.success) {
+    console.log(result.error.errors);
     return {
       ok: false,
-      errors: { type: "validation", errors: result.error },
+      error: { type: "validation", errors: result.error.errors },
     };
   }
   const { email: validEmail, password: validPassword } = result.data;
@@ -52,7 +53,7 @@ export const loginAction = async (
     }
     return {
       ok: false,
-      errors: { type: "server", message },
+      error: { type: "server", message },
     };
   }
 };

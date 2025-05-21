@@ -1,5 +1,5 @@
 "use client";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -10,6 +10,7 @@ import { User } from "@/models/users";
 
 import Heading from "@/components/common/Heading";
 import Button from "@/components/common/Button";
+import Paragraph from "@/components/common/Paragraph";
 import Input from "@/components/common/Input";
 import CustomToast from "@/components/common/CustomToast";
 
@@ -49,6 +50,9 @@ function LoginForm({ onComplete, changeFormType }: Props) {
   // const {state, action, isPending} = useActionState(loginUserAction);
 
   const [state, action, isPending] = useActionState(loginAction, {});
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
   const router = useRouter();
 
   const { setIsLoggedIn, setUser } = useAuth();
@@ -74,15 +78,26 @@ function LoginForm({ onComplete, changeFormType }: Props) {
       }
     };
 
+    console.log("Login state", state);
+
     if (state.ok && state.data) {
       completeLogin();
-    } else if (state.errors && state.errors.type === "server") {
-      const errorMessage = state.errors.message || "Error logging in";
+    } else if (state.error && state.error.type === "server") {
+      const errorMessage = state.error.message || "Error logging in";
       toast.custom((t) => (
         <CustomToast t={t} type="error" message={errorMessage} />
       ));
+    } else if (state.error && state.error.type === "validation") {
+      const schemaValidationErrors: { [key: string]: string } = {};
+      state.error.errors.forEach((issue) => {
+        schemaValidationErrors[issue.path[0]] = issue.message;
+      });
+      setValidationErrors(schemaValidationErrors);
+      toast.custom((t) => (
+        <CustomToast t={t} type="error" message="Validation errors occurred" />
+      ));
     }
-  }, [state, setIsLoggedIn, setUser, onComplete, router]);
+  }, [state]);
 
   return (
     <div className="w-full flex flex-col gap-6 items-center justify-center">
@@ -97,24 +112,42 @@ function LoginForm({ onComplete, changeFormType }: Props) {
       >
         <div className="w-full flex flex-wrap gap-6 items-center justify-center">
           {/* email */}
-          <Input
-            label="email"
-            name="email"
-            type="email"
-            value={""}
-            placeholder="youremail@exmaple.com"
-            className="flex-1 min-w-[260px]"
-          />
+          <div className="flex flex-col">
+            <Input
+              label="email"
+              name="email"
+              type="email"
+              value={""}
+              placeholder="youremail@exmaple.com"
+              className="flex-1 min-w-[260px]"
+            />
+            <Paragraph
+              as="div"
+              size="sm"
+              className="text-sm text-accent ml-2 min-h-6"
+            >
+              {validationErrors.email}
+            </Paragraph>
+          </div>
 
           {/* password */}
-          <Input
-            label="password"
-            name="password"
-            type="password"
-            value={""}
-            placeholder="********"
-            className="flex-1 min-w-[260px]"
-          />
+          <div className="flex flex-col">
+            <Input
+              label="password"
+              name="password"
+              type="password"
+              value={""}
+              placeholder="********"
+              className="flex-1 min-w-[260px]"
+            />
+            <Paragraph
+              as="div"
+              size="sm"
+              className="text-sm text-accent ml-2 min-h-6"
+            >
+              {validationErrors.password ? validationErrors.password : ""}
+            </Paragraph>
+          </div>
         </div>
         {/* submit */}
         <div className="w-full p-1 flex flex-col items-center gap-3">
