@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthProvider";
 
 import Heading from "@/components/common/Heading";
 import Button from "@/components/common/Button";
+import Paragraph from "@/components/common/Paragraph";
 import Input from "@/components/common/Input";
 import CustomToast from "@/components/common/CustomToast";
 
@@ -56,6 +57,9 @@ function SignupForm({ onComplete, changeFormType }: Props) {
 
   // a second state to handle the signup loading (some improvements can be done)
   const [isLoading, setIsLoading] = useState<boolean>(isPending);
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
   const router = useRouter();
 
   const signup = async (email: string, password: string, username: string) => {
@@ -93,6 +97,15 @@ function SignupForm({ onComplete, changeFormType }: Props) {
     if (state.ok && state.data) {
       const { email, password, username } = state.data;
       signup(email, password, username);
+    } else if (state.error) {
+      const schemaValidationErrors: { [key: string]: string } = {};
+      state.error.errors.forEach((issue) => {
+        schemaValidationErrors[issue.path[0]] = issue.message;
+      });
+      setValidationErrors(schemaValidationErrors);
+      toast.custom((t) => (
+        <CustomToast t={t} type="error" message="Validation errors occurred" />
+      ));
     }
   }, [state, user]);
 
@@ -107,46 +120,82 @@ function SignupForm({ onComplete, changeFormType }: Props) {
         action={action}
         className="w-full flex flex-col gap-6 items-center justify-center"
       >
-        <div className="w-full flex flex-wrap gap-6 items-center justify-between">
+        <div className="w-full flex flex-wrap gap-4 items-center justify-between">
           {/* username */}
-          <Input
-            label="username"
-            name="username"
-            value={""}
-            type="text"
-            placeholder="yourname"
-            className="flex-1 min-w-[calc(100vw-72px)] sm:min-w-[260px]"
-          />
+          <div className="flex flex-col">
+            <Input
+              label="username"
+              name="username"
+              value={""}
+              type="text"
+              placeholder="yourname"
+              className="flex-1 min-w-[calc(100vw-72px)] sm:min-w-[260px]"
+            />
+            <Paragraph
+              as="div"
+              size="sm"
+              className="text-sm text-accent ml-2  max-w-[260px] min-h-6"
+            >
+              {validationErrors.username}
+            </Paragraph>
+          </div>
 
           {/* email */}
-          <Input
-            label="email"
-            name="email"
-            value={""}
-            type="email"
-            placeholder="youremail@exmaple.com"
-            className="flex-1 min-w-[calc(100vw-72px)] sm:min-w-[260px]"
-          />
+          <div className="flex flex-col">
+            <Input
+              label="email"
+              name="email"
+              value={""}
+              type="email"
+              placeholder="youremail@exmaple.com"
+              className="flex-1 min-w-[calc(100vw-72px)] sm:min-w-[260px]"
+            />
+            <Paragraph
+              as="div"
+              size="sm"
+              className="text-sm text-accent ml-2  max-w-[260px] min-h-6"
+            >
+              {validationErrors.email}
+            </Paragraph>
+          </div>
 
           {/* password */}
-          <Input
-            label="password"
-            name="password"
-            value={""}
-            type="password"
-            placeholder="********"
-            className="flex-1 min-w-[calc(100vw-72px)] sm:min-w-[260px]"
-          />
+          <div className="flex flex-col">
+            <Input
+              label="password"
+              name="password"
+              value={""}
+              type="password"
+              placeholder="********"
+              className="flex-1 min-w-[calc(100vw-72px)] sm:min-w-[260px]"
+            />
+            <Paragraph
+              as="div"
+              size="sm"
+              className="text-sm text-accent ml-2 max-w-[260px] min-h-6"
+            >
+              {validationErrors.password}
+            </Paragraph>
+          </div>
 
           {/* confirm password */}
-          <Input
-            label="confirm password"
-            name="confirmPassword"
-            value={""}
-            type="password"
-            placeholder="********"
-            className="flex-1 min-w-[calc(100vw-72px)] sm:min-w-[260px]"
-          />
+          <div className="flex flex-col">
+            <Input
+              label="confirm password"
+              name="confirmPassword"
+              value={""}
+              type="password"
+              placeholder="********"
+              className="flex-1 min-w-[calc(100vw-72px)] sm:min-w-[260px]"
+            />
+            <Paragraph
+              as="div"
+              size="sm"
+              className="text-sm text-accent ml-2 max-w-[260px]  min-h-6"
+            >
+              {validationErrors.confirmPassword}
+            </Paragraph>
+          </div>
         </div>
         {/* submit */}
         <div className="w-full p-1 flex flex-col items-center gap-3">
