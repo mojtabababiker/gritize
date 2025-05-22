@@ -21,6 +21,10 @@ import {
 import { Languages, SkillLevel } from "./types/indext";
 import { CodingPatternSchema, UserProblemSchema, UserSchema } from "./schemas";
 import { CodingPatternDTO, ProblemSolutionDTO, UserDTO } from "./dto/user-dto";
+import {
+  deleteImage,
+  uploadImage,
+} from "@/utils/form-actions/profileImage-actions";
 
 /**
  * User class
@@ -572,6 +576,38 @@ export class User {
       return null;
     }
     return solutions;
+  }
+
+  /**
+   * Uploads a new avatar image for the user and updates their profile.
+   * If an existing avatar exists, it will be deleted before the new one is saved.
+   *
+   * @param file - The image file to upload as the new avatar
+   * @returns A promise that resolves to an object containing either:
+   *          - On success: {error: null, url: string} where url is the uploaded image URL
+   *          - On failure: {error: string, url: null} where error contains the error message
+   * @throws {Error} If user is not logged in (no ID present)
+   */
+  async uploadAvatar(
+    file: Blob
+  ): Promise<{ error: string | null; url: string | null }> {
+    if (!this.id) {
+      console.error("Login to upload avatar");
+      return { error: "Login to upload avatar", url: null };
+    }
+    const { error, data } = await uploadImage(this.id, file);
+    if (error || !data) {
+      console.error("Error uploading avatar", error);
+      console.error("Error uploading avatar", data);
+      return { error, url: null };
+    }
+    // delete the old image
+    if (this.avatar) {
+      await deleteImage(this.avatar);
+    }
+    this.avatar = data;
+    await this.save();
+    return { error: null, url: data };
   }
 
   async save(): Promise<void> {

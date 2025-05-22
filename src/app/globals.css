@@ -116,11 +116,11 @@
 
   @keyframes fadeIn {
     0% {
-      transform: translateY(40px);
+      top: -30px;
       opacity: 0;
     }
     100% {
-      transform: translateY(0);
+      top: 0;
       opacity: 1;
     }
   }
