@@ -1,5 +1,5 @@
-import Heading from "@/components/common/Heading";
 import { Check, X } from "lucide-react";
+import { RenderMarkdown } from "@/components/common/RenderMarkdown";
 
 type Props = {
   question: string;
@@ -10,9 +10,9 @@ type Props = {
 function QuestionTrueFalse({ question, setAnswer }: Props) {
   return (
     <div className="w-full flex flex-col items-center justify-center text-bg/85">
-      <Heading as="h3" size="sm" className="w-full font-semibold">
-        {question}
-      </Heading>
+      <div className="w-full font-semibold text-bg/80">
+        <RenderMarkdown markdownText={question} />
+      </div>
 
       <div className="flex items-center justify-center gap-20 my-5">
         {/* true */}

@@ -394,28 +394,21 @@ type QuizInfoProps = {
 const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
   useEffect(() => {
     const parent = parentRef.current;
-    window.addEventListener("keydown", (e) => {
+    const handleKeydown = (e:KeyboardEvent) => {
       if (e.key === "Escape") {
         closeQuiz();
       }
-    });
-    window.addEventListener("click", (e) => {
+    }
+    const handleClick = (e: MouseEvent) => {
       if (parent && e.target === parent) {
         closeQuiz();
       }
-    });
-
+    };
+    window.addEventListener("keydown", handleKeydown);
+    window.addEventListener("click", handleClick);
     return () => {
-      window.removeEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-          closeQuiz();
-        }
-      });
-      window.removeEventListener("click", (e) => {
-        if (parent && e.target === parent) {
-          closeQuiz();
-        }
-      });
+      window.removeEventListener("keydown", handleKeydown);
+      window.removeEventListener("click", handleClick);
     };
   }, [closeQuiz, parentRef]);
   return (
@@ -457,34 +450,28 @@ type QuizRulesProps = {
 const QuizRules = ({ action, closeQuiz, parentRef }: QuizRulesProps) => {
   useEffect(() => {
     const parent = parentRef.current;
-    window.addEventListener("keydown", (e) => {
+    const handleKeydown = (e:KeyboardEvent) => {
       if (e.key === "Escape") {
         closeQuiz();
       }
-    });
-    window.addEventListener("click", (e) => {
+    }
+    const handleClick = (e: MouseEvent) => {
       if (parent && e.target === parent) {
         closeQuiz();
       }
-    });
+    };
+    window.addEventListener("keydown", handleKeydown);
+    window.addEventListener("click", handleClick);
     return () => {
-      window.removeEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-          closeQuiz();
-        }
-      });
-      window.removeEventListener("click", (e) => {
-        if (parent && e.target === parent) {
-          closeQuiz();
-        }
-      });
+      window.removeEventListener("keydown", handleKeydown);
+      window.removeEventListener("click", handleClick);
     };
   }, [closeQuiz, parentRef]);
   return (
     <>
       <div className="w-full flex-1 flex flex-col items-center justify-center mt-10">
         <Paragraph size="md" className=" text-bg/85 max-w-[42ch]">
-          This is a 2 minutes 10 questions quiz, which crafted to test your
+          This is a <span className="font-semibold">2-3 minutes 10-15 questions quiz</span>, which crafted to test your
           knowledge level, and it consists of the following:
         </Paragraph>
         <ul className="w-full list-disc list-inside font-semibold text-bg/85 text-xl mt-5 pl-5">

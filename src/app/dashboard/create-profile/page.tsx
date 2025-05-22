@@ -67,12 +67,12 @@ export default function Page() {
               <div className="text-bg/65 flex flex-col items-center justify-center gap-1 w-full max-w-[420px] text-sm text-center">
                 <Paragraph
                   size="sm"
-                  className="text-bg/65 font-semibold w-full text-center"
+                  className="text-bg/80 font-semibold w-full text-center"
                 >
                   {creationStatus}
                 </Paragraph>
 
-                <div className="scale-80 w-full grayscale-50 flex items-center justify-center">
+                <div className="scale-80 grayscale-50 flex items-center justify-center">
                   <ThinkingLoader />
                 </div>
               </div>

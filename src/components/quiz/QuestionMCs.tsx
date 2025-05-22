@@ -1,7 +1,9 @@
 import { useState } from "react";
+
 import clsx from "clsx";
-import Heading from "@/components/common/Heading";
+
 import Button from "@/components/common/Button";
+import { RenderMarkdown } from "@/components/common/RenderMarkdown";
 
 type Props = {
   question: string;
@@ -26,9 +28,9 @@ const QuestionMCs = ({
   };
   return (
     <div className="w-full flex flex-col items-center justify-center text-bg/85">
-      <Heading as="h3" size="sm" className="w-full font-semibold">
-        {question}
-      </Heading>
+      <div className="w-full font-semibold text-bg/80">
+        <RenderMarkdown markdownText={question} />
+      </div>
       <div className="flex flex-wrap justify-between gap-2 my-5">
         {options.map((option) => (
           <div

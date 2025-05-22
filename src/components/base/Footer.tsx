@@ -70,7 +70,7 @@ function Footer() {
           <ul className="flex flex-col gap-4">
             {FOOTER_MENU.map((item, index) => (
               <li key={`footer-link-${index}`}>
-                <Link href={item.href} target="_blank">
+                <Link href={item.href}>
                   <Heading
                     as="h4"
                     size="sm"
@@ -93,7 +93,7 @@ function Footer() {
           <ul className="flex flex-col gap-4">
             {REPO_LINKS.map((item, index) => (
               <li key={`repo-link-${index}`}>
-                <Link href={item.href}>
+                <Link href={item.href} target="_blank">
                   <Heading
                     as="h4"
                     size="sm"
