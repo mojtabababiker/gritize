@@ -15,6 +15,7 @@ import Heading from "@/components/common/Heading";
 import { RenderMarkdown } from "@/components/common/RenderMarkdown";
 import Paragraph from "@/components/common/Paragraph";
 import CustomToast from "@/components/common/CustomToast";
+import { UserImage } from "@/components/dashboard/UserImage";
 
 import AIAssistant from "./AIAssistant";
 
@@ -139,19 +140,7 @@ function ProblemSection({ problem, editorCodeText, setShowSubmission }: Props) {
               href={"/dashboard"}
               className="flex-items-center justify-center rounded-full w-8 h-8 p-0 bg-surface"
             >
-              {user?.avatar ? (
-                <Image
-                  src={user.avatar}
-                  width={64}
-                  height={64}
-                  className="object-cover w-full h-full"
-                  alt={user.name}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center rounded-full font-heading font-bold text-xl sm:text-3xl text-bg/75 bg-accent/30">
-                  {user?.name?.at(0) || "?"}
-                </div>
-              )}
+              <UserImage size="xs" avatar={user?.avatar} username={user?.name || "?"} className="text-bg/75 bg-accent/30" />
             </Link>
 
             {/* CTAs */}
