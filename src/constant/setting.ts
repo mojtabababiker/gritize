@@ -37,4 +37,9 @@ export const Settings = {
   // github settings
   githubRepo: process.env.NEXT_PUBLIC_GITHUB_REPO_URL || "",
   githubAccessToken: process.env.NEXT_GITHUB_ACCESS_TOKEN || "",
+
+  // nodemailer settings
+  nodemailerPassword: process.env.NEXT_NODEMAILER_PASSWORD || "",
+  nodemailerFrom: process.env.NEXT_NODEMAILER_FROM_EMAIL || "",
+  nodemailerTo: process.env.NEXT_NODEMAILER_TO_EMAIL || "",
 };

@@ -11,7 +11,7 @@ function SigninWithGoogle() {
 
   useEffect(() => {
     localStorage.removeItem("quizResult");
-    if (!user || !user.preferredLanguage) return;
+    if (!user || !user.preferredLanguage || !user.skillLevel) return;
 
     const quizResult = {
       language: user.preferredLanguage,

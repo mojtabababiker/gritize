@@ -109,7 +109,6 @@ export const updateUser = async (userId: string, userObj: Partial<UserDTO>) => {
   const { ...cleanUserObject } = userObj;
   delete cleanUserObject.id;
   delete cleanUserObject.email;
-  delete cleanUserObject.name;
   const { user } = await checkAuth();
   if (!user || user.id !== userId) {
     return {
