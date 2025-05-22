@@ -2,6 +2,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import toast from "react-hot-toast";
+
 import { useAuth } from "@/context/AuthProvider";
 import { useResize } from "@/hooks/useHandleResize";
 
@@ -18,7 +20,6 @@ import ResizeRuler from "@/components/common/ResizeRuler";
 import CodeEditor from "@/components/playground/CodeEditor";
 import ProblemSection from "@/components/playground/ProblemSection";
 import Submissions from "@/components/playground/Submissions";
-import toast from "react-hot-toast";
 import CustomToast from "@/components/common/CustomToast";
 import TestimonialProvider from "@/components/testimonials/TestmonialProvider";
 
@@ -33,6 +34,7 @@ function Page() {
     direction: "horizontal",
   });
 
+  const [problemId, setProblemId] = useState<string | null>(null);
   const [codingPatternId, setCodingPatternId] = useState<string | null>(null);
   const [problem, setProblem] = useState<UserProblemSchema | null>(null);
   const [code, setCode] = useState<string | undefined>(undefined);
@@ -83,13 +85,8 @@ function Page() {
     if (!user) {
       return;
     }
-    const searchParams = new URLSearchParams(window.location.search);
-    const problemId = searchParams.get("problem");
-    const codingPatternId = searchParams.get("cp");
-    setCodingPatternId(codingPatternId);
     if (!problemId) {
       // If no problemId is provided, fetch the localstorage problemId
-
       const localStorageProblem = localStorage.getItem(`${user.id}-lpp`);
       if (localStorageProblem) {
         const { problemId, codingPatternId, code } =
@@ -141,7 +138,7 @@ function Page() {
         code: code || null,
       })
     );
-  }, [user, router]);
+  }, [user, router, problemId, codingPatternId]);
 
   useEffect(() => {
     if (!user) return;
@@ -192,6 +189,18 @@ function Page() {
     backupCodeIntervalId.current = setInterval(saveToLocalStorage, 5000); // Save every 5 seconds
     return () => clearInterval(backupCodeIntervalId.current!);
   }, []);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const newProblemId = searchParams.get("problem");
+    const newCodingPatternId = searchParams.get("cp");
+    if (newProblemId !== problemId) {
+      setProblemId(newProblemId);
+    }
+    if (newCodingPatternId !== codingPatternId) {
+      setCodingPatternId(newCodingPatternId);
+    }
+  });
 
   return isSmallScreen ? (
     <NoticeCard />
