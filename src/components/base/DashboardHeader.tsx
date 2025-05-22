@@ -8,11 +8,12 @@ import { useAuth } from "@/context/AuthProvider";
 import Bounded from "@/components/common/Bounded";
 import Heading from "@/components/common/Heading";
 import ProfileDropdown from "@/components/dashboard/ProfileDropdown";
+import { UserImage } from "@/components/dashboard/UserImage";
 
 function DashboardHeader() {
   const { user } = useAuth();
 
-  const [showProfileDropdown, setShowProfileDropdown] = useState(true);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const handleProfileClick = () => {
     setShowProfileDropdown((prev) => !prev);
@@ -38,7 +39,7 @@ function DashboardHeader() {
         <div className="flex items-center justify-end gap-2">
           {/* name */}
           <Heading as="span" size="sm" className="text-fg">
-            {user?.name || "@/components."}
+            {user?.name || ""}
           </Heading>
           {/* profile dropdown */}
 
@@ -47,20 +48,13 @@ function DashboardHeader() {
               onClick={handleProfileClick}
               className="w-full h-full p-0 cursor-pointer"
             >
-              <span className="sr-only">Open user menu</span>
-              {user?.avatar ? (
-                <Image
-                  src={user.avatar}
-                  width={64}
-                  height={64}
-                  className="object-cover w-full h-full"
-                  alt={user.name}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center rounded-full font-heading font-bold text-2xl sm:text-4xl text-bg/75 bg-accent/30">
-                  {user?.name?.at(0) || "?"}
-                </div>
-              )}
+              <span className="sr-only">Open profile menu</span>
+              <UserImage
+                avatar={user?.avatar}
+                username={user?.name || "?"}
+                size="sm"
+                className="text-bg/75 bg-accent/30"
+              />
             </button>
             <div className="absolute py-3 top-full right-3">
               <ProfileDropdown open={showProfileDropdown} />

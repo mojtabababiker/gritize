@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 
 import toast from "react-hot-toast";
 import { CameraIcon, EditIcon, UploadIcon } from "lucide-react";
@@ -9,6 +8,8 @@ import Heading from "@/components/common/Heading";
 import Paragraph from "@/components/common/Paragraph";
 import Button from "@/components/common/Button";
 import CustomToast from "@/components/common/CustomToast";
+
+import { UserImage } from "@/components/dashboard/UserImage";
 
 function EditableUserAvatar() {
   const { user } = useAuth();
@@ -30,7 +31,11 @@ function EditableUserAvatar() {
   return (
     <>
       <div className="relative size-24 rounded-full self-center ring-2 ring-surface/10">
-        <UserImage avatar={user?.avatar} username={user?.name || "?"} />
+        <UserImage
+          avatar={user?.avatar}
+          username={user?.name || "?"}
+          className="bg-bg/75 text-fg/80"
+        />
         <div className="group absolute -bottom-1 right-2 ">
           <EditIcon
             className="absolute right-0 bottom-0 cursor-pointer text-accent/60 hover:text-accent/90 transition-colors stroke-2"
@@ -48,26 +53,6 @@ function EditableUserAvatar() {
     </>
   );
 }
-
-type UserImageProps = {
-  avatar?: string;
-  username: string;
-};
-const UserImage = ({ avatar, username }: UserImageProps) => {
-  return avatar ? (
-    <Image
-      src={avatar}
-      alt="Profile Image"
-      width={160}
-      height={160}
-      className="w-full h-full rounded-full"
-    />
-  ) : (
-    <div className="w-full h-full rounded-full flex items-center justify-center font-heading font-bold text-6xl  bg-bg/75 text-fg/80">
-      {username.charAt(0).toUpperCase()}
-    </div>
-  );
-};
 
 const UploadAvatarModal = ({ closeModal }: { closeModal: () => void }) => {
   const { user, setUser } = useAuth();
