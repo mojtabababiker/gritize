@@ -49,9 +49,7 @@ export const checkAuth = async (): Promise<{
       isLoggedIn: true,
       user: {
         ...user,
-        name: userAccount.name,
         id: userAccount.$id,
-        email: userAccount.email,
       },
     };
   } catch (error) {

@@ -1,13 +1,22 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Bounded from "../common/Bounded";
-import Heading from "../common/Heading";
+
 import { useAuth } from "@/context/AuthProvider";
+
+import Bounded from "@/components/common/Bounded";
+import Heading from "@/components/common/Heading";
+import ProfileDropdown from "@/components/dashboard/ProfileDropdown";
 
 function DashboardHeader() {
   const { user } = useAuth();
 
+  const [showProfileDropdown, setShowProfileDropdown] = useState(true);
+
+  const handleProfileClick = () => {
+    setShowProfileDropdown((prev) => !prev);
+  };
   return (
     <Bounded
       as="header"
@@ -25,26 +34,37 @@ function DashboardHeader() {
             className="w-full max-w-[190px] h-auto"
           />
         </Link>
+
         <div className="flex items-center justify-end gap-2">
           {/* name */}
           <Heading as="span" size="sm" className="text-fg">
-            {user?.name || "..."}
+            {user?.name || "@/components."}
           </Heading>
-          {/* user image */}
-          <div className="flex-items-center justify-center rounded-full w-14 h-14 p-0 bg-surface">
-            {user?.avatar ? (
-              <Image
-                src={user.avatar}
-                width={64}
-                height={64}
-                className="object-cover w-full h-full"
-                alt={user.name}
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center rounded-full font-heading font-bold text-2xl sm:text-4xl text-bg/75 bg-accent/30">
-                {user?.name?.at(0) || "?"}
-              </div>
-            )}
+          {/* profile dropdown */}
+
+          <div className="relative overflow-visible flex items-center justify-center rounded-full w-14 h-14 p-0 bg-surface">
+            <button
+              onClick={handleProfileClick}
+              className="w-full h-full p-0 cursor-pointer"
+            >
+              <span className="sr-only">Open user menu</span>
+              {user?.avatar ? (
+                <Image
+                  src={user.avatar}
+                  width={64}
+                  height={64}
+                  className="object-cover w-full h-full"
+                  alt={user.name}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center rounded-full font-heading font-bold text-2xl sm:text-4xl text-bg/75 bg-accent/30">
+                  {user?.name?.at(0) || "?"}
+                </div>
+              )}
+            </button>
+            <div className="absolute py-3 top-full right-3">
+              <ProfileDropdown open={showProfileDropdown} />
+            </div>
           </div>
         </div>
       </div>
