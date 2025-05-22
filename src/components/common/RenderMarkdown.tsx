@@ -48,7 +48,7 @@ export function RenderMarkdown({ markdownText }: Props): JSX.Element {
           <Heading
             as="h1"
             size="md"
-            // className="text-2xl font-bold text-fg"
+            // className="text-2xl font-bold"
             {...props}
           >
             {props.children}
@@ -58,7 +58,7 @@ export function RenderMarkdown({ markdownText }: Props): JSX.Element {
           <Heading
             as="h2"
             size="md"
-            // className="text-xl font-bold text-fg"
+            // className="text-xl font-bold"
             {...props}
           >
             {props.children}
@@ -68,7 +68,7 @@ export function RenderMarkdown({ markdownText }: Props): JSX.Element {
           <Heading
             as="h3"
             size="md"
-            className="text-lg font-bold text-fg"
+            className="text-lg font-bold"
             {...props}
           >
             {props.children}
@@ -105,7 +105,7 @@ export function RenderMarkdown({ markdownText }: Props): JSX.Element {
         p: (props) => {
           const { children, ...rest } = props;
           return (
-            <Paragraph size="sm" className="text-fg font-serif" {...rest}>
+            <Paragraph size="sm" className=" font-serif" {...rest}>
               {children}
             </Paragraph>
           );
@@ -114,7 +114,7 @@ export function RenderMarkdown({ markdownText }: Props): JSX.Element {
           const { children, ...rest } = props;
           return (
             <ul
-              className="list-disc list-inside text-fg font-body font-semibold"
+              className="list-disc list-inside  font-body font-semibold"
               {...rest}
             >
               {children}
@@ -124,7 +124,7 @@ export function RenderMarkdown({ markdownText }: Props): JSX.Element {
         li: (props) => {
           const { children, ...rest } = props;
           return (
-            <li className="text-fg font-body font-semibold mt-1.5" {...rest}>
+            <li className=" font-body font-semibold mt-1.5" {...rest}>
               {children}
             </li>
           );
