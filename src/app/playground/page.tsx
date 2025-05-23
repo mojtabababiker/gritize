@@ -2,10 +2,12 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import toast from "react-hot-toast";
+
 import { useAuth } from "@/context/AuthProvider";
 import { useResize } from "@/hooks/useHandleResize";
 
-import { UserProblemSchema } from "@/models/schemas";
+import { CodingPatternSchema, UserProblemSchema } from "@/models/schemas";
 import { Languages } from "@/models/types/indext";
 
 import { CodeSnippets } from "@/constant/editor-constants";
@@ -18,7 +20,6 @@ import ResizeRuler from "@/components/common/ResizeRuler";
 import CodeEditor from "@/components/playground/CodeEditor";
 import ProblemSection from "@/components/playground/ProblemSection";
 import Submissions from "@/components/playground/Submissions";
-import toast from "react-hot-toast";
 import CustomToast from "@/components/common/CustomToast";
 import TestimonialProvider from "@/components/testimonials/TestmonialProvider";
 
@@ -33,8 +34,11 @@ function Page() {
     direction: "horizontal",
   });
 
+  const [problemId, setProblemId] = useState<string | null>(null);
   const [codingPatternId, setCodingPatternId] = useState<string | null>(null);
   const [problem, setProblem] = useState<UserProblemSchema | null>(null);
+  const [codingPattern, setCodingPattern] =
+    useState<CodingPatternSchema | null>(null);
   const [code, setCode] = useState<string | undefined>(undefined);
   const [language, setLanguage] = useState<Languages>("javascript");
 
@@ -55,6 +59,10 @@ function Page() {
         router.replace("/dashboard");
         return null;
       }
+      const codingPattern = user.getCodingTechnique(codingPatternId);
+      console.log("codingPattern", codingPattern);
+      setCodingPattern(codingPattern);
+
       return problem;
     } else {
       const problem = user.getAlgorithmProblem(problemId);
@@ -64,6 +72,7 @@ function Page() {
         router.replace("/dashboard");
         return null;
       }
+      setCodingPattern(null);
       return problem;
     }
   };
@@ -83,13 +92,8 @@ function Page() {
     if (!user) {
       return;
     }
-    const searchParams = new URLSearchParams(window.location.search);
-    const problemId = searchParams.get("problem");
-    const codingPatternId = searchParams.get("cp");
-    setCodingPatternId(codingPatternId);
     if (!problemId) {
       // If no problemId is provided, fetch the localstorage problemId
-
       const localStorageProblem = localStorage.getItem(`${user.id}-lpp`);
       if (localStorageProblem) {
         const { problemId, codingPatternId, code } =
@@ -141,7 +145,7 @@ function Page() {
         code: code || null,
       })
     );
-  }, [user, router]);
+  }, [user, router, problemId, codingPatternId]);
 
   useEffect(() => {
     if (!user) return;
@@ -193,6 +197,18 @@ function Page() {
     return () => clearInterval(backupCodeIntervalId.current!);
   }, []);
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const newProblemId = searchParams.get("problem");
+    const newCodingPatternId = searchParams.get("cp");
+    if (newProblemId !== problemId) {
+      setProblemId(newProblemId);
+    }
+    if (newCodingPatternId !== codingPatternId) {
+      setCodingPatternId(newCodingPatternId);
+    }
+  });
+
   return isSmallScreen ? (
     <NoticeCard />
   ) : (
@@ -210,6 +226,7 @@ function Page() {
               <ProblemSection
                 editorCodeText={code}
                 problem={problem}
+                codingPattern={codingPattern}
                 setShowSubmission={setShowSubmission}
               />
               {/* resize ruler */}

@@ -1,34 +1,38 @@
 "use client";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import toast from "react-hot-toast";
-import { MessageCircleWarningIcon } from "lucide-react";
+import { InfoIcon, MessageCircleWarningIcon } from "lucide-react";
 
 import { useAuth } from "@/context/AuthProvider";
-import { UserProblemSchema } from "@/models/schemas";
+import { CodingPatternSchema, UserProblemSchema } from "@/models/schemas";
 
 import Button from "@/components/common/Button";
 import Heading from "@/components/common/Heading";
 import { RenderMarkdown } from "@/components/common/RenderMarkdown";
 import Paragraph from "@/components/common/Paragraph";
 import CustomToast from "@/components/common/CustomToast";
+import { UserImage } from "@/components/dashboard/UserImage";
 
 import AIAssistant from "./AIAssistant";
 
 type Props = {
   problem: UserProblemSchema | null;
+  codingPattern: CodingPatternSchema | null;
   editorCodeText?: string;
   showSubmission?: boolean;
   setShowSubmission?: (show: boolean) => void;
 };
 
-function ProblemSection({ problem, editorCodeText, setShowSubmission }: Props) {
+function ProblemSection({
+  problem,
+  codingPattern,
+  editorCodeText,
+  setShowSubmission,
+}: Props) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const codingPatternId = searchParams.get("cp");
   const { user } = useAuth();
 
   const [nextProblem, setNextProblem] = useState<UserProblemSchema | null>(
@@ -67,7 +71,7 @@ function ProblemSection({ problem, editorCodeText, setShowSubmission }: Props) {
       }
     }, 1500);
     if (!user || !problem) return;
-    const nextProblem = user.getProblemAfter(problem.id, codingPatternId);
+    const nextProblem = user.getProblemAfter(problem.id, codingPattern?.id);
     setNextProblem(nextProblem);
     setLoading(false);
 
@@ -77,7 +81,7 @@ function ProblemSection({ problem, editorCodeText, setShowSubmission }: Props) {
       setError(null);
     }
     clearTimeout(timeout);
-  }, [problem, user, codingPatternId]);
+  }, [user, problem, codingPattern]);
 
   const goToNextProblem = () => {
     if (!nextProblem) {
@@ -94,7 +98,7 @@ function ProblemSection({ problem, editorCodeText, setShowSubmission }: Props) {
 
     router.push(
       `/playground?problem=${nextProblemId}${
-        codingPatternId ? `&cp=${codingPatternId}` : ""
+        codingPattern ? `&cp=${codingPattern.id}` : ""
       }`
     );
   };
@@ -139,19 +143,12 @@ function ProblemSection({ problem, editorCodeText, setShowSubmission }: Props) {
               href={"/dashboard"}
               className="flex-items-center justify-center rounded-full w-8 h-8 p-0 bg-surface"
             >
-              {user?.avatar ? (
-                <Image
-                  src={user.avatar}
-                  width={64}
-                  height={64}
-                  className="object-cover w-full h-full"
-                  alt={user.name}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center rounded-full font-heading font-bold text-xl sm:text-3xl text-bg/75 bg-accent/30">
-                  {user?.name?.at(0) || "?"}
-                </div>
-              )}
+              <UserImage
+                size="xs"
+                avatar={user?.avatar}
+                username={user?.name || "?"}
+                className="text-bg/75 bg-accent/30"
+              />
             </Link>
 
             {/* CTAs */}
@@ -178,13 +175,26 @@ function ProblemSection({ problem, editorCodeText, setShowSubmission }: Props) {
           </section>
 
           {/* title */}
-          <Heading
-            as="h3"
-            size="lg"
-            className="p-4 text-surface text-end w-full underline"
-          >
-            {problem.problem.title}
-          </Heading>
+          <section dir="ltr" className="w-full flex flex-col items-center p-4">
+            {codingPattern && (
+              <div className="relative w-full -mb-2 flex items-center gap-2">
+                <Heading as="h4" size="sm" className="text-fg peer cursor-">
+                  {codingPattern.title}
+                </Heading>
+                <InfoIcon className="size-4 text-fg peer cursor-" />
+                <div className="absolute z-50 top-full w-full px-4 py-3 bg-primary rounded-lg opacity-0 peer-hover:animate-fade-in">
+                  <RenderMarkdown markdownText={codingPattern.info} />
+                </div>
+              </div>
+            )}
+            <Heading
+              as="h3"
+              size="lg"
+              className="text-surface  w-full underline"
+            >
+              {problem.problem.title}
+            </Heading>
+          </section>
           {/* context area (problem) */}
           <section
             dir="ltr"
