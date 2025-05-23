@@ -62,6 +62,7 @@ export const ProjectDescription = () => {
                 size="md"
                 onClick={() => setShowModal(false)}
                 isSimple
+                className="text-sm"
               >
                 Close
               </Button>

@@ -115,7 +115,7 @@ async function Brief() {
     totalContributors = lastStats.totalContributors;
   }
   return (
-    <Bounded as="section" className="brief-container">
+    <Bounded as="section" className="brief-container" id="about-us">
       <div className="flex flex-col pt-32 pb-16 gap-3">
         {/* title */}
         <Heading as="h2" size="lg" className="text-fg text-center">

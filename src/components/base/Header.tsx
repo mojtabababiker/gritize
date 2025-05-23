@@ -2,12 +2,13 @@
 import clsx from "clsx";
 import Image from "next/image";
 import Bounded from "../common/Bounded";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../common/Button";
 import AuthDialog from "../auth/AuthDialog";
 import { useAuth } from "@/context/AuthProvider";
 import { useRouter } from "next/navigation";
 import Loading from "../common/Loading";
+import Link from "next/link";
 
 type MenuPage = {
   name: string;
@@ -16,7 +17,7 @@ type MenuPage = {
 
 const MENU_ITEMS: MenuPage[] = [
   { name: "Home", href: "/" },
-  { name: "Contribute", href: "/contribute" },
+  { name: "Contribute", href: "#about-us" },
 ];
 
 function Header() {
@@ -25,12 +26,28 @@ function Header() {
   const router = useRouter();
   const { isLoggedIn, user, setIsLoggedIn, setUser } = useAuth();
 
-  const handleClick = (page: MenuPage) => {
-    setActive(page);
-    // route to the page
-    // router.push(page.href);
-  };
+  useEffect(() => {
+    const scrollTo = (containerId: string) => {
+      const element = document.getElementById(containerId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    };
 
+    const linkClickHandler = (e: Event) => {
+      const link = e.currentTarget as HTMLAnchorElement;
+      e.preventDefault();
+      const targetId = link.getAttribute("href")?.substring(1);
+      if (targetId) {
+        scrollTo(targetId);
+      }
+    };
+
+    const innerLinks = document.querySelectorAll("a[href^='#']");
+    innerLinks.forEach((link) => {
+      link.addEventListener("click", linkClickHandler);
+    });
+  }, []);
   const logout = () => {
     /* Add logout functionality here */
     if (!user) {
@@ -67,17 +84,17 @@ function Header() {
             <ul className="nav-menu flex items-end gap-4">
               {MENU_ITEMS.map((item) => (
                 <li key={item.name}>
-                  <button
+                  <Link
                     className={clsx(
                       "text-bg/80 font-heading text-xl sm:text-lg transition-all duration-200 hover:text-bg/100",
                       active.name === item.name
                         ? "font-bold active"
                         : "font-semibold scale-90"
                     )}
-                    onClick={() => handleClick(item)}
+                    href={item.href}
                   >
                     {item.name}
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>

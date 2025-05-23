@@ -56,6 +56,7 @@ function ContactForm({ className }: Props) {
         "w-full flex flex-col gap-6 items-center justify-center",
         className
       )}
+      id="contact-us"
     >
       {/* text */}
       <div className="w-full flex flex-col">

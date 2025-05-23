@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 import Button from "@/components/common/Button";
@@ -21,10 +21,6 @@ function Hero() {
   const { isLoggedIn } = useAuth();
 
   const router = useRouter();
-
-  // useEffect(() => {
-  //   console.log("User status checked:", isLoggedIn, user);
-  // }, [isLoggedIn, user]);
 
   const onQuizFinish = () => {
     setStartQuiz(false);
