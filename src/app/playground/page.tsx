@@ -42,7 +42,7 @@ function Page() {
 
   const [showSubmission, setShowSubmission] = useState(false);
 
-  const [askForTestimonial, setAskForTestimonial] = useState(false);
+  const [askForTestimonial, setAskForTestimonial] = useState(true);
 
   const getProblem = (problemId: string, codingPatternId: string | null) => {
     if (!user) {

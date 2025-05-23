@@ -257,9 +257,10 @@ body {
 
 .testimonial-popup {
   background-image: linear-gradient(
-    to bottom,
-    var(--color-bg) 33%,
-    var(--color-surface) 100%
+    to bottom right,
+    var(--color-bg) 40%,
+    hsl(0, 5%, 8%) 80%,
+    hsl(0, 5%, 80%) 90%
   );
 }
 
