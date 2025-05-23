@@ -45,9 +45,9 @@ function Input({
     setShowPwd((prev) => !prev);
   };
   const CLASS_NAME =
-    "relative text-bg/70 bg-fg placeholder-bg/40 ring-1 ring-accent focus:outline-accent rounded-xl py-4 transition-all duration-150 ease-in-out";
+    "relative text-bg/70 bg-fg placeholder-bg/40 ring-1 ring-accent focus:outline-accent rounded-xl py-3 sm:py-4 transition-all duration-150 ease-in-out";
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div className="flex flex-col gap-1">
       {label && (
         <label htmlFor={id} className="text-surface text-base capitalized">
           {label}
@@ -64,7 +64,7 @@ function Input({
           }}
           placeholder={placeholder}
           rows={rows || 8}
-          className={clsx("px-6", CLASS_NAME, className)}
+          className={clsx("sm:px-6 [padding-left:4px]", CLASS_NAME, className)}
         />
       ) : (
         <div className={clsx("relative", className)}>
@@ -79,10 +79,14 @@ function Input({
               onTextChange?.(e.target.value);
             }}
             placeholder={placeholder}
-            className={clsx("px-4", CLASS_NAME, className)}
+            className={clsx(
+              "sm:px-4 [padding-left:4px]",
+              CLASS_NAME,
+              className
+            )}
           />
           {type === "password" && (
-            <div className="absolute right-0 top-0 bottom-0 flex items-center justify-center p-4">
+            <div className="absolute right-0 top-0 bottom-0 flex items-center justify-center px-1 sm:p-4">
               <span className="sr-only">
                 {showPwd ? "Hide" : "Show"} Password
               </span>

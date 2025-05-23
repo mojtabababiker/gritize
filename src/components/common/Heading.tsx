@@ -19,13 +19,30 @@ function Heading({
     <Component
       className={clsx(
         "font-heading",
-        size === "sm" &&
-          "text-[clamp(0.8125rem,5vw_+_0.45rem,1rem)] font-semibold",
-        size === "md" &&
-          "text-[clamp(1.125rem,5vw_+_0.61rem,1.30rem)] font-semibold",
-        size === "lg" && "text-[clamp(1.25rem,5vw_+_0.8125rem,2rem)] font-bold",
-        size === "title" &&
-          "text-[clamp(2.7rem,5vw_+_1.75rem,4.3rem)] font-black leading-16 md:leading-20 lg:leading-24",
+        size === "sm" && [
+          "text-[clamp(0.75rem,1.5vw,1rem)]",
+          "font-semibold",
+          "leading-[1.4]",
+        ],
+        size === "md" && [
+          "text-[clamp(1rem,2vw,1.35rem)]",
+          "font-semibold",
+          "leading-[1.5]",
+        ],
+        size === "lg" && [
+          "text-[clamp(1.25rem,2.5vw,2.25rem)]",
+          "font-bold",
+          "leading-[1.3]",
+        ],
+        size === "title" && [
+          "text-[clamp(2rem,5vw,4.5rem)]",
+          "font-black",
+          "leading-[1.1]",
+          "tracking-tight",
+          "sm:leading-[1.2]",
+          "md:leading-[1.3]",
+          "lg:leading-[1.4]",
+        ],
         className
       )}
       {...props}
