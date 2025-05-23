@@ -37,7 +37,7 @@ function TestimonialInfo({ userName, setCurrentPage, onClose }: Props) {
         Start Now
       </Button>
       <button
-        className="bg-transparent text-bg underline italic text-xl cursor-pointer"
+        className="bg-transparent text-surface underline italic text-lg font-body font-light cursor-pointer"
         onClick={onClose}
       >
         Skip for now

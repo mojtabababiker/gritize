@@ -44,7 +44,7 @@ function Page() {
 
   const [showSubmission, setShowSubmission] = useState(false);
 
-  const [askForTestimonial, setAskForTestimonial] = useState(false);
+  const [askForTestimonial, setAskForTestimonial] = useState(true);
 
   const backupCodeIntervalId = useRef<NodeJS.Timeout | null>(null);
 
