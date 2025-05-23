@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
 
-import { FileWarning } from "lucide-react";
+import { FileWarning, XIcon } from "lucide-react";
 
 import { useAuth } from "@/context/AuthProvider";
 import Timer from "@/components/common/Timer";
@@ -40,7 +40,7 @@ const Q_COMPONENTS: Record<Question["type"], React.FC<Q_COMPONENTS_Props>> = {
 
 // popup container div tailwind classes for abstraction
 const CONTAINER_CLS =
-  "fixed z-50 inset-0 backdrop-blur-2xl flex items-center justify-center overflow-hidden";
+  "fixed z-50 inset-0 backdrop-blur-2xl flex items-center justify-center overflow-hidden px-3";
 // popup div tailwind classes for abstraction
 const CLASS_NAME =
   "quiz-popup relative w-full max-w-[640px] flex flex-col items-center justify-between px-3 py-5 rounded-xl animate-slide-up";
@@ -210,7 +210,7 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
                 ></div>
               </div>
               {/* counter */}
-              <div className="text-xl font-heading font-semibold text-bg">
+              <div className="text-sm sm:text-xl font-heading font-semibold text-bg">
                 <span className="text-primary">{currentQuestionIndex + 1}</span>
                 /{quiz.questions.length}
               </div>
@@ -394,11 +394,11 @@ type QuizInfoProps = {
 const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
   useEffect(() => {
     const parent = parentRef.current;
-    const handleKeydown = (e:KeyboardEvent) => {
+    const handleKeydown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         closeQuiz();
       }
-    }
+    };
     const handleClick = (e: MouseEvent) => {
       if (parent && e.target === parent) {
         closeQuiz();
@@ -413,9 +413,12 @@ const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
   }, [closeQuiz, parentRef]);
   return (
     <>
+      <div className="absolute top-2 right-2 size-10 rounded-full ring-1 ring-bg/65 flex items-center justify-center">
+        <XIcon className="size-6 sm:size-8 text-bg/65" onClick={closeQuiz} />
+      </div>
       {/* description */}
-      <div className="w-full flex-1 flex items-center justify-center my-10">
-        <Paragraph size="md" className="text-center text-bg/85 px-4">
+      <div className="w-full flex-1 flex items-center justify-center my-4 sm:my-10">
+        <Paragraph size="md" className="sm:text-center text-bg/85 px-4">
           in order To make the experience more effective and tailored for your
           skills, we need to run a quick quiz to determine your current level in
           the selected language.
@@ -433,7 +436,11 @@ const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
 
       {/* start button */}
       <div className="w-full flex items-center justify-center py-1">
-        <Button variant="ghost" className="bg-surface" onClick={action}>
+        <Button
+          variant="ghost"
+          className="bg-surface min-w-[120px] justify-center"
+          onClick={action}
+        >
           I understand
         </Button>
       </div>
@@ -450,11 +457,11 @@ type QuizRulesProps = {
 const QuizRules = ({ action, closeQuiz, parentRef }: QuizRulesProps) => {
   useEffect(() => {
     const parent = parentRef.current;
-    const handleKeydown = (e:KeyboardEvent) => {
+    const handleKeydown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         closeQuiz();
       }
-    }
+    };
     const handleClick = (e: MouseEvent) => {
       if (parent && e.target === parent) {
         closeQuiz();
@@ -469,10 +476,17 @@ const QuizRules = ({ action, closeQuiz, parentRef }: QuizRulesProps) => {
   }, [closeQuiz, parentRef]);
   return (
     <>
-      <div className="w-full flex-1 flex flex-col items-center justify-center mt-10">
+      <div className="absolute top-2 right-2 size-10 rounded-full ring-1 ring-bg/65 flex items-center justify-center">
+        <XIcon className="size-6 sm:size-8 text-bg/65" onClick={closeQuiz} />
+      </div>
+      <div className="w-full flex-1 flex flex-col items-center justify-center mt-5 sm:mt-10">
         <Paragraph size="md" className=" text-bg/85 max-w-[42ch]">
-          This is a <span className="font-semibold">2-3 minutes 10-15 questions quiz</span>, which crafted to test your
-          knowledge level, and it consists of the following:
+          This is a{" "}
+          <span className="font-semibold">
+            2-3 minutes 10-15 questions quiz
+          </span>
+          , which crafted to test your knowledge level, and it consists of the
+          following:
         </Paragraph>
         <ul className="w-full list-disc list-inside font-semibold text-bg/85 text-xl mt-5 pl-5">
           <li>True or False questions</li>
@@ -491,7 +505,11 @@ const QuizRules = ({ action, closeQuiz, parentRef }: QuizRulesProps) => {
 
       {/* start button */}
       <div className="w-full flex items-center justify-center py-1">
-        <Button variant="ghost" className="bg-surface" onClick={action}>
+        <Button
+          variant="ghost"
+          className="bg-surface min-w-[120px] justify-center"
+          onClick={action}
+        >
           Start
         </Button>
       </div>
