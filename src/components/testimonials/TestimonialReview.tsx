@@ -1,12 +1,14 @@
 import React from "react";
-import Heading from "../common/Heading";
-import Paragraph from "../common/Paragraph";
-import { StarCircle } from "../icons/Star";
-import Input from "../common/Input";
-import ArrowsLeft from "../icons/ArrowsLeft";
+
 import clsx from "clsx";
 import toast from "react-hot-toast";
-import CustomToast from "../common/CustomToast";
+
+import Heading from "@/components/common/Heading";
+import Paragraph from "@/components/common/Paragraph";
+import Input from "@/components/common/Input";
+import CustomToast from "@/components/common/CustomToast";
+import ArrowsLeft from "@/components/icons/ArrowsLeft";
+import { StarCircle } from "@/components/icons/Star";
 
 type Props = {
   review: string;

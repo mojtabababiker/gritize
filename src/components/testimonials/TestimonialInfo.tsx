@@ -1,7 +1,8 @@
 import React from "react";
-import Heading from "../common/Heading";
-import Paragraph from "../common/Paragraph";
-import Button from "../common/Button";
+
+import Heading from "@/components/common/Heading";
+import Paragraph from "@/components/common/Paragraph";
+import Button from "@/components/common/Button";
 
 type Props = {
   userName: string;

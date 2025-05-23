@@ -1,17 +1,18 @@
 "use client";
-
-import { useAuth } from "@/context/AuthProvider";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import CustomToast from "../common/CustomToast";
-import Heading from "../common/Heading";
-import Button from "../common/Button";
+
+import { useAuth } from "@/context/AuthProvider";
+
+import CustomToast from "@/components/common/CustomToast";
+import Heading from "@/components/common/Heading";
+import Button from "@/components/common/Button";
+import Input from "@/components/common/Input";
+import Paragraph from "@/components/common/Paragraph";
+import EditableUserAvatar from "@/components/dashboard/UserAvatar";
+
 import TestimonialInfo from "./TestimonialInfo";
-import Input from "../common/Input";
 import TestimonialReview from "./TestimonialReview";
-import Paragraph from "../common/Paragraph";
-import { UserImage } from "../dashboard/UserImage";
-import EditableUserAvatar from "../dashboard/UserAvatar";
 
 type Props = {
   show: boolean;
@@ -169,7 +170,7 @@ export default function TestimonialProvider({ show, onClose }: Props) {
               name="title"
               label="Job Title"
               type="text"
-              placeholder="Your job title..."
+              placeholder="Your job title@/components."
               onTextChange={setTitle}
             />
 
