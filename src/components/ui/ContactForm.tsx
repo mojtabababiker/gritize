@@ -77,7 +77,8 @@ function ContactForm({ className }: Props) {
             label="name"
             name="name"
             id="input-name"
-            placeholder="Your Name@/components."
+            placeholder="Your Name...."
+            className="w-full"
           />
           {validationErrors.name && (
             <Paragraph size="sm" className="text-accent">
@@ -93,6 +94,7 @@ function ContactForm({ className }: Props) {
             name="email"
             id="input-email"
             placeholder="name@example.com"
+            className="w-full"
           />
           {validationErrors.email && (
             <Paragraph size="sm" className="text-accent">
@@ -124,6 +126,7 @@ function ContactForm({ className }: Props) {
           variant="accent"
           size="md"
           type="submit"
+          className="min-w-[120px] justify-center"
         >
           {state?.ok ? "We got it!" : "Send It"}
         </Button>

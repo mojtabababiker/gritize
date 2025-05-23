@@ -110,7 +110,7 @@ function SignupForm({ onComplete, changeFormType }: Props) {
   }, [state, user]);
 
   return (
-    <div className="w-full flex flex-col gap-6 items-center justify-center">
+    <div className="w-full flex flex-col gap-1 sm:gap-4 lg:gap-6 items-center justify-center">
       {/* heading */}
       <Heading as="h2" size="lg" className="text-fg w-full text-center">
         Signin
@@ -118,18 +118,18 @@ function SignupForm({ onComplete, changeFormType }: Props) {
       {/* form */}
       <form
         action={action}
-        className="w-full flex flex-col gap-6 items-center justify-center"
+        className="w-full flex flex-col  items-center justify-center"
       >
-        <div className="w-full flex flex-wrap gap-4 items-center justify-between">
+        <div className="w-full flex flex-wrap gap-1 items-center justify-between mt-4">
           {/* username */}
-          <div className="flex flex-col">
+          <div className="flex flex-col flex-1 min-w-[150px] sm:min-w-[260px]">
             <Input
               label="username"
               name="username"
               value={""}
               type="text"
               placeholder="yourname"
-              className="flex-1 min-w-[calc(100vw-72px)] sm:min-w-[260px]"
+              className="w-full"
             />
             <Paragraph
               as="div"
@@ -141,14 +141,14 @@ function SignupForm({ onComplete, changeFormType }: Props) {
           </div>
 
           {/* email */}
-          <div className="flex flex-col">
+          <div className="flex flex-col flex-1 min-w-[150px] sm:min-w-[260px]">
             <Input
               label="email"
               name="email"
               value={""}
               type="email"
               placeholder="youremail@exmaple.com"
-              className="flex-1 min-w-[calc(100vw-72px)] sm:min-w-[260px]"
+              className="w-full"
             />
             <Paragraph
               as="div"
@@ -160,14 +160,14 @@ function SignupForm({ onComplete, changeFormType }: Props) {
           </div>
 
           {/* password */}
-          <div className="flex flex-col">
+          <div className="flex flex-col flex-1 min-w-[150px] sm:min-w-[260px]">
             <Input
               label="password"
               name="password"
               value={""}
               type="password"
               placeholder="********"
-              className="flex-1 min-w-[calc(100vw-72px)] sm:min-w-[260px]"
+              className="w-full"
             />
             <Paragraph
               as="div"
@@ -179,14 +179,14 @@ function SignupForm({ onComplete, changeFormType }: Props) {
           </div>
 
           {/* confirm password */}
-          <div className="flex flex-col">
+          <div className="flex flex-col flex-1 min-w-[150px] sm:min-w-[260px]">
             <Input
               label="confirm password"
               name="confirmPassword"
               value={""}
               type="password"
               placeholder="********"
-              className="flex-1 min-w-[calc(100vw-72px)] sm:min-w-[260px]"
+              className="w-full"
             />
             <Paragraph
               as="div"
@@ -203,7 +203,7 @@ function SignupForm({ onComplete, changeFormType }: Props) {
             type="submit"
             variant="accent"
             size="md"
-            className="max-w-fit"
+            className="min-w-[120px] justify-center"
             isLoading={isLoading}
             disabled={isLoading}
           >
