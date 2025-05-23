@@ -1,8 +1,9 @@
 export const StarCircle: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="25"
-    height="24"
+    // width="25"
+    // height="24"
+    viewBox="0 0 25 25"
     fill="none"
     {...props}
   >
