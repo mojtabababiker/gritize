@@ -5,6 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import Bounded from "../common/Bounded";
+import clsx from "clsx";
 
 gsap.registerPlugin(useGSAP);
 
@@ -12,42 +13,50 @@ const TEXTS = [
   {
     text: "Practice, purpose, proof. All in one place—made for developers by a developer who gets it",
     size: "24px",
+    className: "text-base md:text-2xl",
     speed: 4.66, // Speed of animation in seconds (how fast the text slides in)
   },
   {
     text: "We created Gritize to fill a void: a space where developers can train like pros",
     size: "32px",
+    className: "text-xl sm:text-2xl lg:text-4xl",
     speed: 4.8,
   },
   {
     text: "Practice, purpose, proof. All in one place—made for developers by a developer who gets it",
     size: "24px",
+    className: "text-xl md:text-2xl",
     speed: 4.82,
   },
   {
     text: "Your resume says potential. Gritize shows it, line by line, commit by commit",
     size: "28px",
+    className: "text-xl md:text-3xl",
     speed: 5.5,
   },
   {
     text: "Grit isn't taught. It's trained—one challenge at a time",
     size: "24px",
+    className: "text-sm md:text-2xl",
     speed: 4.65,
   },
   {
     text: "Pattern recognition over memorization",
     size: "28px",
+    className: "text-xl md:text-3xl",
     speed: 5.4,
   },
 
   {
     text: "Grit isn't taught. It's trained—one challenge at a time",
     size: "18px",
+    className: "text-xs md:text-lg",
     speed: 5.5,
   },
   {
     text: "Your breakthrough doesn’t wait for permission.",
     size: "24px",
+    className: "text-lg md:text-2xl",
     speed: 4.5,
   },
 ];
@@ -100,10 +109,13 @@ function SlidingTextImage() {
         {TEXTS.map((text, index) => (
           <div
             key={`sliding-text-${index}`}
-            className="absolute w-full animate-slide-text text-surface/75"
+            className={clsx(
+              "absolute w-full animate-slide-text text-surface/75",
+              text.className
+            )}
             style={{
               top: `calc(50% - ${index * 50 * (index % 2 === 0 ? -1 : 1)}px)`,
-              fontSize: text.size,
+              // fontSize: text.size,
               animationDuration: `${text.speed}s`,
               animationDelay: `${index * 0.5}s`,
               animationPlayState: "var(--sliding-text-play-state)",
