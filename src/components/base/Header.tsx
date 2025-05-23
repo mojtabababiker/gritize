@@ -69,7 +69,7 @@ function Header() {
       >
         <div className="flex flex-wrap pt-6 pb-4 gap-4 overflow-clip">
           {/* icon */}
-          <div className="flex flex-1 items-center justify-center">
+          <div className="relative flex flex-1 items-center justify-center">
             <Image
               src="/images/main-logo.png"
               width={200}
@@ -77,6 +77,9 @@ function Header() {
               alt="Logo"
               className="w-full max-w-[190px] h-auto"
             />
+            <div className="absolute -top-4 right-6">
+              <span className="text-base text-accent font-semibold">Beta</span>
+            </div>
           </div>
 
           {/* nav menu */}

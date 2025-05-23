@@ -26,7 +26,7 @@ function DashboardHeader() {
       {/* header */}
       <div className="flex items-center justify-between">
         {/* logo */}
-        <Link href="/">
+        <Link href="/" className="relative">
           <Image
             src="/images/main-logo.png"
             alt="Gritize Logo"
@@ -34,6 +34,9 @@ function DashboardHeader() {
             height={200}
             className="w-full max-w-[190px] h-auto"
           />
+          <div className="absolute -top-5 right-0">
+            <span className="text-base text-accent font-semibold">Beta</span>
+          </div>
         </Link>
 
         <div className="flex items-center justify-end gap-2">
