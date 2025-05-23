@@ -11,6 +11,7 @@ import Input from "../common/Input";
 import TestimonialReview from "./TestimonialReview";
 import Paragraph from "../common/Paragraph";
 import { UserImage } from "../dashboard/UserImage";
+import EditableUserAvatar from "../dashboard/UserAvatar";
 
 type Props = {
   show: boolean;
@@ -150,18 +151,16 @@ export default function TestimonialProvider({ show, onClose }: Props) {
               // prompt the user to upload an avatar
               <div className="w-full flex flex-col gap-2">
                 {/* user Image */}
-                <UserImage
-                  size="xs"
-                  avatar={user?.avatar}
-                  username={user?.name || "?"}
-                  className="text-bg/75 bg-accent/30"
-                />
+                <EditableUserAvatar />
                 {/* text */}
                 <Paragraph
                   size="sm"
                   className="self-center max-w-[42ch] text-center text-surface"
                 >
-                  {`We noticed you don't have profile image. Would you like to upload one? help us make your review more personal.`}
+                  {`We noticed you don't have profile image. Would you like to upload one? `}
+                  <span className="text-fg font-semibold">
+                    help us make your review more personal.
+                  </span>
                 </Paragraph>
               </div>
             )}
