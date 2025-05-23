@@ -120,7 +120,7 @@ async function Brief() {
         {/* title */}
         <Heading as="h2" size="lg" className="text-fg text-center">
           A Platform Built From Developers, For
-          <span className="text-accent text-5xl md:text-6xl text-center font-bold block">
+          <span className="text-accent text-4xl md:text-6xl text-center font-bold block">
             {" "}
             Developers
           </span>
@@ -130,7 +130,7 @@ async function Brief() {
         <div className="flex flex-wrap justify-between gap-y-16">
           {/* Project stats server component Should be replaced */}
           <span className="sr-only">Gritize GitHub repository statistics</span>
-          <ul className="project-stats flex flex-col gap-3 items-center justify-center flex-1 sm:min-w-[420px] px-4 mt-8 md:mt-0">
+          <ul className="project-stats flex flex-col gap-3 items-center justify-center flex-1 w-full sm:min-w-[420px] sm:pr-8 mt-8 md:mt-0">
             {/* stars */}
             <li className="w-full flex items-center justify-between">
               <div className="flex-1 flex gap-3 items-center">
@@ -140,17 +140,17 @@ async function Brief() {
                   alt="Total Stars"
                   width={60}
                   height={60}
-                  className="w-10 h-auto object-cover"
+                  className="w-6 sm:w-10 h-auto object-cover"
                 />
 
                 {/* title */}
-                <Heading as="h3" size="md" className="text-fg">
+                <Heading as="h3" size="md" className="text-fg flex-1">
                   Total Stars
                 </Heading>
               </div>
 
               {/* value */}
-              <Heading as="h3" size="md" className="text-accent w-20 ">
+              <Heading as="h3" size="md" className="text-accent max-w-20">
                 {totalStars}
               </Heading>
             </li>
@@ -164,17 +164,17 @@ async function Brief() {
                   alt="Total Commit"
                   width={60}
                   height={60}
-                  className="w-10 h-auto object-cover"
+                  className="w-6 sm:w-10 h-auto object-cover"
                 />
 
                 {/* title */}
-                <Heading as="h3" size="md" className="text-fg">
+                <Heading as="h3" size="md" className="text-fg flex-1">
                   Total Commits
                 </Heading>
               </div>
 
               {/* value */}
-              <Heading as="h3" size="md" className="text-accent w-20">
+              <Heading as="h3" size="md" className="text-accent max-w-20">
                 {totalCommits}
               </Heading>
             </li>
@@ -188,17 +188,17 @@ async function Brief() {
                   alt="Total Pull Request"
                   width={60}
                   height={60}
-                  className="w-10 h-auto object-cover"
+                  className="w-5 sm:w-10 h-auto object-cover"
                 />
 
                 {/* title */}
-                <Heading as="h3" size="md" className="text-fg">
+                <Heading as="h3" size="md" className="text-fg w-full flex-1">
                   Total Pull Requests
                 </Heading>
               </div>
 
               {/* value */}
-              <Heading as="h3" size="md" className="text-accent w-20">
+              <Heading as="h3" size="md" className="text-accent max-w-20">
                 {totalPullRequest}
               </Heading>
             </li>
@@ -210,15 +210,15 @@ async function Brief() {
                   alt="Open Issue"
                   width={60}
                   height={60}
-                  className="w-10 h-auto object-cover"
+                  className="w-6 sm:w-10 h-auto object-cover"
                 />
                 {/* title */}
-                <Heading as="h3" size="md" className="text-fg">
+                <Heading as="h3" size="md" className="text-fg w-full flex-1">
                   Open Issues
                 </Heading>
               </div>
               {/* value */}
-              <Heading as="h3" size="md" className="text-accent w-20">
+              <Heading as="h3" size="md" className="text-accent max-w-20">
                 {openedIssues}
               </Heading>
             </li>
@@ -231,7 +231,7 @@ async function Brief() {
                   alt="Total Contributors"
                   width={60}
                   height={60}
-                  className="w-10 h-auto object-cover"
+                  className="w-6 sm:w-10 h-auto object-cover"
                 />
                 {/* title */}
                 <Heading as="h3" size="md" className="text-fg">
@@ -239,7 +239,7 @@ async function Brief() {
                 </Heading>
               </div>
               {/* value */}
-              <Heading as="h3" size="md" className="text-accent w-20">
+              <Heading as="h3" size="md" className="text-accent max-w-20">
                 {totalContributors}
               </Heading>
             </li>
