@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { useAuth } from "@/context/AuthProvider";
 import { useResize } from "@/hooks/useHandleResize";
 
-import { UserProblemSchema } from "@/models/schemas";
+import { CodingPatternSchema, UserProblemSchema } from "@/models/schemas";
 import { Languages } from "@/models/types/indext";
 
 import { CodeSnippets } from "@/constant/editor-constants";
@@ -37,6 +37,8 @@ function Page() {
   const [problemId, setProblemId] = useState<string | null>(null);
   const [codingPatternId, setCodingPatternId] = useState<string | null>(null);
   const [problem, setProblem] = useState<UserProblemSchema | null>(null);
+  const [codingPattern, setCodingPattern] =
+    useState<CodingPatternSchema | null>(null);
   const [code, setCode] = useState<string | undefined>(undefined);
   const [language, setLanguage] = useState<Languages>("javascript");
 
@@ -57,6 +59,10 @@ function Page() {
         router.replace("/dashboard");
         return null;
       }
+      const codingPattern = user.getCodingTechnique(codingPatternId);
+      console.log("codingPattern", codingPattern);
+      setCodingPattern(codingPattern);
+
       return problem;
     } else {
       const problem = user.getAlgorithmProblem(problemId);
@@ -66,6 +72,7 @@ function Page() {
         router.replace("/dashboard");
         return null;
       }
+      setCodingPattern(null);
       return problem;
     }
   };
@@ -219,6 +226,7 @@ function Page() {
               <ProblemSection
                 editorCodeText={code}
                 problem={problem}
+                codingPattern={codingPattern}
                 setShowSubmission={setShowSubmission}
               />
               {/* resize ruler */}
