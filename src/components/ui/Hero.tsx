@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 
 import Button from "@/components/common/Button";
@@ -31,9 +31,9 @@ function Hero() {
     // Hero section
     <>
       <Bounded className="bg-surface overflow-hidden pt-40 md:pt-32 pb-8 ">
-        <div className="relative w-full md:min-sh-[896px] flex items-between justify-between gap-4 bg-fg/30 sm:bg-fg/0">
+        <div className="relative w-full flex items-between justify-between gap-4 bg-fg/30 sm:bg-fg/0">
           {/* text */}
-          <div className="flex-1 flex flex-col justify-center w-full gap-8">
+          <div className="relative z-20 flex flex-col justify-center w-fit gap-8">
             {/* title */}
             <Heading
               as="h1"
@@ -91,18 +91,18 @@ function Hero() {
                   className="bg-surface flex gap-2 items-center"
                   onClick={() => console.log("Learn More")}
                 >
-                  Contribute To The Platform
-                  <SquareArrowOutUpRight className="size-6 stroke-2 text-bg" />
+                  Contribute To Platform
+                  <SquareArrowOutUpRight className="size-4 sm:size-6 stroke-2 text-bg" />
                 </Button>
               </Link>
             </div>
           </div>
           {/* image */}
-          <div className="absolute inset-0 md:w-auto opacity-45 md:opacity-100 md:relative w-full flex items-center justify-center pointer-events-none ">
+          <div className="absolute inset-0 w-full md:w-auto opacity-45 md:opacity-100 md:relative flex-1 flex items-center justify-center pointer-events-none">
             <Image
               src="/images/hero.png"
               alt="Gritize Image"
-              className="w-full max-w-[400] h-auto"
+              className="w-auto max-w-[400] h-full"
               // layout="responsive"
               width={500}
               height={300}
@@ -111,7 +111,7 @@ function Hero() {
           {/* floating icons */}
           <div className="float-icons-warper absolute opacity-70 sm:opacity-100 inset-0 pointer-events-none">
             {/* cpp icon */}
-            <div className="absolute top-[30%] right-[36%] w-[96px] sm:w-[140px] h-auto flex items-center justify-center opacity-65">
+            <div className="absolute top-[30%] right-[36%] w-[96px] lg:w-[140px] h-auto flex items-center justify-center opacity-65">
               <Image
                 src={"/images/cpp-image.png"}
                 alt="C++ Icon"
@@ -121,7 +121,7 @@ function Hero() {
               />
             </div>
             {/* python */}
-            <div className="absolute bottom-[36%] right-[20%] w-[96px] sm:w-[140px] h-auto flex items-center justify-center opacity-65">
+            <div className="absolute bottom-[36%] right-[20%] w-[96px] lg:w-[140px] h-auto flex items-center justify-center opacity-65">
               <Image
                 src={"/images/python-image.png"}
                 alt="Python Icon"
@@ -131,7 +131,7 @@ function Hero() {
               />
             </div>
             {/* ts icon */}
-            <div className="absolute bottom-[10%] right-0 w-[96px] sm:w-[140px] h-auto flex items-center justify-center opacity-65">
+            <div className="absolute bottom-[10%] right-0 w-[96px] lg:w-[140px] h-auto flex items-center justify-center opacity-65">
               <Image
                 src={"/images/typescript-image.png"}
                 alt="TypeScript Icon"
@@ -141,7 +141,7 @@ function Hero() {
               />
             </div>
             {/* js icon */}
-            <div className="absolute top-10 right-0 w-[96px] sm:w-[140px] h-auto flex items-center justify-center opacity-65">
+            <div className="absolute top-10 right-0 w-[96px] lg:w-[140px] h-auto flex items-center justify-center opacity-65">
               <Image
                 src={"/images/javascript-image.png"}
                 alt="JavaScript Icon"
