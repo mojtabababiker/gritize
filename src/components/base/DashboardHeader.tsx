@@ -41,7 +41,7 @@ function DashboardHeader() {
 
         <div className="flex items-center justify-end gap-2">
           {/* name */}
-          <Heading as="span" size="sm" className="text-fg">
+          <Heading as="span" size="sm" className="text-fg w-fit text-end">
             {user?.name || ""}
           </Heading>
           {/* profile dropdown */}

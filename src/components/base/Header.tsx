@@ -48,17 +48,7 @@ function Header() {
       link.addEventListener("click", linkClickHandler);
     });
   }, []);
-  const logout = () => {
-    /* Add logout functionality here */
-    if (!user) {
-      return;
-    }
-    user.logout();
-    setIsLoggedIn(false);
-    setUser(user);
-    setActive(MENU_ITEMS[0]);
-    router.push("/");
-  };
+
   return !user ? (
     <Loading />
   ) : (
@@ -69,21 +59,21 @@ function Header() {
       >
         <div className="flex flex-wrap pt-6 pb-4 gap-4 overflow-clip">
           {/* icon */}
-          <div className="relative flex flex-1 items-center justify-center">
+          <div className="relative sm:min-w-[190px] flex items-center flex-1">
             <Image
               src="/images/main-logo.png"
               width={200}
               height={200}
               alt="Logo"
-              className="w-full max-w-[190px] h-auto"
+              className="w-full min-w-[120px] max-w-[190px] h-auto"
             />
-            <div className="absolute -top-4 right-6">
+            <div className="absolute -top-4 left-0">
               <span className="text-base text-accent font-semibold">Beta</span>
             </div>
           </div>
 
           {/* nav menu */}
-          <nav className="flex flex-1/2 min-w-[320px] order-3 sm:order-none items-center justify-center sm:justify-end pt-4 sm:pt-0">
+          <nav className="flex w-full md:flex-1 order-3 md:order-none items-center justify-center md:justify-end pt-4 sm:pt-0">
             <ul className="nav-menu flex items-end gap-4">
               {MENU_ITEMS.map((item) => (
                 <li key={item.name}>
@@ -104,23 +94,11 @@ function Header() {
           </nav>
 
           {/* button */}
-          <div className="flex items-center justify-end px-2">
-            {isLoggedIn && (
-              <div className="flex items-center justify-center gap-4 mr-4">
-                <button
-                  onClick={logout}
-                  className={clsx(
-                    "text-bg/65 hover:text-accent cursor-pointer flex-1 text-left transition-colors duration-200 ease-in-out"
-                  )}
-                >
-                  Logout
-                </button>
-              </div>
-            )}
+          <div className="flex flex-1 items-center justify-end px-2">
             <Button
               variant="accent"
               size="lg"
-              className="ml-0 px-8"
+              className="ml-0 sm:px-8"
               onClick={() => {
                 if (!isLoggedIn) {
                   setRequireLogin(true);
