@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import toast from "react-hot-toast";
-import { CameraIcon, EditIcon, UploadIcon } from "lucide-react";
+import { CameraIcon, EditIcon, UploadIcon, XIcon } from "lucide-react";
 
 import { useAuth } from "@/context/AuthProvider";
 import Heading from "@/components/common/Heading";
@@ -121,9 +121,15 @@ const UploadAvatarModal = ({ closeModal }: { closeModal: () => void }) => {
       onClick={closeModal}
     >
       <div
-        className="profile-dropdown w-full max-w-[460px] p-4 pb-8 flex flex-col items-center gap-8 rounded-2xl"
+        className="profile-dropdown relative w-full max-w-[460px] p-4 pb-8 flex flex-col items-center gap-8 rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="absolute top-2 right-2 size-10 rounded-full ring-1 ring-surface/15 flex items-center justify-center">
+          <XIcon
+            className="size-6 sm:size-8 text-accent"
+            onClick={closeModal}
+          />
+        </div>
         <div className="flex flex-col gap-3 w-full">
           <Heading className="text-fg w-full">Profile Picture</Heading>
           <Paragraph size="sm" className="w-full max-w-[42ch] text-surface/60">
@@ -149,7 +155,7 @@ const UploadAvatarModal = ({ closeModal }: { closeModal: () => void }) => {
         <Button
           size="sm"
           variant="ghost-2"
-          className="w-[320px] flex justify-center gap-4 ring ring-surface/10 group hover:ring-accent/50 hover:bg-accent/70 transition-all duration-200 ease-in-out"
+          className="w-full sm:w-[320px] flex justify-center gap-4 ring ring-surface/10 group hover:ring-accent/50 hover:bg-accent/70 transition-all duration-200 ease-in-out"
           onClick={handleButtonClick}
           isSimple
           isLoading={isLoading}

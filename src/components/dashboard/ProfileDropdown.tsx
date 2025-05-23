@@ -49,7 +49,7 @@ function ProfileDropdown({ open }: Props) {
     <>
       <div
         className={clsx(
-          "profile-dropdown z-50 w-[320px] py-6 px-4 rounded-2xl ring-0.5  shadow-sm shadow-accent/5 ring-fg/15 flex flex-col gap-4",
+          "profile-dropdown z-50 w-screen max-w-[280px] sm:max-w-[320px] py-6 px-4 rounded-2xl ring-0.5  shadow-sm shadow-accent/5 ring-fg/15 flex flex-col gap-4",
           isOpen ? "animate-fade-in" : "hidden"
         )}
       >
