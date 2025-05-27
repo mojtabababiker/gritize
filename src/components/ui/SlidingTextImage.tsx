@@ -63,7 +63,7 @@ const TEXTS = [
 ];
 
 function SlidingTextImage() {
-  const [activeImage, setActiveImage] = useState("/images/coding-gif.gif");
+  const [activeImage, setActiveImage] = useState("/images/show-1.gif");
   const images = [
     "/images/show-1.gif",
     "/images/show-2.gif",
