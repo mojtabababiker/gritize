@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
   if (!session || !session.value) {
     console.log("No session found");
     return NextResponse.redirect(
-      new URL("/auth?msg=need+to+login+to+access", request.url)
+      new URL("/auth?msg=need+to+login+first", request.url)
     );
   }
   let userAccount: Models.User<Models.Preferences>;
@@ -21,13 +21,13 @@ export async function middleware(request: NextRequest) {
     userAccount = await account.get();
   } catch (error) {
     return NextResponse.redirect(
-      new URL("/auth?msg=need+to+login+to+access", request.url)
+      new URL("/auth?msg=need+to+login+first", request.url)
     );
   }
 
   if (!userAccount) {
     return NextResponse.redirect(
-      new URL("/auth?msg=need+to+login+to+access", request.url)
+      new URL("/auth?msg=need+to+login+first", request.url)
     );
   }
   return NextResponse.next();

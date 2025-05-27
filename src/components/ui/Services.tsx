@@ -38,7 +38,7 @@ function Services() {
     setRequireLogin(true);
   };
   return (
-    <Bounded className="services-container">
+    <Bounded className="services-container" id="services">
       <div className="flex flex-col h-full pt-24 pb-8 gap-8">
         {/* title */}
         <Heading as="h2" size="lg" className="text-fg text-center">

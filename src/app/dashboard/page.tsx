@@ -48,9 +48,13 @@ function Page() {
           <Heading as="h4" size="sm" className="text-surface">
             Welcome, {user.name}!
           </Heading>
-          <Heading as="h3" size="lg" className="text-fg sm:-mt-10">
+          <Heading as="h3" size="lg" className="text-fg  lg:-mt-4">
             {`Let's Keep The `}
-            <Heading as="span" size="title" className="text-accent">
+            <Heading
+              as="span"
+              size="title"
+              className="text-accent block sm:inline-block"
+            >
               Grit Up
             </Heading>
           </Heading>

@@ -47,9 +47,9 @@ function LanguageSelector({ onValueChange, defaultValue, className }: Props) {
           <ChevronsUpDown className="h-4 w-4" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="bg-primary p-0 ring-0 border-0">
-        <Command className="w-full">
-          <CommandList className="w-full bg-bg/95">
+      <PopoverContent className="bg-transparent p-0 ring-0 border-0 flex items-center justify-center">
+        <Command className="w-full max-w-[280px] sm:max-w-none">
+          <CommandList className="w-full max-w-[280px] sm:max-w-none bg-bg/95">
             <CommandEmpty>No languages found.</CommandEmpty>
             <CommandGroup>
               {languages.map((language) => (

@@ -40,7 +40,7 @@ function StatisticalCard({ value, title, className }: Props) {
       )}
     >
       {/* number */}
-      <div className="flex items-center justify-center p-1 text-accent text-8xl font-body font-black">
+      <div className="flex items-center justify-center p-1 text-accent text-6xl sm:text-7xl lg:text-8xl font-body font-black">
         {currentValue}
       </div>
 

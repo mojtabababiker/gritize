@@ -34,7 +34,7 @@ export function TestimonialsContainer({ testimonials }: Props) {
             userTitle={testimonial.userTitle}
             stars={testimonial.rating}
             testimonial={testimonial.review}
-            className="flex-1 self-stretch min-w-[340px]"
+            className="flex-1 self-stretch sm:min-w-[340px]"
           />
         ))}
       </div>

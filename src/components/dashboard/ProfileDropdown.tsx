@@ -11,6 +11,7 @@ import Loading from "@/components/common/Loading";
 
 import EditableUserAvatar from "./UserAvatar";
 import ProfileEditor from "./ProfileEditor";
+import Heading from "../common/Heading";
 
 type Props = {
   open?: boolean;
@@ -49,12 +50,20 @@ function ProfileDropdown({ open }: Props) {
     <>
       <div
         className={clsx(
-          "profile-dropdown z-50 w-[320px] py-6 px-4 rounded-2xl ring-0.5  shadow-sm shadow-accent/5 ring-fg/15 flex flex-col gap-4",
+          "profile-dropdown z-50 w-screen max-w-[280px] sm:max-w-[320px] py-6 px-4 rounded-2xl ring-0.5  shadow-sm shadow-accent/5 ring-fg/15 flex flex-col gap-4",
           isOpen ? "animate-fade-in" : "hidden"
         )}
       >
         {/* editable user image */}
         <EditableUserAvatar />
+        {/* name */}
+        <Heading
+          as="span"
+          size="sm"
+          className="text-fg w-full text-center sm:hidden block"
+        >
+          {user?.name || ""}
+        </Heading>
         {/* separator */}
         <div className="border-t border-surface/10 my-4" />
 

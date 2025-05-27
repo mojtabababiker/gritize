@@ -10,6 +10,7 @@ import Button from "@/components/common/Button";
 
 import LanguageSelector from "./LanguageSelector";
 import EditableUserAvatar from "./UserAvatar";
+import { XIcon } from "lucide-react";
 
 type Props = {
   closeModal: () => void;
@@ -82,7 +83,13 @@ function ProfileEditor({ closeModal }: Props) {
       ref={containerRef}
     >
       {/* modal */}
-      <div className="profile-dropdown w-full max-w-[460px] p-4 flex flex-col items-center gap-4 rounded-2xl">
+      <div className="profile-dropdown relative w-full max-w-[460px] p-4 flex flex-col items-center gap-4 rounded-2xl">
+        <div className="absolute top-2 right-2 size-10 rounded-full ring-1 ring-surface/15 flex items-center justify-center">
+          <XIcon
+            className="size-6 sm:size-8 text-accent"
+            onClick={closeModal}
+          />
+        </div>
         <Heading as="h3" size="md" className="text-fg">
           Edit Profile
         </Heading>
@@ -119,7 +126,7 @@ function ProfileEditor({ closeModal }: Props) {
               Preferred Programming Language
             </label>
             <LanguageSelector
-              className="relative text-fg/70 bg-bg placeholder-fg/70 ring-1 ring-accent focus:outline-accent rounded-xl py-4 px-5 transition-all duration-150 ease-in-out appearance-none"
+              className="relative text-fg/70 bg-bg placeholder-fg/70 ring-1 ring-accent focus:outline-accent rounded-xl py-2.5 sm:py-4 px-5 transition-all duration-150 ease-in-out appearance-none"
               onValueChange={updateUserLanguage}
               defaultValue={user?.preferredLanguage}
             />
@@ -127,7 +134,7 @@ function ProfileEditor({ closeModal }: Props) {
         </div>
 
         {/* save button */}
-        <div className="w-full flex">
+        <div className="w-full flex my-6">
           <Button
             isSimple
             variant="accent"

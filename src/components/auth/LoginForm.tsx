@@ -100,7 +100,7 @@ function LoginForm({ onComplete, changeFormType }: Props) {
   }, [state]);
 
   return (
-    <div className="w-full flex flex-col gap-6 items-center justify-center">
+    <div className="w-full flex flex-col gap-2 sm:gap-4 lg:gap-6 items-center justify-center">
       {/* heading */}
       <Heading as="h2" size="lg" className="text-fg w-full text-center">
         Login
@@ -108,9 +108,9 @@ function LoginForm({ onComplete, changeFormType }: Props) {
       {/* form */}
       <form
         action={action}
-        className="w-full flex flex-col gap-6 items-center justify-center"
+        className="w-full flex flex-col gap-2 sm:gap-4 lg:gap-6 items-center justify-center"
       >
-        <div className="w-full flex flex-wrap gap-6 items-center justify-center">
+        <div className="w-full flex flex-wrap items-center gap-1 justify-center">
           {/* email */}
           <div className="flex flex-col">
             <Input
@@ -155,7 +155,7 @@ function LoginForm({ onComplete, changeFormType }: Props) {
             type="submit"
             variant="accent"
             size="md"
-            className="max-w-fit"
+            className="min-w-[120px] m-0 justify-center"
             isLoading={isPending}
             disabled={isPending}
           >

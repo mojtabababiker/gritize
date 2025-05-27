@@ -11,11 +11,11 @@ import { Settings } from "@/constant/setting";
 const FOOTER_MENU = [
   {
     item: "about",
-    href: "#about",
+    href: "#about-us",
   },
   {
     item: "what we provide",
-    href: "#service",
+    href: "#services",
   },
   {
     item: "dashboard",

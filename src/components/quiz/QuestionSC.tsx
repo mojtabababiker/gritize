@@ -18,9 +18,11 @@ function QuestionSC({ question, options, setAnswer }: Props) {
           <div
             key={option}
             onClick={() => setAnswer(option)}
-            className="min-w-[126px] h-[40px] py-6 px-4 flex items-center justify-center gap-5 rounded-lg cursor-pointer bg-fg drop-shadow-lg hover:scale-95 transition-all duration-200"
+            className="flex-1 min-w-fit  min-h-[40px] py-4 px-4 flex items-center justify-center gap-5 rounded-lg cursor-pointer bg-fg drop-shadow-lg hover:scale-95 transition-all duration-200"
           >
-            <div className="flex-1 text-xl font-body">{option}</div>
+            <div className="text-lg leading-4 sm:text-xl font-body">
+              {option}
+            </div>
           </div>
         ))}
       </div>

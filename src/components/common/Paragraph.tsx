@@ -23,12 +23,18 @@ function Paragraph({
     <Component
       className={clsx(
         "font-body",
-        size === "sm" &&
-          "text-[clamp(0.875rem,5vw_+_0.43rem,1rem)] leading-[clamp(0.875rem,5vw_+_0.43rem,1.5rem)]",
-        size === "md" &&
-          "text-[clamp(1.25rem,5vw_+_0.686rem,1.5rem)] leading-[clamp(1.25rem,5vw_+_0.686rem,1.5rem)]",
-        size === "lg" &&
-          "text-[clamp(1.25rem,5vw_+_0.785rem,1.89rem)] leading-[clamp(1.25rem,5vw_+_0.785rem,1.89rem)]",
+        size === "sm" && [
+          "text-sm sm:text-base md:text-[1rem]",
+          "leading-[1.1] sm:leading-[1.15] md:leading-[1.2]",
+        ],
+        size === "md" && [
+          "text-base sm:text-lg md:text-[1.5rem]",
+          "leading-relaxed sm:leading-[1.05] md:leading-[1.3]",
+        ],
+        size === "lg" && [
+          "text-lg sm:text-xl md:text-[1.89rem]",
+          "leading-[1.2] sm:leading-[1.15] md:leading-[1.35]",
+        ],
         variant === "quote" && "font-heading font-semibold",
         className
       )}

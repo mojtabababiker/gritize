@@ -43,9 +43,9 @@ function AuthDialog({ message, onClose, onComplete }: Props) {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-50 px-2 sm:px-0 flex items-center justify-center bg-bg/20 backdrop-blur-sm"
+      className="fixed inset-0 z-50 px-2 py-4 sm:px-0 flex items-center justify-center bg-bg/20 backdrop-blur-sm"
     >
-      <div className="relative w-full max-w-[640px] px-6 py-8 rounded-2xl flex flex-col items-center justify-center gap-4 animate-slide-up">
+      <div className="relative w-full max-w-[640px] sm:px-6 py-8 rounded-2xl flex flex-col items-center justify-center gap-2 sm:gap-4 animate-slide-up">
         {/* message */}
         <Paragraph size="sm" className="text-surface text-center max-w-[36ch]">
           {message ||

@@ -164,39 +164,39 @@ function Sidebar() {
 
       {/* quick links */}
       <ul className="w-full flex flex-col gap-4">
-        <li className="flex gap-2 items-center justify-center">
-          <Image
-            src={"/icons/code-icon.png"}
-            alt=""
-            width={24}
-            height={24}
-            className="object-contain"
-          />
+        <li className="">
           <Link
             href="/playground"
             className={clsx(
-              "text-fg hover:text-accent flex-1",
+              "text-fg hover:text-accent flex gap-2 items-center justify-center sm:justify-start ",
               !open && "hidden"
             )}
           >
+            <Image
+              src={"/icons/code-icon.png"}
+              alt=""
+              width={24}
+              height={24}
+              className="size-4 sm:size-6 object-contain"
+            />
             Playground
           </Link>
         </li>
-        <li className="flex gap-2 items-center justify-center">
-          <Image
-            src={"/icons/exit-icon.png"}
-            alt=""
-            width={24}
-            height={24}
-            className="object-contain"
-          />
+        <li className="">
           <button
             onClick={logout}
             className={clsx(
-              "text-fg hover:text-accent cursor-pointer flex-1 text-left",
+              "text-fg hover:text-accent cursor-pointer w-full flex gap-2 items-center justify-center sm:justify-start text-left",
               !open && "hidden"
             )}
           >
+            <Image
+              src={"/icons/exit-icon.png"}
+              alt=""
+              width={24}
+              height={24}
+              className="size-3.5 sm:size-6 object-contain"
+            />
             Logout
           </button>
         </li>
