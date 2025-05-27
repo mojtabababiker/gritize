@@ -178,7 +178,7 @@ export const saveSession = async (session: Models.Session) => {
     path: "/",
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "lax",
     expires: new Date(session.expire),
   });
 };
