@@ -117,6 +117,9 @@ function Page() {
         const userLanguage = user.preferredLanguage || "javascript";
         setLanguage(userLanguage);
         setCode(code || CodeSnippets[userLanguage].code);
+
+        // update window title with problem title
+        document.title = `Gritize | ${problem.problem.title}`;
         return;
       } else {
         console.log("No problemId provided, and no local storage data found");
@@ -145,6 +148,9 @@ function Page() {
         code: code || null,
       })
     );
+
+    // update window title with problem title
+    document.title = `Gritize | ${problem?.problem.title || "Playground"}`;
   }, [user, router, problemId, codingPatternId]);
 
   useEffect(() => {
