@@ -3,6 +3,7 @@ import { Genos, Orbitron } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 
 import { AuthProvider } from "@/context/AuthProvider";
@@ -74,8 +75,9 @@ export default function RootLayout({
           <Toaster position="top-right" />
           {children}
         </AuthProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
-      <Analytics />
     </html>
   );
 }
