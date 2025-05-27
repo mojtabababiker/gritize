@@ -11,6 +11,7 @@ import Loading from "@/components/common/Loading";
 
 import EditableUserAvatar from "./UserAvatar";
 import ProfileEditor from "./ProfileEditor";
+import Heading from "../common/Heading";
 
 type Props = {
   open?: boolean;
@@ -55,6 +56,14 @@ function ProfileDropdown({ open }: Props) {
       >
         {/* editable user image */}
         <EditableUserAvatar />
+        {/* name */}
+        <Heading
+          as="span"
+          size="sm"
+          className="text-fg w-full text-center sm:hidden block"
+        >
+          {user?.name || ""}
+        </Heading>
         {/* separator */}
         <div className="border-t border-surface/10 my-4" />
 

@@ -25,8 +25,8 @@ export const UserImage = ({
     <div
       className={clsx(
         "w-full h-full rounded-full flex items-center justify-center font-heading font-bold",
-        size === "xs" && "text-xl",
-        size === "sm" && "text-2xl",
+        size === "xs" && "text-xs sm:text-xl",
+        size === "sm" && "text-lg sm:text-xl lg:text-2xl",
         size === "md" && "text-3xl sm:text-6xl",
         size === "lg" && "text-4xl sm:text-7xl",
         className

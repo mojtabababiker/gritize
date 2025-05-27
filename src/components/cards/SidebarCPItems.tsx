@@ -20,13 +20,13 @@ function SidebarCPItems({ codingPatterns }: Props) {
       {codingPatterns.map((cp) => (
         <AccordionItem key={cp.id} value={cp.id} className="w-full mb-2">
           <AccordionTrigger className="group flex items-center justify-between w-full px-4 py-2 rounded-2xl bg-primary/25 shadow shadow-fg/10 shadow-b cursor-pointer hover:no-underline">
-            <div className="flex-1 flex gap-2 items-center">
+            <div className="flex-1 flex gap-2 items-center pr-1">
               <Image
                 src="/icons/list-icon.png"
                 alt=""
                 width={20}
                 height={20}
-                className="w-3 h-3 object-contain"
+                className="w-2 sm:w-3 h-2 sm:h-3 object-contain"
               />
               <span className="text-lg  capitalize text-surface group-hover:text-accent truncate">
                 {cp.title}

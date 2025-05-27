@@ -12,6 +12,7 @@ import { useAuth } from "@/context/AuthProvider";
 import toast from "react-hot-toast";
 import CustomToast from "../common/CustomToast";
 import Loading from "../common/Loading";
+import Tooltip from "../common/Tooltip";
 
 const LIMIT = 10; // hard coded limit
 
@@ -174,45 +175,56 @@ export function FeaturedProblems() {
           <span className="text-red-500">{error}</span>
         </div>
       ) : (
-        // table
-        <div className="relative w-full flex flex-col gap-3 items-center justify-center overflow-visible">
-          {/* table */}
-          {featuredProblems.map((problem, index) => (
-            <div
-              key={problem.id}
-              className="w-full flex items-center cursor-pointer hover:scale-95 transition-all duration-200 ease-in-out"
-              onClick={() => createNewUserProblem(problem.id || "")}
-            >
-              <TableRow
-                key={`table-${index}`}
-                className="relative w-full min-w-[640px] overflow-hidden gap-6"
+        <div className="w-full overflow-hidden flex flex-col gap-6 justify-center items-center">
+          {/* // table */}
+          <div className="relative w-full pb-3 flex flex-col gap-3 justify-center overflow-auto">
+            {/* table */}
+            {featuredProblems.map((problem, index) => (
+              <div
+                key={problem.id}
+                className="min-w-max flex items-center justify-center cursor-pointer hover:scale-95 transition-all duration-200 ease-in-out"
+                onClick={() => createNewUserProblem(problem.id || "")}
               >
-                {/* problem index */}
-                <TableCell className="text-fg w-10">
-                  {index + 1 + (page - 1) * LIMIT}
-                </TableCell>
-                <TableCell className="text-fg text-center flex-1">
-                  {problem.title}
-                </TableCell>
-                <TableCell
-                  className={clsx(
-                    "text-center w-20",
-                    problem.difficulty === "easy" && "text-[#2DDD4A]",
-                    problem.difficulty === "mid" && "text-accent",
-                    problem.difficulty === "advanced" && "text-[#F85151]"
-                  )}
+                <TableRow
+                  key={`table-${index}`}
+                  className="relative w-full1 min-w-[640px] overflow- gap-6"
                 >
-                  {problem.difficulty}
-                </TableCell>
-                <TableCell className="group text-fg flex-1/3 overflow-hidden">
-                  {problem.description.slice(0, 100)}...
-                  {/* TODO: Add on hover popup that shows the whole description */}
-                </TableCell>
-              </TableRow>
-            </div>
-          ))}
+                  {/* problem index */}
+                  <TableCell className="text-fg text-xs sm:text-base w-6 sm:w-10">
+                    {index + 1 + (page - 1) * LIMIT}
+                  </TableCell>
+                  {/* problem title */}
+                  <TableCell className="relative">
+                    <div className="overflow-hidden w-[16ch] sm:w-[24ch] peer">
+                      <div className="text-fg text-xs sm:text-base relative truncate">
+                        {problem.title}
+                      </div>
+                    </div>
+                    {/* tooltip */}
+                    <Tooltip>{problem.title}</Tooltip>
+                  </TableCell>
+                  {/* problem difficulty */}
+                  <TableCell
+                    className={clsx(
+                      "text-center text-xs sm:text-base w-12 sm:w-20",
+                      problem.difficulty === "easy" && "text-[#2DDD4A]",
+                      problem.difficulty === "mid" && "text-accent",
+                      problem.difficulty === "advanced" && "text-[#F85151]"
+                    )}
+                  >
+                    {problem.difficulty}
+                  </TableCell>
+                  {/* problem description */}
+                  <TableCell className="group text-fg text-xs sm:text-base flex-1 min-w-[82ch] overflow-hidden">
+                    {problem.description.slice(0, 100)}...
+                    {/* TODO: Add on hover popup that shows the whole description */}
+                  </TableCell>
+                </TableRow>
+              </div>
+            ))}
+          </div>
           {/* pagination */}
-          <div className="w-full max-w-[320px] min-h-[42px] flex items-center justify-between">
+          <div className="w-full max-w-[320px] min-h-[42px] self-center flex items-center justify-between">
             {/* go back */}
             <div className={page <= 1 ? "opacity-0 pointer-events-none" : ""}>
               <ArrowLeft
@@ -239,7 +251,6 @@ export function FeaturedProblems() {
               <span className="sr-only">Next</span>
             </div>
           </div>
-
           {/* loading */}
           {creatingProblem && <Loading />}
         </div>

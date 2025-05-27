@@ -32,7 +32,7 @@ function DashboardHeader() {
             alt="Gritize Logo"
             width={200}
             height={200}
-            className="w-full max-w-[190px] h-auto"
+            className="w-full max-w-[120px] sm:max-w-[190px] h-auto"
           />
           <div className="absolute -top-5 right-0">
             <span className="text-base text-accent font-semibold">Beta</span>
@@ -41,7 +41,11 @@ function DashboardHeader() {
 
         <div className="flex items-center justify-end gap-2">
           {/* name */}
-          <Heading as="span" size="sm" className="text-fg w-fit text-end">
+          <Heading
+            as="span"
+            size="sm"
+            className="text-fg w-fit text-end hidden sm:block"
+          >
             {user?.name || ""}
           </Heading>
           {/* profile dropdown */}

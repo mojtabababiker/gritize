@@ -126,7 +126,7 @@ function ProfileEditor({ closeModal }: Props) {
               Preferred Programming Language
             </label>
             <LanguageSelector
-              className="relative text-fg/70 bg-bg placeholder-fg/70 ring-1 ring-accent focus:outline-accent rounded-xl py-4 px-5 transition-all duration-150 ease-in-out appearance-none"
+              className="relative text-fg/70 bg-bg placeholder-fg/70 ring-1 ring-accent focus:outline-accent rounded-xl py-2.5 sm:py-4 px-5 transition-all duration-150 ease-in-out appearance-none"
               onValueChange={updateUserLanguage}
               defaultValue={user?.preferredLanguage}
             />
@@ -134,7 +134,7 @@ function ProfileEditor({ closeModal }: Props) {
         </div>
 
         {/* save button */}
-        <div className="w-full flex">
+        <div className="w-full flex my-6">
           <Button
             isSimple
             variant="accent"
