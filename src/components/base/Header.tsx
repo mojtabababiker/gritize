@@ -21,10 +21,9 @@ const MENU_ITEMS: MenuPage[] = [
 ];
 
 function Header() {
-  const [active, setActive] = useState<MenuPage>(MENU_ITEMS[0]);
   const [requireLogin, setRequireLogin] = useState(false);
   const router = useRouter();
-  const { isLoggedIn, user, setIsLoggedIn, setUser } = useAuth();
+  const { isLoggedIn, user } = useAuth();
 
   useEffect(() => {
     const scrollTo = (containerId: string) => {
@@ -79,10 +78,7 @@ function Header() {
                 <li key={item.name}>
                   <Link
                     className={clsx(
-                      "text-bg/80 font-heading text-xl sm:text-lg transition-all duration-200 hover:text-bg/100",
-                      active.name === item.name
-                        ? "font-bold active"
-                        : "font-semibold scale-90"
+                      "text-bg/80 font-heading text-xl sm:text-lg transition-all duration-200 hover:text-bg/100"
                     )}
                     href={item.href}
                   >

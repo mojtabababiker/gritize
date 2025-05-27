@@ -30,10 +30,10 @@ function Hero() {
   return (
     // Hero section
     <>
-      <Bounded className="bg-surface overflow-hidden pt-40 md:pt-32 pb-8 ">
-        <div className="relative w-full flex items-between justify-between gap-4 bg-fg/30 sm:bg-fg/0">
+      <Bounded className="bg-surface relative overflow-hidden pt-40 md:pt-32 pb-8 ">
+        <div className="relative w-full h-[calc(100vh-10rem)] flex items-between justify-between gap-4 bg-fg/30 sm:bg-fg/0">
           {/* text */}
-          <div className="relative z-20 flex flex-col justify-center w-fit gap-8">
+          <div className="relative z-20 flex flex-col w-fit gap-8">
             {/* title */}
             <Heading
               as="h1"
@@ -44,7 +44,7 @@ function Hero() {
             </Heading>
 
             {/* body */}
-            <div className="flex md:flex-1 flex-col justify-between gap-7">
+            <div className="flex flex-1 flex-col justify-between gap-7">
               <Paragraph
                 as="p"
                 size="lg"
@@ -68,7 +68,7 @@ function Hero() {
             </div>
 
             {/* CTAs */}
-            <div className="flex flex-wrap z-10 gap-4 md:h-[120px] items-center">
+            <div className="flex flex-wrap z-10 gap-4 flex-1 items-start content-baseline">
               <Button
                 variant="accent"
                 size="lg"
@@ -98,7 +98,7 @@ function Hero() {
             </div>
           </div>
           {/* image */}
-          <div className="absolute inset-0 w-full md:w-auto opacity-45 md:opacity-100 md:relative flex-1 flex items-center justify-center pointer-events-none">
+          <div className="absolute inset-0 w-full md:w-auto opacity-35 md:opacity-100 md:relative flex-1 flex items-center justify-center pointer-events-none">
             <Image
               src="/images/hero.png"
               alt="Gritize Image"
@@ -171,6 +171,8 @@ function Hero() {
             </div>
           </div>
         </div>
+        {/* background overlay */}
+        <div className="absolute top-0 bottom-0 -left-4 -right-4 bg-surface/70 md:hidden pointer-events-none" />
       </Bounded>
 
       {/* login dialog */}
