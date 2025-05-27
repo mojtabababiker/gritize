@@ -1,10 +1,9 @@
-import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 
 import { createAdminClient, createUserClient } from "@/config/appwrite";
 
 import { UserDTO } from "@/models/dto/user-dto";
 
-import { deleteSession, saveSession } from "@/utils/appwrite/auth-action";
 import { createUser, getUserById } from "@/utils/appwrite/database-actions";
 
 /**
@@ -46,7 +45,8 @@ export const GET = async (request: Request) => {
 
   try {
     const session = await account.createSession(userId, secret);
-    await saveSession(session);
+    // await saveSession(session);
+
     const userFromDB = await getUserById(userId);
     if (!userFromDB) {
       const { account } = await createUserClient(session.secret);
@@ -61,22 +61,34 @@ export const GET = async (request: Request) => {
         onboarding: false,
       };
       const { error, data } = await createUser(user);
-      console.log("\n\nUser created in DB\n", data);
-      console.log("\n\n");
-      if (error) {
+
+      if (error || !data) {
         console.error("Failed to create user in database", error);
-        await account.deleteSession("current");
-        await deleteSession();
-        redirectUrl = `/auth?msg=oauth-field`;
+
+        return NextResponse.redirect(
+          new URL("/auth?msg=failed-to-create-user", request.url)
+        );
       } else {
         redirectUrl = "/auth/oauth/complete-signup";
       }
     } else {
       redirectUrl = "/dashboard";
     }
+
+    const response = NextResponse.redirect(new URL(redirectUrl, request.url));
+    // Save the session cookie
+    response.cookies.set("appwrite-session", session.secret, {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      expires: new Date(session.expire),
+    });
+
+    return response;
   } catch (error) {
     console.error("OAuth sign-in failed", error);
-    redirectUrl = `/auth?msg=oauth-field`;
+    // redirectUrl = `/auth?msg=oauth-field`;
+    return NextResponse.redirect(new URL("/auth?msg=oauth-field", request.url));
   }
-  return redirect(redirectUrl);
 };

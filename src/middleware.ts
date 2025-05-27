@@ -1,16 +1,16 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+
 import { Models } from "node-appwrite";
 
 import { createUserClient } from "@/config/appwrite";
 
 export async function middleware(request: NextRequest) {
-  console.log("Middleware running");
   const cookieStore = await cookies();
   const session = cookieStore.get("appwrite-session");
   if (!session || !session.value) {
-    console.log("No session found");
+    console.log("\n\nNo session found in: ", request.url);
     return NextResponse.redirect(
       new URL("/auth?msg=need+to+login+first", request.url)
     );
@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
   try {
     const { account } = await createUserClient(session?.value);
     userAccount = await account.get();
-  } catch (error) {
+  } catch {
     return NextResponse.redirect(
       new URL("/auth?msg=need+to+login+first", request.url)
     );
