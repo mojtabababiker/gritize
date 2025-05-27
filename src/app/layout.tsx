@@ -17,7 +17,45 @@ const heading = Orbitron({
 
 export const metadata: Metadata = {
   title: "Gritize | Your AI-Powered Technical Assistant",
-  description: "",
+  description:
+    "your open-source ally in the journey to sharpen your problem-solving edge, master coding patterns, and contribute to something bigger than tutorials and coding playgrounds.",
+  openGraph: {
+    title: "Gritize | Your AI-Powered Technical Assistant",
+    description:
+      "your open-source ally in the journey to sharpen your problem-solving edge, master coding patterns, and contribute to something bigger than tutorials and coding playgrounds.",
+  },
+  twitter: {
+    title: "Gritize | Your AI-Powered Technical Assistant",
+    description:
+      "your open-source ally in the journey to sharpen your problem-solving edge, master coding patterns, and contribute to something bigger than tutorials and coding playgrounds.",
+    card: "summary_large_image",
+    creator: "mojtabababiker",
+    site: "@mojtabababiker",
+  },
+  creator: "Mojtaba Babiker",
+  authors: [
+    {
+      name: "Mojtaba Babiker",
+      url: "https://github.com/mojtabababiker",
+    },
+  ],
+  keywords: [
+    "Gritize",
+    "Interview Preparation",
+    "Coding Patterns",
+    "Technical Assistant",
+    "AI Assistant",
+    "Open Source",
+    "Problem Solving",
+    "Software Development",
+    "Coding Challenges",
+    "Technical Interviews",
+    "Programming",
+    "Tech Community",
+    "Online Code Editor",
+    "AI-Powered Tools",
+    "Online VS Code Editor",
+  ],
 };
 
 export default function RootLayout({
