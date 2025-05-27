@@ -1,11 +1,12 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import Bounded from "../common/Bounded";
 import clsx from "clsx";
+
+import Bounded from "@/components/common/Bounded";
 
 gsap.registerPlugin(useGSAP);
 
@@ -63,7 +64,12 @@ const TEXTS = [
 
 function SlidingTextImage() {
   const [activeImage, setActiveImage] = useState("/images/coding-gif.gif");
-  const images = ["/images/coding-gif.gif", "/images/coding-gif-2.gif"];
+  const images = [
+    "/images/show-1.gif",
+    "/images/show-2.gif",
+    "/images/show-3.gif",
+    "/images/show-4.gif",
+  ];
   const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
@@ -76,7 +82,7 @@ function SlidingTextImage() {
           skewY: 10,
           onComplete: () => {
             gsap.to(imgRef.current, {
-              opacity: 0.8,
+              opacity: 0.85,
               duration: 0.5,
               scale: 1,
               skewY: 0,
@@ -89,7 +95,7 @@ function SlidingTextImage() {
           return images[nextIndex];
         });
       }
-    }, 7500);
+    }, 10000);
     return () => clearInterval(interval);
   });
 
@@ -103,7 +109,7 @@ function SlidingTextImage() {
           alt="Playground GIF"
           width={1000}
           height={1000}
-          className="relative z-30 opacity-85 object-cover w-full h-auto max-w-[1024px] transition-opacity duration-500 ease-in-out"
+          className="relative z-30 opacity-85 aspect-video w-full h-auto max-w-[1080px] transition-opacity duration-500 ease-in-out"
           unoptimized
         />
         {TEXTS.map((text, index) => (
