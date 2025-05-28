@@ -43,6 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         setUser(anonymousUser);
       }
+      setIsLoggedIn(loggedIn);
     };
 
     checkLoginStatus();
