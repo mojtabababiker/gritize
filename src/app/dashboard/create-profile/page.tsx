@@ -21,7 +21,7 @@ export default function Page() {
 
   const onComplete = async () => {
     if (!user) {
-      console.error("User is not initialized");
+      // console.error("User is not initialized");
       return;
     }
     user.isNewUser = false;
@@ -40,7 +40,7 @@ export default function Page() {
 
   useEffect(() => {
     if (!initialRenderCompleted.current) {
-      console.log("initialRenderCompleted");
+      // console.log("initialRenderCompleted");
       initialRenderCompleted.current = true;
       createProgram();
     }

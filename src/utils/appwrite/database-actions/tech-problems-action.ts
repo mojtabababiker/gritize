@@ -63,15 +63,6 @@ export const getProblemById = async (
       Settings.problemsCollectionId,
       problemId
     );
-    // const {
-    //   $id: id,
-    //   $collectionId,
-    //   $databaseId,
-    //   $createdAt,
-    //   $updatedAt,
-    //   $permissions,
-    //   ...rest
-    // } = problemDoc;
     const cleanProblemObj =
       stripAppwriteFields<TechnicalProblemSchema>(problemDoc);
     return cleanProblemObj;
@@ -159,9 +150,6 @@ export const listProblems = async (
   const { databases } = await createAdminClient();
   let problemsDoc: Models.DocumentList<Models.Document>;
 
-  console.log("Listing problems with cursorId:", cursorId);
-  console.log("Listing problems with limit:", limit);
-
   try {
     if (prev) {
       const query =
@@ -195,7 +183,7 @@ export const listProblems = async (
       slug: problem.slug,
       difficulty: problem.difficulty,
     }));
-    console.log(`Fetch ${problems.length} problems of ${total} total`);
+    // console.log(`Fetch ${problems.length} problems of ${total} total`);
     const hasMore = page * limit < total;
     return {
       data: problems,

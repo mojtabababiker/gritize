@@ -11,7 +11,7 @@ import { oauthSignIn } from "@/utils/appwrite/auth-action";
  * @throws {Error} If the Google sign-in process fails
  */
 export const signinWithGoogle = async () => {
-  console.log("Signing with google");
+  // console.log("Signing with google");
   return await oauthSignIn(OAuthProvider.Google);
 };
 
@@ -24,6 +24,6 @@ export const signinWithGoogle = async () => {
  * @throws {Error} If the GitHub authentication process fails
  */
 export const signinWithGithub = async () => {
-  console.log("Signing with github");
+  // console.log("Signing with github");
   return await oauthSignIn(OAuthProvider.Github);
 };

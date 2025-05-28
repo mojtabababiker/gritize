@@ -134,6 +134,8 @@ export const registerUser = async (
     return { data: user.$id, error: null };
   } catch (error) {
     console.error("Registration failed", error);
+    console.error("Email: ", email);
+    console.error("Username: ", username);
     if (error instanceof AppwriteException) {
       return { error, data: null };
     }
@@ -158,13 +160,13 @@ export const oauthSignIn = async (provider: OAuthProvider) => {
     throw new Error("Provider is required");
   }
   const { account } = await createAdminClient();
-  console.log("Called with: ", provider);
+  // console.log("Called with: ", provider);
   const redirectUrl = await account.createOAuth2Token(
     provider,
     `${Settings.appURL}/api/auth/oauth?provider=${provider}`,
     `${Settings.appURL}/auth?msg=oauth-field&provider=${provider}`
   );
-  console.log("Redirect URL: ", redirectUrl);
+  // console.log("Redirect URL: ", redirectUrl);
   return redirect(redirectUrl);
 };
 

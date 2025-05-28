@@ -32,7 +32,7 @@ export const loginAction = async (
 
   const result = loginSchema.safeParse({ email, password });
   if (!result.success) {
-    console.log(result.error.errors);
+    // console.log(result.error.errors);
     return {
       ok: false,
       error: { type: "validation", errors: result.error.errors },
@@ -43,7 +43,7 @@ export const loginAction = async (
     const user = await User.login(validEmail, validPassword);
     return { ok: true, data: user.json };
   } catch (error) {
-    console.error("Login error:", error);
+    // console.error("Login error:", error);
     // const message = JSON.parse(error.response)?.message || "Login failed";
     let message = "Error in login, please try again later";
     if (error instanceof AppwriteException) {

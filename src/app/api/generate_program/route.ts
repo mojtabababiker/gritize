@@ -67,7 +67,7 @@ const options = {
  * ```
  */
 export async function POST(request: NextRequest): Promise<Response> {
-  const startTime = Date.now();
+  // const startTime = Date.now();
   const { prompt } = await request.json();
   const searchParams = request.nextUrl.searchParams;
   const programType = searchParams.get("programType");
@@ -94,15 +94,14 @@ export async function POST(request: NextRequest): Promise<Response> {
         : SYSTEM_INSTRUCTION_CODING_PATTERN,
     prompt: prompt,
   });
-  console.log(`${programType.toUpperCase()} generated.`);
-  console.log("Prompt Tokens used:", programResult.usage.promptTokens);
-  console.log("Completion Tokens used:", programResult.usage.completionTokens);
+  // console.log("Prompt Tokens used:", programResult.usage.promptTokens);
+  // console.log("Completion Tokens used:", programResult.usage.completionTokens);
 
-  const endTime = Date.now();
-  const totalTime = (endTime - startTime) / 1000; // in seconds
-  console.log(
-    `\n** Total time taken to generate the program: ${totalTime} seconds**\n`
-  );
+  // const endTime = Date.now();
+  // const totalTime = (endTime - startTime) / 1000; // in seconds
+  // console.log(
+  //   `\n** Total time taken to generate the program: ${totalTime} seconds**\n`
+  // );
 
   const cleanResult = cleanJsonResponse(programResult.text);
 

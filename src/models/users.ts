@@ -186,6 +186,7 @@ export class User {
 
     if (dbError || !user) {
       console.error("Database error during user registration", dbError);
+      console.error("User ID: ", this.id);
       throw new Error("User registration failed.");
     }
 
@@ -217,7 +218,7 @@ export class User {
    * - isNewUser (defaults to false)
    */
   static async fromJson(data: UserDTO): Promise<User> {
-    console.log("\n\nUser data from JSON", data, "\n\n");
+    // console.log("\n\nUser data from JSON", data, "\n\n");
 
     const user = new User({
       id: data.id,
@@ -313,7 +314,7 @@ export class User {
         problemId
       );
       if (error || !userProblem?.id) {
-        console.error("Error creating user problem", error);
+        // console.error("Error creating user problem", error);
         continue;
       }
       // console.log("User problem created", userProblem.id);
@@ -358,7 +359,7 @@ export class User {
         codingPattern
       );
       if (error || !userCodingPattern) {
-        console.error("Error creating user coding pattern", error);
+        // console.error("Error creating user coding pattern", error);
         continue;
       }
       // console.log("User coding pattern created", userCodingPattern.id);
@@ -460,7 +461,6 @@ export class User {
       data
     );
     if (error) {
-      console.error("Error updating user problem", error);
       return { error, data: null };
     }
     if (codingPatternId) {
@@ -475,7 +475,9 @@ export class User {
           solvedProblems: codingPattern.solvedProblems,
         });
         if (error) {
-          console.error(error);
+          // console.error(error);
+          codingPattern.solvedProblems--;
+          return { error, data: null };
         }
       }
     }
@@ -487,7 +489,9 @@ export class User {
         totalSolvedProblems: this.totalSolvedProblems,
       });
       if (error) {
-        console.error("Error updating user total solved problems", error);
+        // console.error("Error updating user total solved problems", error);
+        this.totalSolvedProblems--;
+        return { error, data: null };
       }
     }
     return { data: updateProblem, error: null };
@@ -522,7 +526,7 @@ export class User {
     time: number;
   }) {
     if (!this.id) {
-      console.error("Login to submit solution");
+      // console.error("Login to submit solution");
       return { error: "Login to submit solution" };
     }
 
@@ -546,7 +550,7 @@ export class User {
    */
   async getLastSolution(problemId: string): Promise<ProblemSolutionDTO | null> {
     if (!this.id) {
-      console.error("Login to get last solution");
+      // console.error("Login to get last solution");
       return null;
     }
     const solution = await getProblemSolution(
@@ -568,7 +572,7 @@ export class User {
    */
   async getProblemSolutions(problemId: string) {
     if (!this.id) {
-      console.error("Login to get problem solutions");
+      // console.error("Login to get problem solutions");
       return null;
     }
     const solutions = await listProblemSolutions(this.id, problemId);
@@ -592,13 +596,13 @@ export class User {
     file: Blob
   ): Promise<{ error: string | null; url: string | null }> {
     if (!this.id) {
-      console.error("Login to upload avatar");
+      // console.error("Login to upload avatar");
       return { error: "Login to upload avatar", url: null };
     }
     const { error, data } = await uploadImage(this.id, file);
     if (error || !data) {
-      console.error("Error uploading avatar", error);
-      console.error("Error uploading avatar", data);
+      // console.error("Error uploading avatar", error);
+      // console.error("Error uploading avatar", data);
       return { error, url: null };
     }
     // delete the old image
@@ -614,12 +618,12 @@ export class User {
     // call the backend service action with the serialized user information
     // if the save fails, throw an error
     if (!this.id) {
-      console.error("Login to save user data");
+      // console.error("Login to save user data");
       throw new Error("Login to save user data");
     }
     const { error } = await updateUser(this.id, this.json);
     if (error) {
-      console.error("Error saving user data", error);
+      // console.error("Error saving user data", error);
       throw new Error("Error saving user data");
     }
   }

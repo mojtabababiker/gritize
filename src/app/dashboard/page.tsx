@@ -24,7 +24,7 @@ function Page() {
       // This is a temporary solution until we have a better way to handle new users
       router.push("/dashboard/create-profile");
     }
-    console.log("User data:", user);
+    // console.log("User data:", user);
   }, [user, router]);
 
   if (!user || !user.id) {

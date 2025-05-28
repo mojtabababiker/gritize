@@ -55,12 +55,12 @@ function Page() {
     if (codingPatternId) {
       const problem = user.getCodingPatternProblem(codingPatternId, problemId);
       if (!problem) {
-        console.log("No problem found");
+        // console.log("No problem found");
         router.replace("/dashboard");
         return null;
       }
       const codingPattern = user.getCodingTechnique(codingPatternId);
-      console.log("codingPattern", codingPattern);
+      // console.log("codingPattern", codingPattern);
       setCodingPattern(codingPattern);
 
       return problem;
@@ -68,7 +68,7 @@ function Page() {
       const problem = user.getAlgorithmProblem(problemId);
 
       if (!problem) {
-        console.log("No problem found");
+        // console.log("No problem found");
         router.replace("/dashboard");
         return null;
       }
@@ -100,7 +100,7 @@ function Page() {
           JSON.parse(localStorageProblem);
 
         if (!problemId) {
-          console.log("No problemId found in local storage");
+          // console.log("No problemId found in local storage");
           toast.custom((t) => (
             <CustomToast t={t} type="error" message="No problemId found" />
           ));
@@ -109,7 +109,7 @@ function Page() {
         }
         const problem = getProblem(problemId, codingPatternId);
         if (!problem) {
-          console.log("No problem found in local storage");
+          // console.log("No problem found in local storage");
           return;
         }
         setProblem(problem);
@@ -122,7 +122,7 @@ function Page() {
         document.title = `Gritize | ${problem.problem.title}`;
         return;
       } else {
-        console.log("No problemId provided, and no local storage data found");
+        // console.log("No problemId provided, and no local storage data found");
         toast.custom((t) => (
           <CustomToast t={t} type="error" message="No problemId found" />
         ));

@@ -18,7 +18,7 @@ const options = {
 
 export async function POST(request: Request): Promise<Response> {
   const { messages } = await request.json();
-  console.log("Received messages:", messages);
+  // console.log("Received messages:", messages);
 
   const handleError: StreamTextOnErrorCallback = ({ error }) => {
     console.error("Error in stream:", error);
@@ -26,7 +26,7 @@ export async function POST(request: Request): Promise<Response> {
 
   const response = streamText({ ...options, messages, onError: handleError });
 
-  console.log("\n\nStreaming response:", response.text, "\n");
+  // console.log("\n\nStreaming response:", response.text, "\n");
 
   return response.toDataStreamResponse();
 }

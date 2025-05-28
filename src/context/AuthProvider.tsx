@@ -43,9 +43,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         setUser(anonymousUser);
       }
-      // console.log("User status checked:", loggedIn, user);
-
-      console.log("\n\nFrom the useEffect\n");
     };
 
     checkLoginStatus();

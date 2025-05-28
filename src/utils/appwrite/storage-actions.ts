@@ -25,9 +25,6 @@ export const uploadFile = async (userId: string, file: Blob) => {
   );
 
   const url = `${Settings.endpoint}/storage/buckets/${Settings.storageBucketId}/files/${uploadedFile.$id}/view?project=${Settings.project}`;
-
-  console.log("\nUploaded file:", uploadedFile);
-  console.log("\nFile preview:", url);
   return url;
 };
 

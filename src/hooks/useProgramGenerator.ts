@@ -165,7 +165,7 @@ export function useProgramGenerator({
    */
   const createProgram = () => {
     if (!user) {
-      console.error("User is not initialized");
+      // console.error("User is not initialized");
       return;
     }
     if (!isLoading && (user.isNewUser || programType === "coding-patterns")) {

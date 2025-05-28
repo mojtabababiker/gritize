@@ -114,7 +114,7 @@ function CodeEditor({
       ],
     };
 
-    console.log("Running code with data:", data);
+    // console.log("Running code with data:", data);
 
     try {
       const response = await fetch(`${sandBoxURL}/execute`, {

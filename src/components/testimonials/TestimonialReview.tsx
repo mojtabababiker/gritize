@@ -28,7 +28,7 @@ function TestimonialReview({
   setCurrentPage,
 }: Props) {
   const handleClick = () => {
-    console.log(review, rating);
+    // console.log(review, rating);
     if (review.length < 5) {
       toast.custom((t) => (
         <CustomToast

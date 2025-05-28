@@ -103,12 +103,12 @@ export function FeaturedProblems() {
       totalProblems.current = data.total;
       setHasMore(data.hasMore);
       setLoading(false);
-    } catch (error) {
-      console.error("Error fetching featured problems:", error);
+    } catch {
+      // console.error("Error fetching featured problems:", error);
       setError("Failed to fetch featured problems.");
     } finally {
       setLoading(false);
-      console.log("\n\npage", page);
+      // console.log("\n\npage", page);
     }
   };
 
@@ -135,7 +135,7 @@ export function FeaturedProblems() {
       ));
       router.push(`/playground?problem=${createdProblemId[0]}`);
     } catch (error) {
-      console.error("Error creating new user problem:", error);
+      // console.error("Error creating new user problem:", error);
       // @ts-expect-error to expensive to type it
       setError(error.message || "Failed to create new user problem.");
     } finally {
@@ -148,7 +148,7 @@ export function FeaturedProblems() {
       return;
     }
     firstRendered.current = true;
-    console.log("fetching featured problems");
+    // console.log("fetching featured problems");
     fetchFeaturedProblems();
   }, []);
   return (
