@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import toast from "react-hot-toast";
@@ -25,6 +25,7 @@ import TestimonialProvider from "@/components/testimonials/TestmonialProvider";
 
 function Page() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,8 +35,10 @@ function Page() {
     direction: "horizontal",
   });
 
-  const [problemId, setProblemId] = useState<string | null>(null);
-  const [codingPatternId, setCodingPatternId] = useState<string | null>(null);
+  // Get URL params directly - no need for state
+  const problemId = searchParams.get("problem");
+  const codingPatternId = searchParams.get("cp");
+
   const [problem, setProblem] = useState<UserProblemSchema | null>(null);
   const [codingPattern, setCodingPattern] =
     useState<CodingPatternSchema | null>(null);
@@ -43,7 +46,6 @@ function Page() {
   const [language, setLanguage] = useState<Languages>("javascript");
 
   const [showSubmission, setShowSubmission] = useState(false);
-
   const [askForTestimonial, setAskForTestimonial] = useState(false);
 
   const backupCodeIntervalId = useRef<NodeJS.Timeout | null>(null);
@@ -55,20 +57,15 @@ function Page() {
     if (codingPatternId) {
       const problem = user.getCodingPatternProblem(codingPatternId, problemId);
       if (!problem) {
-        // console.log("No problem found");
         router.replace("/dashboard");
         return null;
       }
       const codingPattern = user.getCodingTechnique(codingPatternId);
-      // console.log("codingPattern", codingPattern);
       setCodingPattern(codingPattern);
-
       return problem;
     } else {
       const problem = user.getAlgorithmProblem(problemId);
-
       if (!problem) {
-        // console.log("No problem found");
         router.replace("/dashboard");
         return null;
       }
@@ -76,53 +73,43 @@ function Page() {
       return problem;
     }
   };
-  useEffect(() => {
-    const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < 1024);
-    };
-
-    handleResize(); // Check on initial load
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   useEffect(() => {
-    if (!user) {
+    if (!user || !user.id) {
       return;
     }
+
     if (!problemId) {
-      // If no problemId is provided, fetch the localstorage problemId
+      // If no problemId is provided, fetch from localStorage
       const localStorageProblem = localStorage.getItem(`${user.id}-lpp`);
       if (localStorageProblem) {
-        const { problemId, codingPatternId, code } =
-          JSON.parse(localStorageProblem);
+        const {
+          problemId: storedProblemId,
+          codingPatternId: storedCodingPatternId,
+          code: storedCode,
+        } = JSON.parse(localStorageProblem);
 
-        if (!problemId) {
-          // console.log("No problemId found in local storage");
+        if (!storedProblemId) {
           toast.custom((t) => (
             <CustomToast t={t} type="error" message="No problemId found" />
           ));
           router.replace("/dashboard");
           return;
         }
-        const problem = getProblem(problemId, codingPatternId);
+
+        const problem = getProblem(storedProblemId, storedCodingPatternId);
         if (!problem) {
-          // console.log("No problem found in local storage");
           return;
         }
+
         setProblem(problem);
         setIsLoading(false);
         const userLanguage = user.preferredLanguage || "javascript";
         setLanguage(userLanguage);
-        setCode(code || CodeSnippets[userLanguage].code);
-
-        // update window title with problem title
+        setCode(storedCode || CodeSnippets[userLanguage].code);
         document.title = `Gritize | ${problem.problem.title}`;
         return;
       } else {
-        // console.log("No problemId provided, and no local storage data found");
         toast.custom((t) => (
           <CustomToast t={t} type="error" message="No problemId found" />
         ));
@@ -130,27 +117,33 @@ function Page() {
         return;
       }
     }
+
+    // Handle URL-provided problemId
     const problem = getProblem(problemId, codingPatternId);
     setProblem(problem);
     if (!problem) {
       router.replace("/404");
+      return;
     }
-    // update language based on the user preference
+
+    // Set up user preferences
     const userLanguage = user.preferredLanguage || "javascript";
     setLanguage(userLanguage);
     setCode(CodeSnippets[userLanguage].code);
-    setIsLoading(user === null);
+    setIsLoading(false);
+
+    // Save to localStorage
     window.localStorage.setItem(
-      `${user?.id}-lpp`,
+      `${user.id}-lpp`,
       JSON.stringify({
-        problemId: problem?.id,
+        problemId: problem.id,
         codingPatternId: codingPatternId,
         code: code || null,
       })
     );
 
-    // update window title with problem title
-    document.title = `Gritize | ${problem?.problem.title || "Playground"}`;
+    // Update window title
+    document.title = `Gritize | ${problem.problem.title || "Playground"}`;
   }, [user, router, problemId, codingPatternId]);
 
   useEffect(() => {
@@ -164,15 +157,12 @@ function Page() {
     const lastAskedDate = new Date(lastAskedReview || "");
     const diffTime = Math.abs(currentDate.getTime() - lastAskedDate.getTime());
     const diffHours = Math.ceil(diffTime / (1000 * 60 * 60));
-    // const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     user.lastAskedReview = currentDate.toISOString();
 
-    // if the last asked review is more than 8 hours ago
     if (user.mustReview && diffHours >= 8) {
       setAskForTestimonial(true);
     }
-    // const last
   }, [user]);
 
   useEffect(() => {
@@ -190,30 +180,24 @@ function Page() {
       };
 
       const key = `${user.id}-lpp`;
-      window.localStorage.setItem(
-        key,
-        JSON.stringify({
-          ...data,
-          code: code || null,
-        })
-      );
+      window.localStorage.setItem(key, JSON.stringify(data));
     };
-    // saveToLocalStorage(); // Save on initial load
-    backupCodeIntervalId.current = setInterval(saveToLocalStorage, 5000); // Save every 5 seconds
+
+    backupCodeIntervalId.current = setInterval(saveToLocalStorage, 5000);
     return () => clearInterval(backupCodeIntervalId.current!);
-  }, []);
+  }, [user?.id, problem?.id, codingPatternId, code]);
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const newProblemId = searchParams.get("problem");
-    const newCodingPatternId = searchParams.get("cp");
-    if (newProblemId !== problemId) {
-      setProblemId(newProblemId);
-    }
-    if (newCodingPatternId !== codingPatternId) {
-      setCodingPatternId(newCodingPatternId);
-    }
-  });
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 1024);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return isSmallScreen ? (
     <NoticeCard />
