@@ -1,6 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 import toast from "react-hot-toast";
 
@@ -23,7 +23,7 @@ import Submissions from "@/components/playground/Submissions";
 import CustomToast from "@/components/common/CustomToast";
 import TestimonialProvider from "@/components/testimonials/TestmonialProvider";
 
-function Page() {
+function Playground() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -281,5 +281,13 @@ const NoticeCard = () => {
     </div>
   );
 };
+
+function Page() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <Playground />
+    </Suspense>
+  );
+}
 
 export default Page;
