@@ -103,6 +103,7 @@ export function useProgramGenerator({
     const { program: programData, error } = program;
     if (error || !programData) {
       console.error("Error generating program:", { error, programData });
+      setIsLoading(false);
       onError("Error generating program. Please try again later.");
       onStatusChange("");
       return;
@@ -112,22 +113,26 @@ export function useProgramGenerator({
     if (creationMessageInterval.current) {
       clearInterval(creationMessageInterval.current);
     }
-    const { algorithms, codingPatterns } = programData;
+    const { algorithms, codingPattern } = programData;
 
     if (programType === "coding-patterns") {
-      const isNotValid = codingPatterns?.some(
-        (pattern) =>
-          !pattern.title || !pattern.totalProblems || !pattern.problems.length
-      );
-      if (!codingPatterns?.length || isNotValid) {
+      if (
+        !codingPattern ||
+        !codingPattern.title ||
+        !codingPattern.totalProblems ||
+        !codingPattern.problems?.length
+      ) {
+        setIsLoading(false);
+        console.error("Invalid coding pattern data:", codingPattern);
         onError("Error in program generation, please try again.");
         onStatusChange("");
         return;
       }
-      await user.setCodingTechniques(codingPatterns);
+      await user.setCodingTechniques(codingPattern);
     } else if (programType === "algorithms") {
       const isNotValid = algorithms?.some((algorithm) => !algorithm);
       if (!algorithms?.length || isNotValid) {
+        setIsLoading(false);
         onError("Error in program generation, please try again.");
         onStatusChange("");
         return;
@@ -172,6 +177,16 @@ export function useProgramGenerator({
       onStatusChange("Creating program");
       onError("");
       setIsLoading(true);
+      let prompt = `Create a program for a ${user?.skillLevel} software engineer`;
+      if (programType === "coding-patterns") {
+        const codingPatternsTitles = user?.codingTechniques.map(
+          (technique) => technique.title
+        );
+        const patternsToSkip = codingPatternsTitles?.join(", ");
+        if (patternsToSkip) {
+          prompt += `, excluding the following coding patterns: [${patternsToSkip}]`;
+        }
+      }
       submit({
         prompt: prompt,
       });
@@ -204,7 +219,7 @@ export function useProgramGenerator({
   };
 
   const handleError = (error: Error) => {
-    const { message } = error;
+    // const { message } = error;
     // console.error("Error:", message);
     setIsLoading(false);
     onError(
@@ -216,28 +231,26 @@ export function useProgramGenerator({
   // ==================================
   //              AI SDK
   // ==================================
-  const prompt = `Create a program for a ${user?.skillLevel} software engineer`;
 
   const algorithms =
     programType === "algorithms" ? z.array(z.string()) : z.optional(z.any());
-  const codingPatterns =
+  const codingPattern =
     programType === "coding-patterns"
-      ? z.array(
-          z.object({
-            title: z.string(),
-            totalProblems: z.number(),
-            info: z.string(),
-            problems: z.array(z.string()),
-          })
-        )
+      ? z.object({
+          title: z.string(),
+          totalProblems: z.number(),
+          info: z.string(),
+          problems: z.array(z.string()),
+        })
       : z.optional(z.any());
   const schema = z.object({
     algorithms,
-    codingPatterns,
+    codingPattern,
   });
 
+  let apiUrl = `/api/generate_program?programType=${programType}`;
   const { submit, error } = useObject({
-    api: `/api/generate_program?programType=${programType}`,
+    api: apiUrl,
     schema,
     onFinish: ({ object, error }) => saveProgram({ program: object, error }),
     onError: handleError,

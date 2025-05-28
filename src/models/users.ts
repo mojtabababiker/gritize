@@ -348,23 +348,21 @@ export class User {
    * - Creates coding techniques one by one and stores them in the user's codingPatterns map
    * - Continues to next pattern if error occurs during creation
    */
-  async setCodingTechniques(codingPatterns: CodingPatternDTO[]): Promise<void> {
-    if (!codingPatterns || !codingPatterns.length || !this.id) {
+  async setCodingTechniques(codingPattern: CodingPatternDTO): Promise<void> {
+    if (!codingPattern || !this.id) {
       return;
     }
 
-    for (const codingPattern of codingPatterns) {
-      const { data: userCodingPattern, error } = await createCodingTechnique(
-        this.id,
-        codingPattern
-      );
-      if (error || !userCodingPattern) {
-        // console.error("Error creating user coding pattern", error);
-        continue;
-      }
-      // console.log("User coding pattern created", userCodingPattern.id);
-      this.codingPatterns[userCodingPattern.id] = userCodingPattern;
+    const { data: userCodingPattern, error } = await createCodingTechnique(
+      this.id,
+      codingPattern
+    );
+    if (error || !userCodingPattern?.id) {
+      // console.error("Error creating user coding pattern", error);
+      return;
     }
+    // console.log("User coding pattern created", userCodingPattern.id);
+    this.codingPatterns[userCodingPattern.id] = userCodingPattern;
     // this.codingPatterns = value;
   }
 
