@@ -205,7 +205,8 @@ export function useProgramGenerator({
 
   const handleError = (error: Error) => {
     const { message } = error;
-    console.error("Error:", message);
+    // console.error("Error:", message);
+    setIsLoading(false);
     onError(
       error.message ||
         "It seems all slots are occupied, please wait or try again later."

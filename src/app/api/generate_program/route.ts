@@ -77,10 +77,7 @@ export async function POST(request: NextRequest): Promise<Response> {
     !["algorithms", "coding-patterns"].includes(programType)
   ) {
     return Response.json(
-      {
-        error:
-          "Invalid program type. Must be either 'algorithms' or 'coding-patterns'.",
-      },
+      "Invalid program type. Must be either 'algorithms' or 'coding-patterns'.",
       { status: 400 }
     );
   }
@@ -103,9 +100,16 @@ export async function POST(request: NextRequest): Promise<Response> {
   //   `\n** Total time taken to generate the program: ${totalTime} seconds**\n`
   // );
 
-  const cleanResult = cleanJsonResponse(programResult.text);
+  try {
+    const cleanResult = cleanJsonResponse(programResult.text);
 
-  return Response.json(cleanResult);
+    return Response.json(cleanResult);
+  } catch (error) {
+    console.error("Error cleaning JSON response:", error);
+    return Response.json("Failed to parse the generated program output.", {
+      status: 500,
+    });
+  }
 }
 
 /**
