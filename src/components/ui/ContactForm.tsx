@@ -109,7 +109,7 @@ function ContactForm({ className }: Props) {
           type="text-aria"
           name="message"
           id="input-message"
-          placeholder="Type Here@/components."
+          placeholder="Type Your Message..."
         />
         {validationErrors.message && (
           <Paragraph size="sm" className="text-accent">
