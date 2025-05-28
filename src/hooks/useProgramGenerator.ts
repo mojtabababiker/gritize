@@ -177,6 +177,7 @@ export function useProgramGenerator({
       onStatusChange("Creating program");
       onError("");
       setIsLoading(true);
+
       let prompt = `Create a program for a ${user?.skillLevel} software engineer`;
       if (programType === "coding-patterns") {
         const codingPatternsTitles = user?.codingTechniques.map(
@@ -187,9 +188,11 @@ export function useProgramGenerator({
           prompt += `, excluding the following coding patterns: [${patternsToSkip}]`;
         }
       }
+
       submit({
         prompt: prompt,
       });
+
       creationMessageInterval.current = setInterval(() => {
         onStatusChange((prev) => {
           if (prev === "Creating program") {
@@ -206,13 +209,18 @@ export function useProgramGenerator({
 
       // if the program creation takes more than 45 seconds, show a message
       creationCompletedTimeout.current = setTimeout(() => {
-        if (isLoading) {
-          clearInterval(creationMessageInterval.current!);
-          onStatusChange(
-            "Program creation is taking longer than expected. Please be patient."
-          );
+        // console.error("Timeout reached for program creation");
+        clearInterval(creationMessageInterval.current!);
+        setIsLoading(false);
+        onStatusChange("");
+        if (creationMessageInterval.current) {
+          clearInterval(creationMessageInterval.current);
         }
-      }, 45000);
+        onError(
+          "Program creation is taking longer than expected. Please try again."
+        );
+        stop();
+      }, 26000); // 26 seconds timeout to complete the program creation
     } else if (!user.isNewUser) {
       // router.replace("/dashboard");
     }
@@ -222,6 +230,13 @@ export function useProgramGenerator({
     // const { message } = error;
     // console.error("Error:", message);
     setIsLoading(false);
+    if (creationMessageInterval.current) {
+      clearInterval(creationMessageInterval.current);
+    }
+    if (creationCompletedTimeout.current) {
+      clearTimeout(creationCompletedTimeout.current);
+    }
+    onStatusChange("");
     onError(
       error.message ||
         "It seems all slots are occupied, please wait or try again later."
@@ -249,7 +264,7 @@ export function useProgramGenerator({
   });
 
   let apiUrl = `/api/generate_program?programType=${programType}`;
-  const { submit, error } = useObject({
+  const { submit, error, stop } = useObject({
     api: apiUrl,
     schema,
     onFinish: ({ object, error }) => saveProgram({ program: object, error }),
@@ -258,6 +273,7 @@ export function useProgramGenerator({
 
   return {
     createProgram,
+    cancelProgram: stop,
     isLoading,
     error,
     setIsLoading,
