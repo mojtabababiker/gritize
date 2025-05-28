@@ -78,8 +78,8 @@ function SignupForm({ onComplete, changeFormType }: Props) {
       } else {
         router.replace("/dashboard");
       }
-    } catch (error) {
-      console.error("Error signing up", error);
+    } catch {
+      // console.error("Error signing up", error);
 
       const errorMessage = "A user with this email already exists"; // needs to handle more errors
 

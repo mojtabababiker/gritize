@@ -94,7 +94,7 @@ export function useProgramGenerator({
    */
   const saveProgram = async (program: Program): Promise<void> => {
     if (!user) {
-      console.error("User is not initialized");
+      // console.error("User is not initialized");
       return;
     }
     if (creationCompletedTimeout.current) {
@@ -102,7 +102,7 @@ export function useProgramGenerator({
     }
     const { program: programData, error } = program;
     if (error || !programData) {
-      console.error("Error generating program:", { error, programData });
+      // console.error("Error generating program:", { error, programData });
       setIsLoading(false);
       onError("Error generating program. Please try again later.");
       onStatusChange("");
@@ -123,7 +123,7 @@ export function useProgramGenerator({
         !codingPattern.problems?.length
       ) {
         setIsLoading(false);
-        console.error("Invalid coding pattern data:", codingPattern);
+        // console.error("Invalid coding pattern data:", codingPattern);
         onError("Error in program generation, please try again.");
         onStatusChange("");
         return;
@@ -263,9 +263,9 @@ export function useProgramGenerator({
     codingPattern,
   });
 
-  let apiUrl = `/api/generate_program?programType=${programType}`;
+  const api = `/api/generate_program?programType=${programType}`;
   const { submit, error, stop } = useObject({
-    api: apiUrl,
+    api,
     schema,
     onFinish: ({ object, error }) => saveProgram({ program: object, error }),
     onError: handleError,

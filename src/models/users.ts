@@ -147,7 +147,7 @@ export class User {
       this.generalAlgorithms = {};
       this.codingPatterns = {};
     } catch (error) {
-      console.error("Logout failed", error);
+      // console.error("Logout failed", error);
       throw error;
     }
   }
@@ -173,7 +173,7 @@ export class User {
     );
 
     if (authError) {
-      console.error("Registration failed", authError);
+      // console.error("Registration failed", authError);
       throw authError;
     }
 
@@ -185,8 +185,8 @@ export class User {
     const { data: user, error: dbError } = await createUser(this.json);
 
     if (dbError || !user) {
-      console.error("Database error during user registration", dbError);
-      console.error("User ID: ", this.id);
+      // console.error("Database error during user registration", dbError);
+      // console.error("User ID: ", this.id);
       throw new Error("User registration failed.");
     }
 

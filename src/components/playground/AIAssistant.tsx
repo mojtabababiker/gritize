@@ -46,7 +46,7 @@ function AIAssistant({
   };
 
   const handleError = (error: Error, type: "hint" | "review") => {
-    console.error(`Error fetching ${type}:`, error.message);
+    // console.error(`Error fetching ${type}:`, error.message);
     onError(error.message || `Failed to fetch ${type}. Please try again.`);
   };
 

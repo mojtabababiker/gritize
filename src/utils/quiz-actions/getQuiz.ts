@@ -42,7 +42,7 @@ const model = google("gemini-2.0-flash-thinking-exp-01-21");
 export async function getQuiz(
   language: string
 ): Promise<{ data: Quiz | null; error: string | null }> {
-  const startTime = Date.now();
+  // const startTime = Date.now();
   const prompt = QUIZ_GENERATION.replace("{{SELECTED_LANGUAGE}}", language);
 
   // console.log("prompt from API", prompt);
@@ -55,7 +55,7 @@ export async function getQuiz(
       output: "no-schema",
     });
 
-    console.log("Execution time:", Date.now() - startTime, "ms");
+    // console.log("Execution time:", Date.now() - startTime, "ms");
     // console.log("result from API", result.object);
     // saving the quiz to the database
     const quiz = result.object as Quiz;
@@ -63,7 +63,7 @@ export async function getQuiz(
 
     return { data: result.object as Quiz, error: null };
   } catch (error) {
-    console.log("Execution time:", Date.now() - startTime, "ms");
+    // console.log("Execution time:", Date.now() - startTime, "ms");
     console.error("Error in API:", error);
     return {
       data: null,
