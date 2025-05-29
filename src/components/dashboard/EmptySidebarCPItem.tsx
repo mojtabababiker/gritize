@@ -10,10 +10,8 @@ import { useAuth } from "@/context/AuthProvider";
 import Button from "@/components/common/Button";
 import Paragraph from "@/components/common/Paragraph";
 import Heading from "@/components/common/Heading";
-import { useRouter } from "next/navigation";
 
 function EmptySidebarCPItem() {
-  const router = useRouter();
   const { user, setUser } = useAuth();
 
   const [message, setErrorMessage] = useState<string>("");
@@ -27,7 +25,8 @@ function EmptySidebarCPItem() {
     user.isNewUser = false;
     await user.save();
     setUser(user);
-    router.replace("/dashboard");
+    setErrorMessage("");
+    setStatus("");
   };
 
   const { createProgram, error, isLoading } = useProgramGenerator({
