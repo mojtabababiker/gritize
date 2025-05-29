@@ -24,6 +24,7 @@ export const metadata: Metadata = {
     "your open-source ally in the journey to sharpen your problem-solving edge, master coding patterns, and contribute to something bigger than tutorials and coding playgrounds.",
   openGraph: {
     title: "Gritize | Your AI-Powered Technical Assistant",
+    type: "website",
     description:
       "your open-source ally in the journey to sharpen your problem-solving edge, master coding patterns, and contribute to something bigger than tutorials and coding playgrounds.",
     siteName: "Gritize",
