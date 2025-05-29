@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
-import Heading from "../common/Heading";
+import Heading from "@/components/common/Heading";
 
 type Props = {
   value: number;
@@ -13,24 +13,26 @@ type Props = {
 function StatisticalCard({ value, title, className }: Props) {
   const cardRef = useRef<HTMLDivElement | null>(null);
   const endValue = useRef<number>(value);
-  const [currentValue] = useState<number>(endValue.current); // update it to 0 b3den
+  const [currentValue, setCurrentValue] = useState<number>(0);
 
   useEffect(() => {
     if (!cardRef.current) return;
-    /**
-     * function that give the look of incrementing the number from 0 to endValue
-     * whenever it a visible in view bort
-     * @param param0 the entry
-     */
-    const startCounter = ([entry]: IntersectionObserverEntry[]) => {
-      if (entry.isIntersecting && cardRef.current) {
-        // start increment
-        observer.unobserve(cardRef.current);
+    const duration = 2000; // 2 seconds
+    const startTime = performance.now();
+
+    const countingInterval = setInterval(() => {
+      const elapsed = performance.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      setCurrentValue(Math.floor(progress * endValue.current));
+      if (progress === 1) {
+        clearInterval(countingInterval);
       }
+    }, 200);
+
+    return () => {
+      clearInterval(countingInterval);
     };
-    const observer = new IntersectionObserver(startCounter);
-    observer.observe(cardRef.current);
-  });
+  }, []);
   return (
     <div
       ref={cardRef}
