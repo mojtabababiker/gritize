@@ -26,6 +26,8 @@ export const metadata: Metadata = {
     title: "Gritize | Your AI-Powered Technical Assistant",
     description:
       "your open-source ally in the journey to sharpen your problem-solving edge, master coding patterns, and contribute to something bigger than tutorials and coding playgrounds.",
+    siteName: "Gritize",
+    url: "https://gritize.vercel.app",
   },
   twitter: {
     title: "Gritize | Your AI-Powered Technical Assistant",
