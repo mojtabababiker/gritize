@@ -13,8 +13,7 @@ import Heading from "@/components/common/Heading";
 import Paragraph from "@/components/common/Paragraph";
 import CustomToast from "@/components/common/CustomToast";
 import SidebarItem from "@/components/cards/SidebarItem";
-import SidebarCPItems from "@/components/cards/SidebarCPItems";
-import EmptySidebarCPItem from "@/components/dashboard/EmptySidebarCPItem";
+import SidebarCPContainer from "@/components/dashboard/SidebarCPContainer";
 
 function Sidebar() {
   const router = useRouter();
@@ -132,11 +131,14 @@ function Sidebar() {
             as="h3"
             size="md"
             className={clsx(
-              "text-fg flex-1transition-all duration-500 ease-in-out",
+              "text-fg flex-1transition-all duration-500 ease-in-out flex gap-1 items-end",
               !open && "opacity-0 scale-x-0 order-1"
             )}
           >
             Coding Techniques
+            <span className="text-accent/75 text-base font-body font-normal italic">
+              {user?.codingTechniques.length}/3 remaining
+            </span>
           </Heading>
           <Image
             src={"/icons/brain-icon.png"}
@@ -154,11 +156,7 @@ function Sidebar() {
             !open && "opacity-0 scale-x-0"
           )}
         >
-          {user && user.codingTechniques.length > 0 ? (
-            <SidebarCPItems codingPatterns={user.codingTechniques} />
-          ) : (
-            <EmptySidebarCPItem />
-          )}
+          <SidebarCPContainer />
         </div>
       </div>
 
