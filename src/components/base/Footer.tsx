@@ -1,12 +1,20 @@
 "use client";
-
-import Image from "next/image";
-import Bounded from "../common/Bounded";
-import Paragraph from "../common/Paragraph";
-import Heading from "../common/Heading";
+import { useState } from "react";
 import Link from "next/link";
-import ContactForm from "../ui/ContactForm";
+import Image from "next/image";
+
+import toast from "react-hot-toast";
+
 import { Settings } from "@/constant/setting";
+import { useAuth } from "@/context/AuthProvider";
+
+import Bounded from "@/components/common/Bounded";
+import Paragraph from "@/components/common/Paragraph";
+import Heading from "@/components/common/Heading";
+import CustomToast from "@/components/common/CustomToast";
+
+import ContactForm from "@/components/ui/ContactForm";
+import TestimonialProvider from "@/components/testimonials/TestmonialProvider";
 
 const FOOTER_MENU = [
   {
@@ -39,9 +47,26 @@ const REPO_LINKS = [
 ];
 
 function Footer() {
+  const { isLoggedIn } = useAuth();
+  const [askForTestimonial, setAskForTestimonial] = useState(false);
+
+  const handleReview = () => {
+    if (!isLoggedIn) {
+      setAskForTestimonial(false);
+      toast.custom((t) => (
+        <CustomToast
+          t={t}
+          type="warning"
+          message=" Please login to give a feedback (-:"
+        />
+      ));
+      return;
+    }
+    setAskForTestimonial(true);
+  };
   return (
     <Bounded as="footer" className="bg-bg pt-24 pb-12">
-      <div className="flex flex-wrap items-centers justify-center gap-6">
+      <div className="flex flex-wrap items-centers justify-center gap-6 pb-8">
         {/* desc section */}
         <div className="flex-1 flex flex-col gap-3  min-w-full md:min-w-[280px]">
           {/* logo */}
@@ -81,6 +106,16 @@ function Footer() {
                 </Link>
               </li>
             ))}
+            <li key={`footer-link-ask-review`}>
+              <button
+                className="text-surface capitalize cursor-pointer"
+                onClick={handleReview}
+              >
+                <Heading as="h4" size="sm" className="text-surface capitalize">
+                  Give us a feedback
+                </Heading>
+              </button>
+            </li>
           </ul>
         </div>
         {/* contribute links */}
@@ -116,6 +151,22 @@ function Footer() {
           <ContactForm className="max-w-[640px]" />
         </div>
       </div>
+      {/* trademark reserved */}
+      <div className="absolute bottom-1.5 left-1.5 border-t border-surface pt-2">
+        <p className="text-surface text-center text-xs">
+          © {new Date().getFullYear()} Gritize. All rights reserved.
+        </p>
+      </div>
+
+      {/* review provider */}
+      {askForTestimonial && (
+        <div className="fixed inset-0 h-screen w-screen z-50 bg-bg/40 cursor-auto">
+          <TestimonialProvider
+            show={askForTestimonial}
+            onClose={() => setAskForTestimonial(false)}
+          />
+        </div>
+      )}
     </Bounded>
   );
 }

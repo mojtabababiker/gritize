@@ -1,17 +1,21 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import clsx from "clsx";
-import { LogOutIcon, UserPenIcon } from "lucide-react";
+import { LogOutIcon, StarIcon, UserPenIcon } from "lucide-react";
 
+import { Settings } from "@/constant/setting";
 import { useAuth } from "@/context/AuthProvider";
 
 import Loading from "@/components/common/Loading";
+import Heading from "@/components/common/Heading";
+import TestimonialProvider from "@/components/testimonials/TestmonialProvider";
+import GithubIcon from "@/components/icons/GithubIcon";
 
 import EditableUserAvatar from "./UserAvatar";
 import ProfileEditor from "./ProfileEditor";
-import Heading from "../common/Heading";
 
 type Props = {
   open?: boolean;
@@ -23,6 +27,8 @@ function ProfileDropdown({ open }: Props) {
   const [isOpen, setIsOpen] = useState(open || false);
   const [editProfile, setEditProfile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [askForTestimonial, setAskForTestimonial] = useState(false);
 
   const handleEditProfile = () => {
     setIsOpen(false);
@@ -84,6 +90,27 @@ function ProfileDropdown({ open }: Props) {
             <LogOutIcon className="size-4 text-red-500" />
           </button>
         </div>
+
+        {/* review and contribute actions */}
+        <div className="w-full pt-2 flex gap-4 items-center justify-center border-t border-surface/10">
+          <button
+            className="text-fg/45 text-sm hover:text-fg transition-all duration-200 ease-in-out cursor-pointer flex gap-1 items-center"
+            onClick={() => setAskForTestimonial(true)}
+          >
+            <StarIcon className="size-3" />
+            rate us
+          </button>
+          <Link
+            title="GitHub Repository"
+            href={Settings.githubRepo}
+            target="_blank"
+            className="text-fg/45 text-sm hover:text-fg transition-all duration-200 ease-in-out flex gap-1 items-center"
+            rel="noopener noreferrer"
+          >
+            <GithubIcon className="size-3" />
+            contribute
+          </Link>
+        </div>
       </div>
       {/* Profile edit Modal */}
       {editProfile && (
@@ -92,6 +119,16 @@ function ProfileDropdown({ open }: Props) {
 
       {/* loading */}
       {isLoading && <Loading />}
+
+      {/* review provider */}
+      {askForTestimonial && (
+        <div className="fixed inset-0 h-screen w-screen z-50 bg-bg/40 cursor-auto">
+          <TestimonialProvider
+            show={askForTestimonial}
+            onClose={() => setAskForTestimonial(false)}
+          />
+        </div>
+      )}
     </>
   );
 }

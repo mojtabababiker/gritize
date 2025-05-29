@@ -17,10 +17,12 @@ import Heading from "@/components/common/Heading";
 import Loading from "@/components/common/Loading";
 import Paragraph from "@/components/common/Paragraph";
 import ResizeRuler from "@/components/common/ResizeRuler";
+import CustomToast from "@/components/common/CustomToast";
+
 import CodeEditor from "@/components/playground/CodeEditor";
 import ProblemSection from "@/components/playground/ProblemSection";
 import Submissions from "@/components/playground/Submissions";
-import CustomToast from "@/components/common/CustomToast";
+
 import TestimonialProvider from "@/components/testimonials/TestmonialProvider";
 
 function Playground() {
@@ -35,7 +37,6 @@ function Playground() {
     direction: "horizontal",
   });
 
-  // Get URL params directly - no need for state
   const problemId = searchParams.get("problem");
   const codingPatternId = searchParams.get("cp");
 
