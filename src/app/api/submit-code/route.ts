@@ -14,7 +14,7 @@ const model = google("gemini-2.0-flash-thinking-exp-01-21");
 export async function POST(request: Request) {
   const { prompt } = await request.json();
 
-  console.log("Received body:", prompt);
+  // console.log("Received body:", prompt);
 
   const response = await generateText({
     model,
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
   // return Response.json({ message: "not implemented" }, { status: 501 });
 
-  console.log("Response:", response.text);
+  // console.log("Response:", response.text);
 
   return response.text
     ? Response.json({ message: response.text }, { status: 200 })

@@ -1,7 +1,7 @@
 import { GitCompareIcon, MessageCircleWarningIcon } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 import Button from "../common/Button";
-import { Message, UIMessage } from "ai";
+import { UIMessage } from "ai";
 import { RenderMarkdown } from "../common/RenderMarkdown";
 import { useAuth } from "@/context/AuthProvider";
 import { UserProblemSchema } from "@/models/schemas";
@@ -46,20 +46,20 @@ function AIAssistant({
   };
 
   const handleError = (error: Error, type: "hint" | "review") => {
-    console.error(`Error fetching ${type}:`, error.message);
+    // console.error(`Error fetching ${type}:`, error.message);
     onError(error.message || `Failed to fetch ${type}. Please try again.`);
   };
 
-  const handleHint = (message: Message) => {
+  const handleHint = () => {
     onHintsLoaded(true);
     setShowHint(true);
-    console.log("Hint received:", message);
+    // console.log("Hint received:", message);
     setHintInput(DEFAULT_HINT_PROMPT);
     scrollToBottom(hintsScrollRef);
   };
 
-  const handleReview = (message: Message) => {
-    console.log("Review received:", message);
+  const handleReview = () => {
+    // console.log("Review received:", message);
     scrollToBottom(reviewScrollRef);
   };
 

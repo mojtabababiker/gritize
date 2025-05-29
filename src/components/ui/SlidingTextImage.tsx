@@ -75,6 +75,10 @@ function SlidingTextImage() {
   useEffect(() => {
     const interval = setInterval(() => {
       if (imgRef.current) {
+        setActiveImage((prev) => {
+          const nextIndex = (images.indexOf(prev) + 1) % images.length;
+          return images[nextIndex];
+        });
         gsap.to(imgRef.current, {
           opacity: 0,
           duration: 0.5,
@@ -89,10 +93,6 @@ function SlidingTextImage() {
             });
             if (imgRef.current) imgRef.current.src = activeImage;
           },
-        });
-        setActiveImage((prev) => {
-          const nextIndex = (images.indexOf(prev) + 1) % images.length;
-          return images[nextIndex];
         });
       }
     }, 10000);

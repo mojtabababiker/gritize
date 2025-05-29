@@ -21,7 +21,7 @@ function EmptySidebarCPItem() {
 
   const onComplete = async () => {
     if (!user) {
-      console.error("User is not initialized");
+      // console.error("User is not initialized");
       return;
     }
     user.isNewUser = false;

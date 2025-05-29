@@ -89,7 +89,6 @@ function Hero() {
                   variant="ghost"
                   size="lg"
                   className="bg-surface flex gap-2 items-center"
-                  onClick={() => console.log("Learn More")}
                 >
                   Contribute To Platform
                   <SquareArrowOutUpRight className="size-4 sm:size-6 stroke-2 text-bg" />

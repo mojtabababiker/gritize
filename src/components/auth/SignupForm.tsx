@@ -72,14 +72,14 @@ function SignupForm({ onComplete, changeFormType }: Props) {
       toast.custom((t) => (
         <CustomToast t={t} type="success" message="Login successful" />
       ));
-      console.log("Login successful", user);
+      // console.log("Login successful", user);
       if (onComplete) {
         onComplete();
       } else {
         router.replace("/dashboard");
       }
-    } catch (error) {
-      console.log("Error signing up", error);
+    } catch {
+      // console.error("Error signing up", error);
 
       const errorMessage = "A user with this email already exists"; // needs to handle more errors
 

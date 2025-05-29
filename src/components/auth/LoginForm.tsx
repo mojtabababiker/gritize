@@ -61,7 +61,7 @@ function LoginForm({ onComplete, changeFormType }: Props) {
     const completeLogin = async () => {
       const userObj = state.data;
       if (!userObj) {
-        console.error("User object is null");
+        // console.error("User object is null");
         return;
       }
       const user = await User.fromJson(userObj);
@@ -70,7 +70,7 @@ function LoginForm({ onComplete, changeFormType }: Props) {
       toast.custom((t) => (
         <CustomToast t={t} type="success" message="Login successful" />
       ));
-      console.log("Login successful", user);
+      // console.log("Login successful", user);
       if (onComplete) {
         onComplete();
       } else {
@@ -78,7 +78,7 @@ function LoginForm({ onComplete, changeFormType }: Props) {
       }
     };
 
-    console.log("Login state", state);
+    // console.log("Login state", state);
 
     if (state.ok && state.data) {
       completeLogin();

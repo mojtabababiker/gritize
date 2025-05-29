@@ -101,14 +101,14 @@ export async function searchProblemsBySlug({
   slugs: string[];
 }): Promise<Record<string, string | null>> {
   const problemIds: Record<string, string | null> = {};
-  console.log(`\nSearching for ${slugs.length} problems in the database...\n`);
+  // console.log(`\nSearching for ${slugs.length} problems in the database...\n`);
   for (const s of slugs) {
     const problemData = await TechnicalProblem.getBySlug(s);
-    console.log(
-      `\nProblem with slug '${s}' fetched: ${
-        problemData?.id ? `and found '${problemData.id}'` : "and not found"
-      }\n`
-    );
+    // console.log(
+    //   `\nProblem with slug '${s}' fetched: ${
+    //     problemData?.id ? `and found '${problemData.id}'` : "and not found"
+    //   }\n`
+    // );
     if (problemData && problemData.id) {
       problemIds[s] = problemData.id;
     } else {
@@ -142,7 +142,7 @@ export async function createProblems({
 }): Promise<Record<string, string | null>> {
   const problemIds: Record<string, string | null> = {};
 
-  console.log(`\nCreating ${problems.length} problems in the database...\n`);
+  // console.log(`\nCreating ${problems.length} problems in the database...\n`);
   for (const problem of problems) {
     const { title, description, difficulty, type, hint, slug } = problem;
     const problemObj = await TechnicalProblem.fromJson({
@@ -154,13 +154,13 @@ export async function createProblems({
       slug,
     });
     problemIds[slug] = problemObj?.id || null;
-    if (problemObj && problemObj.id) {
-      console.info(
-        `\nProblem created successfully: ${problem.title} - ${problemObj.id}\n`
-      );
-    } else {
-      console.error(`\nFailed to create problem: ${problem.title}\n`);
-    }
+    // if (problemObj && problemObj.id) {
+    //   console.info(
+    //     `\nProblem created successfully: ${problem.title} - ${problemObj.id}\n`
+    //   );
+    // } else {
+    //   console.error(`\nFailed to create problem: ${problem.title}\n`);
+    // }
   }
 
   return problemIds;

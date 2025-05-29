@@ -126,15 +126,6 @@ export const updateUser = async (userId: string, userObj: Partial<UserDTO>) => {
         ...cleanUserObject,
       }
     );
-    // const {
-    //   $id: id,
-    //   $collectionId,
-    //   $databaseId,
-    //   $createdAt,
-    //   $updatedAt,
-    //   $permissions,
-    //   ...rest
-    // } = userDoc;
     const data = stripAppwriteFields<UserDTO>(userDoc);
     return { data, error: null };
   } catch (error) {

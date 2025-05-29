@@ -49,10 +49,10 @@ export const saveQuiz = async (
         questions: JSON.stringify(quiz.questions),
       }
     );
-    console.log("Quiz created", quizDoc.$id);
+    // console.log("Quiz created", quizDoc.$id);
     return { data: quizDoc, error: null };
   } catch (error) {
-    console.error("Error saving quiz", error);
+    // console.error("Error saving quiz", error);
     if (error instanceof AppwriteException) {
       return { error, data: null };
     }

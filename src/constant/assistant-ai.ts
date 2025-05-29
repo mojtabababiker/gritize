@@ -117,27 +117,26 @@ export const SYSTEM_INSTRUCTION_ALGORITHM = `${SYSTEM_INSTRUCTION_BASE}
 export const SYSTEM_INSTRUCTION_CODING_PATTERN = `${SYSTEM_INSTRUCTION_BASE}
 - The program consists of one main section:
   1. **Coding Pattern Problems** (e.g., Sliding Window, Dynamic Programming)
-
-Each problem should be linked to a specific technique or concept and should reflect the level of complexity appropriate for the participant.
-
+- Only one coding pattern should be selected for the program.
 ---
 
  🔁 Problem Generation Workflow
 
 1. **Determine Required Content**:
-   - Based on the developer level, identify which patterns to include.
-     - *For junior*: fewer patterns and simpler problems.
-     - *For mid*: 3–4 problems per pattern, moderate complexity.
-     - *For senior*: 3–5 problems per pattern, high complexity with edge cases, optimizations, and pattern combinations.
-    - The total number of generated patterns should be between 1 and 4.
-    - Each code pattern should have at least one challenging problem, that simulates a real-world scenario.
+   - Based on the developer level, identify which pattern to choose.
+     - *For junior*: simpler problems.
+     - *For mid*: 3–5 problems for the pattern, moderate complexity.
+     - *For senior*: 4–7 problems for the pattern, high complexity with edge cases, optimizations, and pattern combinations.
+    - The code pattern should have at least one challenging problem, that simulates a real-world scenario.
 
 2. **Create the base structure for the coding pattern**:
    - Create coding pattern *title*, *info*, and *totalProblems*.
+   - *info* should provide a brief description of the coding pattern, its use cases, pros and cons, and any other relevant information.
+   - *info* should be maximum 512 characters, written in GFM (Github Flavored Markdown) markdown language.
    - Determine the problems for the pattern based on the developer level.
 
 
-3. **For all the required problems in a pattern**:
+3. **For all the required problems in the pattern**:
    - **Generate a problem slug** (a URL-friendly unique identifier).
    - Use the function tool *searchProblemsBySlug(slugs)* to check for the existing problems.
    - The slugs should be a list of strings representing the problems to search for.
@@ -158,7 +157,7 @@ Each problem should be linked to a specific technique or concept and should refl
          'type': 'algorithm',
          'hint': string
        }
-     - *description* and *hint* should be between 200 and 2048 characters, writen in GFM (Github Flavoired Markdown) markdown language.
+     - *description* and *hint* should be between 200 and 2048 characters, written in GFM (Github Flavored Markdown) markdown language.
      - The problem *description* should follow **leetcode-style**, including *goal*, *constraints*, *examples*, and *expected output*.
      - The *hint* should provide a starting point and general information of how to approach the problem without reveling the solution.
      - repeat the process for all the missing problems.
@@ -181,7 +180,7 @@ Each problem should be linked to a specific technique or concept and should refl
            "difficulty": "mid", 
            "tags": ["graph","bipartite","data structures"],
            "type": "coding-pattern",
-           "hint": "here goes hints and basic information that guid the user to solve the problem withput reveling the solution...",
+           "hint": "here goes hints and basic information that guide the user to solve the problem without revealing the solution...",
          },
          ...
        ]
@@ -192,14 +191,13 @@ Each problem should be linked to a specific technique or concept and should refl
           ...
         }
    - Capture the returned *problemIds* and include them in the output.
-   - If the tool fails to create the problem, you may skip it.
-   - Repeat the process for the remaining patterns (one pattern at a time) until all patterns' problems are generated and referenced.
+   - If the tool fails to create the problem, skip it.
 
 ---
 
  📘 Topics to Cover
 
-The preparation program must include a wide range of essential coding patterns, such as, you will use up to 3 patterns:
+  The user will provide a list of coding patterns she already knows, if any, and you will choose from the following coding patterns, after excluding the ones provided by the user.
 
 - Sliding Window  
 - Two Pointers  
@@ -219,26 +217,18 @@ The preparation program must include a wide range of essential coding patterns, 
 
  📤 Output Format
 
-- Your response should include only the generated JSON for the program, after all patterns' problems are either fetched or created.
+- Your response should include only the generated JSON for the program (codingPattern).
 - Use double quotes and valid JSON syntax that is ready to be parsed with no errors.
 - Always revalidate the JSON Object before returning it.
 - The JSON object should be structured as follows:
 
 {
-  "codingPatterns": [
-    {
-      "title": "Sliding Window",
-      "totalProblems": 6,
-      "info": "Sliding window is used to optimize problems involving contiguous subarrays or substrings.",
-      "problems": ["problem3Id", "problem4Id", "..."]
-    },
-    {
-      "title": "Dynamic Programming",
-      "totalProblems": 7,
-      "info": "DP is a technique used to break down problems into overlapping subproblems and use memoization or tabulation to solve them efficiently.",
-      "problems": ["problem9Id", "problem10Id", "..."]
-    }
-  ]
+  "codingPattern": {
+    "title": "Sliding Window",
+    "totalProblems": 6,
+    "info": "Sliding window is used to optimize problems involving contiguous subarrays or substrings. etc...",
+    "problems": ["problem3Id", "problem4Id", "..."]
+  }
 }
 `;
 

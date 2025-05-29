@@ -94,7 +94,7 @@ export function useProgramGenerator({
    */
   const saveProgram = async (program: Program): Promise<void> => {
     if (!user) {
-      console.error("User is not initialized");
+      // console.error("User is not initialized");
       return;
     }
     if (creationCompletedTimeout.current) {
@@ -102,7 +102,8 @@ export function useProgramGenerator({
     }
     const { program: programData, error } = program;
     if (error || !programData) {
-      console.error("Error generating program:", { error, programData });
+      // console.error("Error generating program:", { error, programData });
+      setIsLoading(false);
       onError("Error generating program. Please try again later.");
       onStatusChange("");
       return;
@@ -112,22 +113,26 @@ export function useProgramGenerator({
     if (creationMessageInterval.current) {
       clearInterval(creationMessageInterval.current);
     }
-    const { algorithms, codingPatterns } = programData;
+    const { algorithms, codingPattern } = programData;
 
     if (programType === "coding-patterns") {
-      const isNotValid = codingPatterns?.some(
-        (pattern) =>
-          !pattern.title || !pattern.totalProblems || !pattern.problems.length
-      );
-      if (!codingPatterns?.length || isNotValid) {
+      if (
+        !codingPattern ||
+        !codingPattern.title ||
+        !codingPattern.totalProblems ||
+        !codingPattern.problems?.length
+      ) {
+        setIsLoading(false);
+        // console.error("Invalid coding pattern data:", codingPattern);
         onError("Error in program generation, please try again.");
         onStatusChange("");
         return;
       }
-      await user.setCodingTechniques(codingPatterns);
+      await user.setCodingTechniques(codingPattern);
     } else if (programType === "algorithms") {
       const isNotValid = algorithms?.some((algorithm) => !algorithm);
       if (!algorithms?.length || isNotValid) {
+        setIsLoading(false);
         onError("Error in program generation, please try again.");
         onStatusChange("");
         return;
@@ -165,16 +170,29 @@ export function useProgramGenerator({
    */
   const createProgram = () => {
     if (!user) {
-      console.error("User is not initialized");
+      // console.error("User is not initialized");
       return;
     }
     if (!isLoading && (user.isNewUser || programType === "coding-patterns")) {
       onStatusChange("Creating program");
       onError("");
       setIsLoading(true);
+
+      let prompt = `Create a program for a ${user?.skillLevel} software engineer`;
+      if (programType === "coding-patterns") {
+        const codingPatternsTitles = user?.codingTechniques.map(
+          (technique) => technique.title
+        );
+        const patternsToSkip = codingPatternsTitles?.join(", ");
+        if (patternsToSkip) {
+          prompt += `, excluding the following coding patterns: [${patternsToSkip}]`;
+        }
+      }
+
       submit({
         prompt: prompt,
       });
+
       creationMessageInterval.current = setInterval(() => {
         onStatusChange((prev) => {
           if (prev === "Creating program") {
@@ -191,21 +209,34 @@ export function useProgramGenerator({
 
       // if the program creation takes more than 45 seconds, show a message
       creationCompletedTimeout.current = setTimeout(() => {
-        if (isLoading) {
-          clearInterval(creationMessageInterval.current!);
-          onStatusChange(
-            "Program creation is taking longer than expected. Please be patient."
-          );
+        // console.error("Timeout reached for program creation");
+        clearInterval(creationMessageInterval.current!);
+        setIsLoading(false);
+        onStatusChange("");
+        if (creationMessageInterval.current) {
+          clearInterval(creationMessageInterval.current);
         }
-      }, 45000);
+        onError(
+          "Program creation is taking longer than expected. Please try again."
+        );
+        stop();
+      }, 35000); // 35 seconds timeout to complete the program creation
     } else if (!user.isNewUser) {
       // router.replace("/dashboard");
     }
   };
 
   const handleError = (error: Error) => {
-    const { message } = error;
-    console.error("Error:", message);
+    // const { message } = error;
+    // console.error("Error:", message);
+    setIsLoading(false);
+    if (creationMessageInterval.current) {
+      clearInterval(creationMessageInterval.current);
+    }
+    if (creationCompletedTimeout.current) {
+      clearTimeout(creationCompletedTimeout.current);
+    }
+    onStatusChange("");
     onError(
       error.message ||
         "It seems all slots are occupied, please wait or try again later."
@@ -215,28 +246,26 @@ export function useProgramGenerator({
   // ==================================
   //              AI SDK
   // ==================================
-  const prompt = `Create a program for a ${user?.skillLevel} software engineer`;
 
   const algorithms =
     programType === "algorithms" ? z.array(z.string()) : z.optional(z.any());
-  const codingPatterns =
+  const codingPattern =
     programType === "coding-patterns"
-      ? z.array(
-          z.object({
-            title: z.string(),
-            totalProblems: z.number(),
-            info: z.string(),
-            problems: z.array(z.string()),
-          })
-        )
+      ? z.object({
+          title: z.string(),
+          totalProblems: z.number(),
+          info: z.string(),
+          problems: z.array(z.string()),
+        })
       : z.optional(z.any());
   const schema = z.object({
     algorithms,
-    codingPatterns,
+    codingPattern,
   });
 
-  const { submit, error } = useObject({
-    api: `/api/generate_program?programType=${programType}`,
+  const api = `/api/generate_program?programType=${programType}`;
+  const { submit, error, stop } = useObject({
+    api,
     schema,
     onFinish: ({ object, error }) => saveProgram({ program: object, error }),
     onError: handleError,
@@ -244,6 +273,7 @@ export function useProgramGenerator({
 
   return {
     createProgram,
+    cancelProgram: stop,
     isLoading,
     error,
     setIsLoading,

@@ -125,12 +125,12 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
    */
   const submitQuiz = async (quiz: Quiz): Promise<void> => {
     if (!user) {
-      console.error("User is not initialized");
+      // console.error("User is not initialized");
       return;
     }
     setCurrentQuestionIndex(null);
     setCurrentPage("submitting");
-    console.log("Submitting quiz:", { quiz });
+    // console.log("Submitting quiz:", { quiz });
     let result = 0; // quiz checking result
 
     for (const question of quiz.questions) {
@@ -175,7 +175,7 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
       await user.save();
     }
 
-    console.log("Quiz result:", { result, level });
+    // console.log("Quiz result:", { result, level });
     setUser(user);
     // Call the onFinish function to indicate the quiz is completed
     // give the user time seeing submitting page before calling

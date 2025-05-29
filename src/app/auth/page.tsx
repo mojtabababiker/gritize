@@ -17,9 +17,7 @@ function Page() {
   const onSignin = () => {
     if (!user) return;
     // handle the case where the user is login
-    console.log("User signed in");
     if (isLoggedIn && user.skillLevel) {
-      console.log("User created");
       router.replace("/dashboard");
       return;
     }

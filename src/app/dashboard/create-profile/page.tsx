@@ -21,7 +21,7 @@ export default function Page() {
 
   const onComplete = async () => {
     if (!user) {
-      console.error("User is not initialized");
+      // console.error("User is not initialized");
       return;
     }
     user.isNewUser = false;
@@ -40,16 +40,16 @@ export default function Page() {
 
   useEffect(() => {
     if (!initialRenderCompleted.current) {
-      console.log("initialRenderCompleted");
+      // console.log("initialRenderCompleted");
       initialRenderCompleted.current = true;
       createProgram();
     }
   });
 
-  return isLoading ? (
+  return (
     <div className="fixed z-50 inset-0 backdrop-blur-xl flex items-center justify-center overflow-hidden">
       <div className="quiz-popup min-w-[280px] min-h-[320px] flex flex-col items-center justify-center py-6 px-4 rounded-2xl">
-        {!error && !errorMessage ? (
+        {isLoading ? (
           <>
             <Code2 size={32} className="text-accent animate-bounce" />
             <div className="flex flex-col gap-4 items-center justify-center">
@@ -78,7 +78,7 @@ export default function Page() {
               </div>
             </div>
           </>
-        ) : (
+        ) : error || errorMessage ? (
           <>
             <FileWarning size={32} className="text-red-900 animate-pulse" />
             <div className="flex flex-col gap-4 items-center justify-center">
@@ -116,8 +116,8 @@ export default function Page() {
               </button>
             </div>
           </>
-        )}
+        ) : null}
       </div>
     </div>
-  ) : null;
+  );
 }

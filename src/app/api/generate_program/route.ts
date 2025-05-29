@@ -12,6 +12,8 @@ import {
 } from "@/utils/assistant-tools";
 import { NextRequest } from "next/server";
 
+export const maxDuration = 45;
+
 const google = createGoogleGenerativeAI({
   apiKey: Settings.googleApiKey,
 });
@@ -67,7 +69,7 @@ const options = {
  * ```
  */
 export async function POST(request: NextRequest): Promise<Response> {
-  const startTime = Date.now();
+  // const startTime = Date.now();
   const { prompt } = await request.json();
   const searchParams = request.nextUrl.searchParams;
   const programType = searchParams.get("programType");
@@ -77,10 +79,7 @@ export async function POST(request: NextRequest): Promise<Response> {
     !["algorithms", "coding-patterns"].includes(programType)
   ) {
     return Response.json(
-      {
-        error:
-          "Invalid program type. Must be either 'algorithms' or 'coding-patterns'.",
-      },
+      "Invalid program type. Must be either 'algorithms' or 'coding-patterns'.",
       { status: 400 }
     );
   }
@@ -94,19 +93,27 @@ export async function POST(request: NextRequest): Promise<Response> {
         : SYSTEM_INSTRUCTION_CODING_PATTERN,
     prompt: prompt,
   });
-  console.log(`${programType.toUpperCase()} generated.`);
-  console.log("Prompt Tokens used:", programResult.usage.promptTokens);
-  console.log("Completion Tokens used:", programResult.usage.completionTokens);
+  // console.log("Request IP: ", request.);
+  // console.log("Prompt Tokens used:", programResult.usage.promptTokens);
+  // console.log("Completion Tokens used:", programResult.usage.completionTokens);
 
-  const endTime = Date.now();
-  const totalTime = (endTime - startTime) / 1000; // in seconds
-  console.log(
-    `\n** Total time taken to generate the program: ${totalTime} seconds**\n`
-  );
+  // const endTime = Date.now();
+  // const totalTime = (endTime - startTime) / 1000; // in seconds
+  // console.log(
+  // `\n** Total time taken to generate the program: ${totalTime} seconds**\n`
+  // );
 
-  const cleanResult = cleanJsonResponse(programResult.text);
+  try {
+    const cleanResult = cleanJsonResponse(programResult.text);
 
-  return Response.json(cleanResult);
+    // console.log(cleanResult);
+    return Response.json(cleanResult);
+  } catch (error) {
+    console.error("Error cleaning JSON response:", error);
+    return Response.json("Failed to parse the generated program output.", {
+      status: 500,
+    });
+  }
 }
 
 /**

@@ -114,7 +114,7 @@ function CodeEditor({
       ],
     };
 
-    console.log("Running code with data:", data);
+    // console.log("Running code with data:", data);
 
     try {
       const response = await fetch(`${sandBoxURL}/execute`, {
@@ -298,7 +298,7 @@ function CodeEditor({
       await saveSolution(score);
       setError(null);
     } catch (error) {
-      console.error("Error submitting code:", error);
+      // console.error("Error submitting code:", error);
       setError(
         // @ts-expect-error to expensive to type it
         `An error occurred while submitting the code. ${error.message || ""}`

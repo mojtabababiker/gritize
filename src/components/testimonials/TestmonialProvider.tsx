@@ -53,8 +53,8 @@ export default function TestimonialProvider({ show, onClose }: Props) {
         body: JSON.stringify(data),
       });
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error submitting review:", errorData);
+        // const errorData = await response.json();
+        // console.error("Error submitting review:", errorData);
         setError(
           "Oops!, An error occurred while submitting your review. Please try again."
         );

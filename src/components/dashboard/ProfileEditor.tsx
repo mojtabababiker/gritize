@@ -29,8 +29,8 @@ function ProfileEditor({ closeModal }: Props) {
 
   const updateUserLanguage = (language: Languages) => {
     setNewLanguage(language);
-    console.log("Selected language:", language);
-    console.log("User preferred language:", user?.preferredLanguage);
+    // console.log("Selected language:", language);
+    // console.log("User preferred language:", user?.preferredLanguage);
   };
 
   const saveChanges = async () => {

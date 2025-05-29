@@ -178,11 +178,11 @@ function ProblemSection({
           <section dir="ltr" className="w-full flex flex-col items-center p-4">
             {codingPattern && (
               <div className="relative w-full -mb-2 flex items-center gap-2">
-                <Heading as="h4" size="sm" className="text-fg peer cursor-">
+                <Heading as="h4" size="sm" className="text-fg peer">
                   {codingPattern.title}
                 </Heading>
-                <InfoIcon className="size-4 text-fg peer cursor-" />
-                <div className="absolute z-50 top-full w-full px-4 py-3 bg-primary rounded-lg opacity-0 peer-hover:animate-fade-in">
+                <InfoIcon className="size-4 text-fg peer" />
+                <div className="absolute -z-10 peer-hover:z-50 hover:z-50 top-full w-full px-4 py-3 bg-primary rounded-lg opacity-0 peer-hover:block hover:opacity-100 hover:block peer-hover:animate-fade-in transition-all duration-300 ease-in-out">
                   <RenderMarkdown markdownText={codingPattern.info} />
                 </div>
               </div>

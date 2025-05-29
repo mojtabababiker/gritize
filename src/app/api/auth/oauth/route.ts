@@ -63,7 +63,8 @@ export const GET = async (request: Request) => {
       const { error, data } = await createUser(user);
 
       if (error || !data) {
-        console.error("Failed to create user in database", error);
+        console.error("Failed to create user in database", error.response);
+        console.error("User ID: ", userId);
 
         return NextResponse.redirect(
           new URL("/auth?msg=failed-to-create-user", request.url)
@@ -88,6 +89,7 @@ export const GET = async (request: Request) => {
     return response;
   } catch (error) {
     console.error("OAuth sign-in failed", error);
+    console.error("User ID: ", userId);
     // redirectUrl = `/auth?msg=oauth-field`;
     return NextResponse.redirect(new URL("/auth?msg=oauth-field", request.url));
   }

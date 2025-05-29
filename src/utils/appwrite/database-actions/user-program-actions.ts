@@ -37,7 +37,7 @@ export const createUserProblem = async (
   try {
     const problem = await getProblemById(problemId);
     if (!problem) {
-      console.error("Problem not found");
+      console.error(`Problem with ID ${problemId} not found`);
       return {
         error: { response: `Problem ${problemId} not found` },
         data: null,
@@ -60,19 +60,6 @@ export const createUserProblem = async (
           `Attempt to create problem already exists for user ${userId} and problem ${problemId}`
         );
         const existingProblem = existingUserProblem.documents[0];
-        // const {
-        //   $id: id,
-        //   $collectionId,
-        //   $databaseId,
-        //   $createdAt,
-        //   $updatedAt,
-        //   $permissions,
-        //   userId: userIdFromDoc,
-        //   problemId: problemIdFromDoc,
-        //   ...rest
-        // } = existingProblem;
-
-        // const result = { id, problem, ...rest } as UserProblemSchema;
         const result = stripAppwriteFields<UserProblemSchema>(existingProblem);
         return { data: { ...result, problem }, error: null };
       }
@@ -80,7 +67,6 @@ export const createUserProblem = async (
     const resultDoc = await databases.createDocument(
       Settings.databaseId,
       Settings.userProblemsCollectionId,
-      // ID.unique(),
       userProblemId,
       {
         userId,
@@ -95,7 +81,7 @@ export const createUserProblem = async (
     // const result = { id, problem, ...rest } as UserProblemSchema;
     return { data: { ...result, problem }, error: null };
   } catch (error) {
-    console.log(
+    console.error(
       `\nError creating user Problem: ${userProblemId}\nWith Problem: ${problemId}\nFor user ${userId}\n`
     );
     // console.log("Error creating user problem", error);
@@ -127,7 +113,7 @@ export const createUserProblem = async (
  */
 export const getUserProblemById = async (userProblemId: string) => {
   if (!userProblemId) {
-    console.error("User problem ID is required");
+    // console.error("User problem ID is required");
     return null;
   }
 
@@ -141,25 +127,17 @@ export const getUserProblemById = async (userProblemId: string) => {
     );
 
     if (!userProblemDoc) {
-      console.error("User problem not found");
+      // console.error("User problem not found");
       return null;
     }
-    // const {
-    //   $id: id,
-    //   $collectionId,
-    //   $databaseId,
-    //   $createdAt,
-    //   $updatedAt,
-    //   $permissions,
-    //   userId,
-    //   problemId,
-    //   ...rest
-    // } = userProblemDoc;
     const result = stripAppwriteFields<UserProblemSchema>(userProblemDoc);
     const problem = await getProblemById(userProblemDoc.problemId);
     return { ...result, problem };
   } catch (error) {
-    console.error("Error getting user problem by ID", error);
+    console.error(
+      `Error getting user problem by ID: ${userProblemId}\n`,
+      error
+    );
     return null;
   }
 };
@@ -264,23 +242,13 @@ export const updateUserProblem = async (
         ...data,
       }
     );
-
-    // const {
-    //   $id: id,
-    //   $collectionId,
-    //   $databaseId,
-    //   $createdAt,
-    //   $updatedAt,
-    //   $permissions,
-    //   userId: userIdFromDoc,
-    //   problemId: problemIdFromDoc,
-    //   ...rest
-    // } = resultDoc;
-
     const result = stripAppwriteFields<UserProblemSchema>(resultDoc);
     return { data: result, error: null };
   } catch (error) {
-    console.error("Error updating user problem", error);
+    console.error(
+      `Error updating user problem with ID: ${problemId} for user ${userId}`,
+      error
+    );
     if (error instanceof AppwriteException) {
       return { error, data: null };
     }
@@ -345,10 +313,13 @@ export const createCodingTechnique = async (
         problem
       );
       if (error || !userProblem?.id) {
-        console.error("Error creating user problem for coding pattern", error);
+        console.error(
+          `Failed to create user problem for coding pattern: ${problem}`
+        );
+        console.error(error);
         continue;
       }
-      console.log("User problem created for coding pattern", userProblem.id);
+      // console.log("User problem created for coding pattern", userProblem.id);
       problems.push(userProblem);
     }
     const resultDoc = await databases.createDocument(
@@ -366,13 +337,13 @@ export const createCodingTechnique = async (
     if (!updatedDoc) {
       throw new Error("Failed to fetch updated coding pattern");
     }
-    console.log("Coding pattern created", updatedDoc.id);
+    // console.log("Coding pattern created", updatedDoc.id);
     return { data: { ...updatedDoc, problems }, error: null };
   } catch (error) {
-    console.log("\nError creating user Technique\n", error);
+    console.error(`Error creating user Technique, user ID: ${userId}`, error);
     // revert the user problems created
 
-    console.log("Reverting user problems creation...");
+    // console.log("Reverting user problems creation...");
     await deleteUserProblems(problems.map((problem) => problem.id));
 
     if (error instanceof AppwriteException) {
@@ -398,7 +369,7 @@ export const createCodingTechnique = async (
  */
 export const getCodingPatternById = async (codingPatternId: string) => {
   if (!codingPatternId) {
-    console.error("Coding pattern ID is required");
+    // console.error("Coding pattern ID is required");
     return null;
   }
 
@@ -412,25 +383,17 @@ export const getCodingPatternById = async (codingPatternId: string) => {
     );
 
     if (!codPDoc) {
-      console.error("Coding pattern not found");
+      // console.error("Coding pattern not found");
       return null;
     }
-    // const {
-    //   $id: id,
-    //   $collectionId,
-    //   $databaseId,
-    //   $createdAt,
-    //   $updatedAt,
-    //   $permissions,
-    //   userId,
-    //   problems: problemsIds,
-    //   ...rest
-    // } = codPDoc;
     const result = stripAppwriteFields<CodingPatternSchema>(codPDoc);
     const problems = await listUserProblemsById(codPDoc.problems);
     return { ...result, problems };
-  } catch (error) {
-    console.error("Error getting coding pattern by ID", error);
+  } catch {
+    // console.error("Error getting coding pattern by ID", error);
+    console.error(
+      `Coding Pattern ID: ${codingPatternId} not found or error occurred`
+    );
     return null;
   }
 };
@@ -486,7 +449,7 @@ export const updateCodingPattern = async (
   data: Partial<Omit<CodingPatternSchema, "id" | "problem" | "totalProblems">>
 ) => {
   if (!patternId) {
-    console.error("Coding Pattern ID is Missing");
+    // console.error("Coding Pattern ID is Missing");
     return { error: "Coding Pattern ID is Missing" };
   }
   try {
@@ -564,20 +527,14 @@ export const createProblemSolution = async (
       }
     );
 
-    // const {
-    //   $id: id,
-    //   $collectionId,
-    //   $databaseId,
-    //   $createdAt,
-    //   $updatedAt,
-    //   $permissions,
-    //   ...rest
-    // } = resultDoc;
     const result = stripAppwriteFields<ProblemSolutionDTO>(resultDoc);
     // const result = { id, ...rest } as ProblemSolutionDTO;
     return { data: result, error: null };
   } catch (error) {
     console.error("Error creating problem solution", error);
+    console.error(
+      `Problem ID: ${data.problemId}, Language: ${data.language}, User ID: ${data.userId}`
+    );
     if (error instanceof AppwriteException) {
       return { error, data: null };
     }
@@ -607,7 +564,7 @@ export const getProblemSolution = async (
   language: Languages
 ) => {
   if (!problemId) {
-    console.error("Problem ID is required");
+    // console.error("Problem ID is required");
     return null;
   }
   try {
@@ -625,24 +582,21 @@ export const getProblemSolution = async (
     );
 
     if (!problemSolutionDoc || problemSolutionDoc.documents.length === 0) {
-      console.error("Problem solution not found");
+      // console.error("Problem solution not found");
+      console.error(
+        `No solution found for problem ID: ${problemId}, language: ${language}, user ID: ${userId}`
+      );
       return null;
     }
-    // const {
-    //   $id: id,
-    //   $collectionId,
-    //   $databaseId,
-    //   $createdAt,
-    //   $updatedAt,
-    //   $permissions,
-    //   ...rest
-    // } = problemSolutionDoc.documents[0];
     const result = stripAppwriteFields<ProblemSolutionDTO>(
       problemSolutionDoc.documents[0]
     );
     return { ...result };
   } catch (error) {
     console.error("Error getting problem solution by ID", error);
+    console.error(
+      `problem ID: ${problemId}, language: ${language}, user ID: ${userId}`
+    );
     return null;
   }
 };
@@ -670,7 +624,7 @@ export const listProblemSolutions = async (
   problemId: string
 ): Promise<ProblemSolutionDTO[] | null> => {
   if (!problemId) {
-    console.error("Problem ID is required");
+    // console.error("Problem ID is required");
     return null;
   }
   try {
@@ -687,25 +641,21 @@ export const listProblemSolutions = async (
     );
 
     if (!problemSolutionDoc || problemSolutionDoc.documents.length === 0) {
-      console.error("Problem solutions not found");
+      // console.error("Problem solutions not found");
+      console.error(
+        `No solutions found for problem ID: ${problemId}, user ID: ${userId}`
+      );
       return null;
     }
     const docs = problemSolutionDoc.documents;
 
     return docs.map((doc) => {
-      // const {
-      //   $id: id,
-      //   $collectionId,
-      //   $databaseId,
-      //   $updatedAt,
-      //   $permissions,
-      //   ...rest
-      // } = doc;
       const result = stripAppwriteFields<ProblemSolutionDTO>(doc);
       return { ...result, $createdAt: doc.$createdAt };
     });
   } catch (error) {
     console.error("Error getting problem solutions", error);
+    console.error(`Problem ID: ${problemId}, User ID: ${userId}`);
     return null;
   }
 };

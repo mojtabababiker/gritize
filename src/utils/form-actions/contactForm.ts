@@ -33,7 +33,7 @@ export const submit = async (
   const validData = contactUsSchema.safeParse(formData);
 
   if (!validData.success) {
-    console.error("Validation error in contact form:", validData.error.errors);
+    // console.error("Validation error in contact form:", validData.error.errors);
     return {
       ok: false,
       error: { type: "validation", errors: validData.error.errors },
@@ -47,7 +47,7 @@ export const submit = async (
       data: "successful submission",
     };
   } catch (error) {
-    console.error("Error in contact form submission:", error);
+    // console.error("Error in contact form submission:", error);
     return {
       ok: false,
       error: {
