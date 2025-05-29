@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import clsx from "clsx";
 import toast from "react-hot-toast";
@@ -16,6 +17,7 @@ import ThinkingLoader from "@/components/playground/ThinkingLoader";
 import EmptySidebarCPItem from "./EmptySidebarCPItem";
 
 function SidebarCPContainer() {
+  const router = useRouter();
   const { user, setUser } = useAuth();
 
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -35,6 +37,7 @@ function SidebarCPContainer() {
     toastMessage("Coding patterns generated successfully", "success");
     setErrorMessage("");
     setStatus("");
+    router.replace("/dashboard");
   };
 
   const { createProgram, error, isLoading } = useProgramGenerator({
