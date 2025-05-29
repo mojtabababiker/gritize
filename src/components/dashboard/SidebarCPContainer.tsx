@@ -110,7 +110,7 @@ function SidebarCPContainer() {
                 user.codingTechniques.length >= 3 ? "hidden" : "flex"
               )}
             >
-              Create Coding Pattern
+              {error || errorMessage ? "Reload" : " Create Coding Pattern"}
             </Button>
           </div>
         </>
