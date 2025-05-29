@@ -32,7 +32,7 @@ function StatisticalCard({ value, title, className }: Props) {
     return () => {
       clearInterval(countingInterval);
     };
-  }, []);
+  }, [cardRef, value]);
   return (
     <div
       ref={cardRef}
