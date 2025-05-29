@@ -12,6 +12,8 @@ import {
 } from "@/utils/assistant-tools";
 import { NextRequest } from "next/server";
 
+export const maxDuration = 45;
+
 const google = createGoogleGenerativeAI({
   apiKey: Settings.googleApiKey,
 });

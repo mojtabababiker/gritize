@@ -220,7 +220,7 @@ export function useProgramGenerator({
           "Program creation is taking longer than expected. Please try again."
         );
         stop();
-      }, 26000); // 26 seconds timeout to complete the program creation
+      }, 35000); // 35 seconds timeout to complete the program creation
     } else if (!user.isNewUser) {
       // router.replace("/dashboard");
     }
