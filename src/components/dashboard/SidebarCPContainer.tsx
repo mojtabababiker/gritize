@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
+import clsx from "clsx";
 import toast from "react-hot-toast";
 
 import { useProgramGenerator } from "@/hooks/useProgramGenerator";
@@ -99,11 +100,14 @@ function SidebarCPContainer() {
               variant="accent"
               size="sm"
               onClick={handleCreateProgram}
-              disabled={isLoading || user.codingTechniques.length >= 3}
+              disabled={isLoading}
               isLoading={isLoading}
-              className="min-w-[120px] flex gap-1 items-center justify-center disabled:cursor-not-allowed disabled:opacity-50 "
+              className={clsx(
+                "min-w-[120px] gap-1 items-center justify-center",
+                user.codingTechniques.length >= 3 ? "hidden" : "flex"
+              )}
             >
-              {user.codingTechniques.length >= 3 ? "Limit Reached" : "Add more"}
+              Create Coding Pattern
             </Button>
           </div>
         </>
