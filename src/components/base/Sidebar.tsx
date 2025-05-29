@@ -154,14 +154,14 @@ function Sidebar() {
             as="h3"
             size="md"
             className={clsx(
-              "text-fg flex-1transition-all duration-500 ease-in-out flex gap-1 items-end",
+              "text-fg flex-1 transition-all duration-500 ease-in-out flex flex-col",
               !open && "opacity-0 scale-x-0 order-1"
             )}
           >
-            Coding Techniques
-            <span className="text-accent/75 text-base font-body font-normal italic">
+            <span className="text-surface/65 text-base font-body font-normal italic">
               {user?.codingTechniques.length}/3 remaining
             </span>
+            <span className="w-full">Coding Techniques</span>
           </Heading>
           <Image
             src={"/icons/brain-icon.png"}

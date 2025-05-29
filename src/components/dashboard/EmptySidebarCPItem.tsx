@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { FileWarning } from "lucide-react";
 
@@ -12,6 +13,7 @@ import Paragraph from "@/components/common/Paragraph";
 import Heading from "@/components/common/Heading";
 
 function EmptySidebarCPItem() {
+  const router = useRouter();
   const { user, setUser } = useAuth();
 
   const [message, setErrorMessage] = useState<string>("");
@@ -27,6 +29,7 @@ function EmptySidebarCPItem() {
     setUser(user);
     setErrorMessage("");
     setStatus("");
+    router.replace("/dashboard");
   };
 
   const { createProgram, error, isLoading } = useProgramGenerator({
