@@ -110,7 +110,7 @@ function Hero() {
           {/* floating icons */}
           <div className="float-icons-warper absolute opacity-70 sm:opacity-100 inset-0 pointer-events-none">
             {/* cpp icon */}
-            <div className="absolute top-[30%] right-[36%] w-[96px] lg:w-[140px] h-auto flex items-center justify-center opacity-65">
+            <div className="absolute top-[30%] right-[36%] w-[96px] lg:w-[140px] h-auto flex items-center justify-center opacity-65 animate-float">
               <Image
                 src={"/images/cpp-image.png"}
                 alt="C++ Icon"
@@ -120,7 +120,10 @@ function Hero() {
               />
             </div>
             {/* python */}
-            <div className="absolute bottom-[36%] right-[20%] w-[96px] lg:w-[140px] h-auto flex items-center justify-center opacity-65">
+            <div
+              className="absolute bottom-[36%] right-[20%] w-[96px] lg:w-[140px] h-auto flex items-center justify-center opacity-65 animate-floats"
+              style={{ animationDelay: "0.3s" }}
+            >
               <Image
                 src={"/images/python-image.png"}
                 alt="Python Icon"
@@ -130,7 +133,10 @@ function Hero() {
               />
             </div>
             {/* ts icon */}
-            <div className="absolute bottom-[10%] right-0 w-[96px] lg:w-[140px] h-auto flex items-center justify-center opacity-65">
+            <div
+              className="absolute bottom-[10%] right-0 w-[96px] lg:w-[140px] h-auto flex items-center justify-center opacity-65 animate-float"
+              style={{ animationDelay: "3s" }}
+            >
               <Image
                 src={"/images/typescript-image.png"}
                 alt="TypeScript Icon"
@@ -140,7 +146,10 @@ function Hero() {
               />
             </div>
             {/* js icon */}
-            <div className="absolute top-10 right-0 w-[96px] lg:w-[140px] h-auto flex items-center justify-center opacity-65">
+            <div
+              className="absolute top-10 right-0 w-[96px] lg:w-[140px] h-auto flex items-center justify-center opacity-65 animate-float"
+              style={{ animationDelay: "3s" }}
+            >
               <Image
                 src={"/images/javascript-image.png"}
                 alt="JavaScript Icon"
@@ -152,18 +161,27 @@ function Hero() {
 
             {/* floating texts */}
             {/* word 1 */}
-            <div className="absolute bottom-[15%] right-[40%] flex items-center justify-center opacity-65 -rotate-12">
+            <div
+              className="absolute bottom-[15%] right-[40%] flex items-center justify-center opacity-65 -rotate-12 animate-pulse"
+              style={{ animationDuration: "3.5s" }}
+            >
               <p className="text-bg font-heading font-semibold text-xl opacity-70">
                 Commitment
               </p>
             </div>
             {/* word2 */}
-            <div className="absolute top-[43%] right-[32%] flex items-center justify-center opacity-65 -rotate-12">
+            <div
+              className="absolute top-[43%] right-[32%] flex items-center justify-center opacity-65 -rotate-12 animate-pulse"
+              style={{ animationDuration: "3.5s", animationDelay: "1.8s" }}
+            >
               <p className="text-accent font-heading font-semibold text-xl opacity-70">
                 Disciplined
               </p>
             </div>
-            <div className="absolute bottom-[30%] right-[20%] flex items-center justify-center opacity-65">
+            <div
+              className="absolute bottom-[30%] right-[20%] flex items-center justify-center opacity-65 animate-pulse"
+              style={{ animationDuration: "3.5s", animationDelay: "1.8s" }}
+            >
               <p className="text-accent font-heading font-semibold text-xl opacity-70">
                 No Weakness
               </p>
