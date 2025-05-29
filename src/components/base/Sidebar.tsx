@@ -1,11 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import clsx from "clsx";
 import toast from "react-hot-toast";
+import { XIcon } from "lucide-react";
 
 import { useAuth } from "@/context/AuthProvider";
 
@@ -28,6 +29,14 @@ function Sidebar() {
     } else {
       setOpen(false);
     }
+  };
+
+  const closeSidebarButtonHandler: MouseEventHandler<HTMLButtonElement> = (
+    e
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpen(false);
   };
 
   const logout = async () => {
@@ -74,11 +83,25 @@ function Sidebar() {
         "sidebar fixed z-40 top-22 2xl:top-0 left-0 2xl:min-h-screen 2xl:min-w-[86px] max-w-[420px] flex flex-col justify-between gap-8 px-4 bg-bg/60 backdrop-blur-md overflow-x-hidden drop-shadow-sm shadow-bg/50 shadow-xl",
         open
           ? "w-full h-[calc(100dvh-90px)] py-12 mr-6 overflow-y-scroll"
-          : "w-12 h-12 rounded-full 2xl:rounded-none overflow-hidden"
+          : "w-12 h-12 rounded-sm 2xl:rounded-none overflow-hidden"
       )}
     >
+      {/* close sidebar */}
+      <div
+        className={clsx(
+          "absolute sm:hidden top-0 left-0 pt-2 w-full items-center justify-center ",
+          !open ? "hidden" : "flex"
+        )}
+      >
+        <button
+          className="size-10 rounded-full ring-1 ring-surface/15 flex items-center justify-center"
+          onClick={closeSidebarButtonHandler}
+        >
+          <XIcon className="size-6 sm:size-8 text-accent" />
+        </button>
+      </div>
       {/* solved problems */}
-      <div className="flex flex-col gap-6 items-center justify-center">
+      <div className="flex flex-col gap-6 items-center justify-center mt-2 sm:mt-0">
         {/* title */}
         <div className="w-full flex justify-between items-center">
           <Heading

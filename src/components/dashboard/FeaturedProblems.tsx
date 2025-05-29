@@ -1,18 +1,19 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
-import { ArrowLeft, ArrowRight } from "lucide-react";
 import clsx from "clsx";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { TechnicalProblemSchema } from "@/models/schemas";
-import { TableCell, TableRow } from "@/components/cards/TableRow";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
-import toast from "react-hot-toast";
-import CustomToast from "../common/CustomToast";
-import Loading from "../common/Loading";
-import Tooltip from "../common/Tooltip";
+
+import CustomToast from "@/components/common/CustomToast";
+import Loading from "@/components/common/Loading";
+import Tooltip from "@/components/common/Tooltip";
+import { TableCell, TableRow } from "@/components/cards/TableRow";
 
 const LIMIT = 10; // hard coded limit
 
@@ -182,21 +183,21 @@ export function FeaturedProblems() {
             {featuredProblems.map((problem, index) => (
               <div
                 key={problem.id}
-                className="min-w-max flex items-center justify-center cursor-pointer hover:scale-95 transition-all duration-200 ease-in-out"
+                className="flex cursor-pointer hover:scale-95 transition-all duration-200 ease-in-out"
                 onClick={() => createNewUserProblem(problem.id || "")}
               >
                 <TableRow
                   key={`table-${index}`}
-                  className="relative w-full1 min-w-[640px] overflow- gap-6"
+                  className="relative w-full min-w-[640px] gap-6"
                 >
                   {/* problem index */}
-                  <TableCell className="text-fg text-xs sm:text-base w-6 sm:w-10">
+                  <TableCell className="text-fg text-sm sm:text-base w-6 sm:w-10">
                     {index + 1 + (page - 1) * LIMIT}
                   </TableCell>
                   {/* problem title */}
                   <TableCell className="relative">
                     <div className="overflow-hidden w-[16ch] sm:w-[24ch] peer">
-                      <div className="text-fg text-xs sm:text-base relative truncate">
+                      <div className="text-fg text-sm sm:text-base relative truncate">
                         {problem.title}
                       </div>
                     </div>
@@ -206,7 +207,7 @@ export function FeaturedProblems() {
                   {/* problem difficulty */}
                   <TableCell
                     className={clsx(
-                      "text-center text-xs sm:text-base w-12 sm:w-20",
+                      "text-center text-sm sm:text-base w-12 sm:w-20",
                       problem.difficulty === "easy" && "text-[#2DDD4A]",
                       problem.difficulty === "mid" && "text-accent",
                       problem.difficulty === "advanced" && "text-[#F85151]"
@@ -215,9 +216,9 @@ export function FeaturedProblems() {
                     {problem.difficulty}
                   </TableCell>
                   {/* problem description */}
-                  <TableCell className="group text-fg text-xs sm:text-base flex-1 min-w-[82ch] overflow-hidden">
-                    {problem.description.slice(0, 100)}...
-                    {/* TODO: Add on hover popup that shows the whole description */}
+                  <TableCell className="group text-fg text-sm sm:text-base line-clamp-1">
+                    {/* {problem.description.slice(0, 100)}... */}
+                    {problem.description}
                   </TableCell>
                 </TableRow>
               </div>

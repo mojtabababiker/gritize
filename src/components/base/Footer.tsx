@@ -152,7 +152,7 @@ function Footer() {
         </div>
       </div>
       {/* trademark reserved */}
-      <div className="absolute bottom-1.5 left-1.5 border-t border-surface pt-2">
+      <div className="absolute w-full bottom-1.5 left-0 px-1.5 pt-2 border-t border-surface/35 ">
         <p className="text-surface text-center text-xs">
           © {new Date().getFullYear()} Gritize. All rights reserved.
         </p>

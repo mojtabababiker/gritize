@@ -111,7 +111,7 @@ function Submissions({
 
           <Button
             onClick={closeSubmissions}
-            className="max-w-[120px] mt-4 p-2 bg-primary text-white rounded"
+            className="max-w-[120px] items-center justify-center mt-4 p-2 bg-primary text-white rounded"
             variant="primary"
             size="sm"
             isSimple

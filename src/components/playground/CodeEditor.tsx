@@ -358,7 +358,7 @@ function CodeEditor({
             isLoading={isSubmitting}
           >
             {/* <MessageCircleWarningIcon className="w-4 h-4" /> */}
-            <span className="">submit</span>
+            <span className="px-3">submit</span>
           </Button>
           <Button
             variant="ghost"
@@ -370,7 +370,7 @@ function CodeEditor({
             isLoading={isRunning}
           >
             {/* <GitCompareIcon className="w-4 h-4 text-fg" /> */}
-            <span className="text-fg">run test</span>
+            <span className="text-fg px-4">run test</span>
           </Button>
         </div>
 

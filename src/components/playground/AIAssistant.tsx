@@ -192,15 +192,17 @@ function AIAssistant({
             variant="ghost"
             size="sm"
             isSimple
-            className="gap-2 text-fg hover:bg-primary/85 capitalize"
+            className="text-fg hover:bg-bg hover:text-surface hover:ring-surface capitalize px-3"
             onClick={getHints}
             disabled={
               hintStatus === "streaming" || reviewStatus === "streaming"
             }
             isLoading={hintStatus === "streaming"}
           >
-            <MessageCircleWarningIcon className="w-4 h-4" />
-            <span className="">get hints</span>
+            <div className="flex gap-2 px-3 items-center  justify-center">
+              <MessageCircleWarningIcon className="w-4 h-4" />
+              <span className="">get hints</span>
+            </div>
           </Button>
         </form>
 
@@ -226,8 +228,10 @@ function AIAssistant({
             }
             isLoading={reviewStatus === "streaming"}
           >
-            <GitCompareIcon className="w-4 h-4 text-fg" />
-            <span className="text-fg">get review</span>
+            <div className="flex gap-2 items-center justify-center px-3">
+              <GitCompareIcon className="w-4 h-4 text-fg" />
+              <span className="text-fg">get review</span>
+            </div>
           </Button>
         </form>
       </div>

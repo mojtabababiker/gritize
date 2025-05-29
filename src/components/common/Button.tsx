@@ -25,8 +25,10 @@ function Button({
   return (
     <button
       className={clsx(
-        "relative flex items-center cursor-pointer transition-all duration-350",
-        isSimple ? "rounded-lg" : "button-cutout",
+        "relative flex items-center cursor-pointer duration-300 ease-in-out",
+        isSimple
+          ? "rounded-lg transition-all"
+          : "button-cutout transition-[filter,background-position,color]",
         size === "sm" &&
           "font-body font-medium text-xs sm:text-base px-1.5 py-2 sm:px-2 sm:py-3",
         size === "md" &&

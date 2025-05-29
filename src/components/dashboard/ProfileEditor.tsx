@@ -84,12 +84,14 @@ function ProfileEditor({ closeModal }: Props) {
     >
       {/* modal */}
       <div className="profile-dropdown relative w-full max-w-[460px] p-4 flex flex-col items-center gap-4 rounded-2xl">
-        <div className="absolute top-2 right-2 size-10 rounded-full ring-1 ring-surface/15 flex items-center justify-center">
-          <XIcon
-            className="size-6 sm:size-8 text-accent"
-            onClick={closeModal}
-          />
-        </div>
+        <button
+          className="absolute top-2 right-2 size-10 rounded-full ring-1 ring-surface/15 flex items-center justify-center text-accent cursor-pointer hover:bg-surface/10 transition-all duration-150 ease-in-out"
+          aria-label="Close modal"
+          type="button"
+          onClick={closeModal}
+        >
+          <XIcon className="size-6 sm:size-8" />
+        </button>
         <Heading as="h3" size="md" className="text-fg">
           Edit Profile
         </Heading>
