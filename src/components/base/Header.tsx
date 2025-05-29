@@ -1,24 +1,14 @@
 "use client";
-import clsx from "clsx";
-import Image from "next/image";
-import Bounded from "../common/Bounded";
 import { useEffect, useState } from "react";
-import Button from "../common/Button";
-import AuthDialog from "../auth/AuthDialog";
-import { useAuth } from "@/context/AuthProvider";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Loading from "../common/Loading";
-import Link from "next/link";
 
-type MenuPage = {
-  name: string;
-  href: string;
-};
+import { useAuth } from "@/context/AuthProvider";
 
-const MENU_ITEMS: MenuPage[] = [
-  { name: "Home", href: "/" },
-  { name: "Contribute", href: "#about-us" },
-];
+import Button from "@/components/common/Button";
+import Bounded from "@/components/common/Bounded";
+import Loading from "@/components/common/Loading";
+import AuthDialog from "@/components/auth/AuthDialog";
 
 function Header() {
   const [requireLogin, setRequireLogin] = useState(false);
@@ -70,24 +60,6 @@ function Header() {
               <span className="text-base text-accent font-semibold">Beta</span>
             </div>
           </div>
-
-          {/* nav menu */}
-          <nav className="flex w-full md:flex-1 order-3 md:order-none items-center justify-center md:justify-end pt-4 sm:pt-0">
-            <ul className="nav-menu flex items-end gap-4">
-              {MENU_ITEMS.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    className={clsx(
-                      "text-bg/80 font-heading text-xl sm:text-lg transition-all duration-200 hover:text-bg/100"
-                    )}
-                    href={item.href}
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
 
           {/* button */}
           <div className="flex flex-1 items-center justify-end px-2">
