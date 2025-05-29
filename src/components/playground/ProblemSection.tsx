@@ -169,7 +169,7 @@ function ProblemSection({
                 className="capitalize hover:bg-accent/95"
                 onClick={goToNextProblem}
               >
-                next problem
+                <span className=" px-3"> next problem</span>
               </Button>
             </div>
           </section>
