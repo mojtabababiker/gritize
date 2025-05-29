@@ -172,16 +172,17 @@ body {
   background: var(--color-red-900);
 }
 
-.button-cutout.primary {
+.button-cutout.primary,
+.button-cutout.ghost-2 {
   filter: drop-shadow(1px 0 var(--color-fg)) drop-shadow(-1px 0 var(--color-fg))
     drop-shadow(0 1px var(--color-fg)) drop-shadow(0 -1px var(--color-fg))
-    drop-shadow(1px 2px var(--color-fg)) drop-shadow(2px 1px var(--color-fg));
+    drop-shadow(2px 2px var(--color-fg));
   &:hover,
   &:focus,
   &:active {
     filter: drop-shadow(1px 0 var(--color-fg))
       drop-shadow(-1px 0 var(--color-fg)) drop-shadow(0 1px var(--color-fg))
-      drop-shadow(0 -1px var(--color-fg));
+      drop-shadow(0 -1px var(--color-fg)) drop-shadow(1px 1px var(--color-fg));
   }
 }
 .button-cutout.accent,
@@ -190,8 +191,7 @@ body {
     drop-shadow(-1px 0 var(--color-primary))
     drop-shadow(0 1px var(--color-primary))
     drop-shadow(0 -1px var(--color-primary))
-    drop-shadow(3px 0 var(--color-primary))
-    drop-shadow(0 3px var(--color-primary));
+    drop-shadow(2px 2px var(--color-primary));
   &:hover,
   &:focus,
   &:active {
@@ -199,22 +199,7 @@ body {
       drop-shadow(-1px 0 var(--color-primary))
       drop-shadow(0 1px var(--color-primary))
       drop-shadow(0 -1px var(--color-primary))
-      drop-shadow(2px 0 var(--color-primary))
-      drop-shadow(0 2px var(--color-primary));
-  }
-}
-
-.button-cutout.ghost-2 {
-  filter: drop-shadow(1px 0 var(--color-fg)) drop-shadow(-1px 0 var(--color-fg))
-    drop-shadow(0 1px var(--color-fg)) drop-shadow(0 -1px var(--color-fg))
-    drop-shadow(3px 0 var(--color-fg)) drop-shadow(0 3px var(--color-fg));
-  &:hover,
-  &:focus,
-  &:active {
-    filter: drop-shadow(1px 0 var(--color-fg))
-      drop-shadow(-1px 0 var(--color-fg)) drop-shadow(0 1px var(--color-fg))
-      drop-shadow(0 -1px var(--color-fg)) drop-shadow(2px 0 var(--color-fg))
-      drop-shadow(0 2px var(--color-fg));
+      drop-shadow(1px 1px var(--color-primary));
   }
 }
 
