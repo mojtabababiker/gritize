@@ -33,12 +33,12 @@ const FOOTER_MENU = [
 
 const REPO_LINKS = [
   {
-    item: "how to contribute",
+    item: "github repository",
     href: Settings.githubRepo,
   },
   {
-    item: "github repository",
-    href: Settings.githubRepo,
+    item: "how to contribute",
+    href: `${Settings.githubRepo}/blob/main/CONTRIBUTING.md`,
   },
   {
     item: "opened issues",
