@@ -183,6 +183,21 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
     return;
   };
 
+  const skipQuiz = async (): Promise<void> => {
+    if (!user) return;
+
+    user.skillLevel = "mid-level";
+    user.preferredLanguage = "javascript";
+    user.onboarding = true;
+    user.isNewUser = true;
+
+    if (user.id) {
+      await user.save();
+    }
+    setUser(user);
+    onFinish();
+  };
+
   if (!user) return null;
 
   // when the user sees all the quiz information and rules, and the quiz language is selected.
@@ -259,6 +274,7 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
           <QuizInfo
             closeQuiz={closeQuiz}
             action={() => setCurrentPage("rule")}
+            skipQuiz={skipQuiz}
             parentRef={containerRef}
           />
         )}
@@ -266,6 +282,7 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
           <QuizRules
             closeQuiz={closeQuiz}
             action={() => setCurrentPage("languageSelector")}
+            skipQuiz={skipQuiz}
             parentRef={containerRef}
           />
         )}
@@ -373,6 +390,7 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
 
 type QuizInfoProps = {
   action: () => void;
+  skipQuiz: () => void;
   closeQuiz: () => void;
   parentRef: React.RefObject<HTMLDivElement | null>;
 };
@@ -391,7 +409,13 @@ type QuizInfoProps = {
  * <QuizInfo action={() => handleQuizStart()} />
  * ```
  */
-const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
+const QuizInfo = ({
+  action,
+  skipQuiz,
+  closeQuiz,
+  parentRef,
+}: QuizInfoProps) => {
+  const [showSkipDialog, setShowSkipDialog] = useState<boolean>(false);
   useEffect(() => {
     const parent = parentRef.current;
     const handleKeydown = (e: KeyboardEvent) => {
@@ -417,7 +441,7 @@ const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
         <XIcon className="size-6 sm:size-8 text-bg/65" onClick={closeQuiz} />
       </div>
       {/* description */}
-      <div className="w-full flex-1 flex items-center justify-center my-4 sm:my-10">
+      <div className="relative w-full flex-1 flex items-center justify-center my-4 sm:my-10">
         <Paragraph size="md" className="sm:text-center text-bg/85 px-4">
           in order To make the experience more effective and tailored for your
           skills, we need to run a quick quiz to determine your current level in
@@ -435,7 +459,7 @@ const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
       </div>
 
       {/* start button */}
-      <div className="w-full flex items-center justify-center py-1">
+      <div className="w-full flex flex-col items-center justify-center py-1">
         <Button
           variant="ghost"
           className="bg-surface min-w-[120px] justify-center"
@@ -443,18 +467,43 @@ const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
         >
           I understand
         </Button>
+        <Button
+          variant="ghost-2"
+          size="sm"
+          className="text-bg/75 hover:text-bg"
+          isSimple
+          onClick={() => setShowSkipDialog(true)}
+        >
+          continue without
+        </Button>
       </div>
+
+      {/* skip confirmation dialog */}
+      <ConfirmSkipQuiz
+        skipQuiz={() => {
+          setShowSkipDialog(false);
+          skipQuiz();
+        }}
+        close={() => setShowSkipDialog(false)}
+      />
     </>
   );
 };
 
 type QuizRulesProps = {
   action: () => void;
+  skipQuiz: () => void;
   closeQuiz: () => void;
   parentRef: React.RefObject<HTMLDivElement | null>;
 };
 
-const QuizRules = ({ action, closeQuiz, parentRef }: QuizRulesProps) => {
+const QuizRules = ({
+  action,
+  skipQuiz,
+  closeQuiz,
+  parentRef,
+}: QuizRulesProps) => {
+  const [showSkipDialog, setShowSkipDialog] = useState<boolean>(false);
   useEffect(() => {
     const parent = parentRef.current;
     const handleKeydown = (e: KeyboardEvent) => {
@@ -504,7 +553,7 @@ const QuizRules = ({ action, closeQuiz, parentRef }: QuizRulesProps) => {
       </div>
 
       {/* start button */}
-      <div className="w-full flex items-center justify-center py-1">
+      <div className="w-full flex flex-col items-center justify-center py-1">
         <Button
           variant="ghost"
           className="bg-surface min-w-[120px] justify-center"
@@ -512,7 +561,46 @@ const QuizRules = ({ action, closeQuiz, parentRef }: QuizRulesProps) => {
         >
           Start
         </Button>
+        <Button
+          variant="ghost-2"
+          size="sm"
+          className="text-bg/75 hover:text-bg"
+          isSimple
+          onClick={skipQuiz}
+        >
+          continue without
+        </Button>
       </div>
     </>
   );
 };
+
+type ConfirmSkipQuizProps = {
+  skipQuiz: () => void;
+  close: () => void;
+};
+const ConfirmSkipQuiz = ({ skipQuiz, close }: ConfirmSkipQuizProps) => (
+  <div className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-2 rounded-2xl backdrop-blur-sm bg-surface/10">
+    <div className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-surface px-3 py-4">
+      <Paragraph size="md" className="text-bg/95">
+        Are you sure you want to skip the quiz?
+      </Paragraph>
+      <Paragraph size="sm" className="text-bg/75">
+        You will be assigned a mid-level skill level and you can always retake
+        the quiz later from your dashboard.
+      </Paragraph>
+      <div className="flex gap-2">
+        <Button variant="primary" onClick={skipQuiz} isSimple>
+          Yes, skip
+        </Button>
+        <Button
+          variant="ghost-2"
+          className="text-bg/75 hover:text-bg"
+          onClick={close}
+        >
+          No, go back
+        </Button>
+      </div>
+    </div>
+  </div>
+);
