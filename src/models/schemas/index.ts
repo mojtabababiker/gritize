@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { Languages, SkillLevel } from "../types/indext";
 
 export interface TechnicalProblemSchema {
@@ -51,3 +52,20 @@ export interface TestimonialSchema {
   review: string;
   rating: number;
 }
+
+export const QuizSchema = z.object({
+  id: z.string().optional(),
+  questions: z.array(
+    z.object({
+      type: z.enum(["singleChoice", "multipleChoice", "TOF"]),
+      question: z.string(),
+      options: z.array(z.string()).optional(),
+      answer: z.union([z.string(), z.array(z.string())]).optional(),
+      userAnswer: z
+        .union([z.string(), z.array(z.string()), z.boolean()])
+        .optional(),
+    })
+  ),
+  questionsCount: z.number(),
+  language: z.string(),
+});
