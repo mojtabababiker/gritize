@@ -33,9 +33,11 @@ This project and everyone participating in it is governed by our Code of Conduct
 
 Before you begin, ensure you have the following installed:
 
-- **Node.js** (version 20 or higher)
+- **Node.js** (version 15.3 or higher)
 - **pnpm** (recommended package manager)
+- **Docker** and **Docker Compose** (for local Appwrite setup)
 - **Git** for version control
+- A code editor (VS Code recommended)
 
 ### Development Setup
 
@@ -53,22 +55,48 @@ Before you begin, ensure you have the following installed:
    pnpm install
    ```
 
-3. **Set up environment variables**
+3. **Set up local Appwrite instance** (First time only)
+
+   We provide automated scripts for easy local development:
+
+   - _Docker installation is scripted for **Ubuntu** Linux only, for other OS please refer to [Docker](https://docs.docker.com/compose/install/) installation guid._
+   - For **Appwrite** installation refer to [self-hosting](https://appwrite.io/docs/advanced/self-hosting) guid.
+
+   ```bash
+   # Install Docker (Ubuntu/Debian - skip if already installed)
+   chmod +x local-dev/docker-engin-install.sh
+   sudo ./local-dev/docker-engin-install.sh <Ubuntu-Codename>
+
+   # Install and start Appwrite locally
+   chmod +x local-dev/install-appwrite.sh
+   sudo ./local-dev/install-appwrite.sh
+   # follow the instructions to setup Appwrite
+   ```
+
+4. **Set up environment variables**
 
    ```bash
    cp .env.example .env.local
    # Edit .env.local with your configuration
    ```
 
-4. **Start the development server**
+5. **Initialize Appwrite database**
+
+   ```bash
+   # Set up databases, collections, and storage buckets
+   pnpm appwrite:run
+   ```
+
+6. **Start the development server**
 
    ```bash
    pnpm dev
    ```
 
-5. **Verify the setup**
+7. **Verify the setup**
    - Open [http://localhost:3000](http://localhost:3000)
    - Ensure the application loads correctly
+   - Test authentication and basic features
 
 ## 🤝 How to Contribute
 
@@ -257,7 +285,36 @@ components/
 - `src/hooks/` - Custom React hooks
 - `src/utils/` - Utility functions and helpers
 - `src/models/` - Data models and schemas
+- `local-dev/` - **Local development setup scripts**
+  - `run.ts` - Database initialization script
+  - `docker-engin-install.sh` - Docker installation for Ubuntu/Debian
+  - `install-appwrite.sh` - Appwrite setup script
+  - `collections/` - Database collection definitions
+  - `buckets/` - Storage bucket configurations
 - `Data/` - Problem datasets and coding patterns
+
+### Local Development Scripts
+
+The `local-dev/` directory contains essential tools for setting up your development environment:
+
+#### **Database Initialization (`run.ts`)**
+
+- Creates databases and collections
+- Sets up collection attributes and indexes
+- Configures storage buckets
+- Handles both fresh setup and updates
+
+#### **Docker Setup (`docker-engin-install.sh`) _Ubuntu_**
+
+- Automated Docker installation for Ubuntu/Debian
+- Handles cleanup of previous installations
+- Sets up Docker repository and packages
+
+#### **Appwrite Installation (`install-appwrite.sh`)**
+
+- Downloads and starts Appwrite using Docker
+- Configures default settings for local development
+- Sets up the Appwrite console
 
 ### Component Guidelines
 
@@ -304,6 +361,35 @@ pnpm test:watch
 # Run tests with coverage
 pnpm test:coverage
 ```
+
+### Development Scripts
+
+The project includes several helpful scripts for development:
+
+```bash
+# Core Development
+pnpm dev              # Start development server with Turbopack
+pnpm build            # Build for production
+pnpm start            # Start production server
+pnpm lint             # Run ESLint
+pnpm type-check       # TypeScript type checking
+
+# Appwrite Development Setup
+pnpm appwrite:run     # Initialize/update Appwrite database and collections
+pnpm appwrite:dump    # Initialize with data dump (includes sample data)
+
+# Data Management
+pnpm dev:dump         # Start dev server with data dump enabled
+```
+
+### Appwrite Development Workflow
+
+When working with database changes or setting up for the first time:
+
+1. **First time setup**: Run `pnpm appwrite:run` after starting Appwrite
+2. **Schema updates**: Modify files in `local-dev/collections/` then run `pnpm appwrite:run`
+3. **With sample data**: Use `pnpm appwrite:dump` to include test data
+4. **Troubleshooting**: Check Appwrite console at `http://localhost/console`
 
 ## 📤 Submitting Changes
 
