@@ -20,12 +20,15 @@ export interface UserDTO {
 
 export interface UserProblemDTO {
   id: string;
-  problemId: string;
   solved: boolean;
   score: number;
+  userId: string;
+  problemId: string;
+  solutions?: string[];
 }
 
 export interface CodingPatternDTO {
+  userId?: string;
   title: string;
   info: string;
   problems: string[];

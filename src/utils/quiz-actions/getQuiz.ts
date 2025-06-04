@@ -1,6 +1,6 @@
 import { QUIZ_GENERATION } from "@/constant/assistant-ai";
 import { Settings } from "@/constant/setting";
-import { Quiz } from "@/utils/quiz-actions/types";
+import { Quiz } from "@/models/dto/quiz-dto";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateObject } from "ai";
 import { saveQuiz } from "../appwrite/database-actions";

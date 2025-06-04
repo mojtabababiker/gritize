@@ -1,13 +1,13 @@
-export type Question = {
+export interface Question {
   type: "singleChoice" | "multipleChoice" | "TOF";
   question: string;
   options?: string[];
   answer?: string | string[];
   userAnswer?: string | string[] | boolean;
-};
-export type Quiz = {
+}
+export interface Quiz {
   id: string;
   language: string;
   questionsCount: number;
   questions: Question[];
-};
+}
