@@ -40,7 +40,7 @@ const Q_COMPONENTS: Record<Question["type"], React.FC<Q_COMPONENTS_Props>> = {
 
 // popup container div tailwind classes for abstraction
 const CONTAINER_CLS =
-  "fixed z-50 inset-0 backdrop-blur-2xl flex items-center justify-center overflow-hidden px-3";
+  "fixed z-50 inset-0 h-screen w-screen backdrop-blur-2xl flex items-center justify-center overflow-hidden px-3";
 // popup div tailwind classes for abstraction
 const CLASS_NAME =
   "quiz-popup relative w-full max-w-[640px] flex flex-col items-center justify-between px-3 py-5 rounded-xl animate-slide-up";
@@ -48,13 +48,18 @@ const CLASS_NAME =
 type QuizRunnerProps = {
   onFinish: () => void;
   closeQuiz: () => void;
+  startingFrom?: "languageSelector" | "rule";
 };
 
-export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
+export default function QuizRunner({
+  onFinish,
+  closeQuiz,
+  startingFrom,
+}: QuizRunnerProps) {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentPage, setCurrentPage] = useState<
     "languageSelector" | "info" | "rule" | "submitting"
-  >("info");
+  >(startingFrom || "info");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<
     number | null
   >(null);
@@ -135,16 +140,18 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
 
     for (const question of quiz.questions) {
       let isCorrect = false;
-      if (typeof question.userAnswer === typeof question.answer) {
-        if (Array.isArray(question.userAnswer)) {
+      const answer = question.answer;
+      const userAnswer = question.userAnswer;
+      if (typeof userAnswer === typeof answer) {
+        if (Array.isArray(answer) && Array.isArray(userAnswer)) {
           if (
-            question.userAnswer.length === question.answer?.length &&
-            question.userAnswer.every((ans) => question.answer?.includes(ans))
+            userAnswer.every((ans) => answer.includes(ans)) &&
+            userAnswer.length === answer.length
           ) {
             isCorrect = true;
           }
         } else {
-          isCorrect = question.userAnswer === question.answer;
+          isCorrect = userAnswer === answer;
         }
       }
       if (isCorrect) {
@@ -287,7 +294,7 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
           />
         )}
         {currentPage === "languageSelector" && (
-          <div className="w-full flex-1 flex flex-col items-center justify-center my-10">
+          <div className="w-full flex-1 flex flex-col items-center justify-center my-5">
             <Paragraph size="md" className="text-center text-bg/85">
               Please select the language you want to be quizzed on:
             </Paragraph>
@@ -308,6 +315,21 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
                 />
               ))}
             </div>
+
+            {startingFrom ? (
+              <Button
+                variant="ghost"
+                className="text-bg/75 hover:text-surface hover:bg-primary justify-center mt-10 min-w-[120px]"
+                isSimple
+                onClick={() => {
+                  setQuizLanguage(null);
+                  setCurrentQuestionIndex(null);
+                  closeQuiz();
+                }}
+              >
+                Cancel
+              </Button>
+            ) : null}
           </div>
         )}
         {currentPage === "submitting" && (

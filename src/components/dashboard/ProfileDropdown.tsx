@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import clsx from "clsx";
-import { LogOutIcon, StarIcon, UserPenIcon } from "lucide-react";
+import { Code2Icon, LogOutIcon, StarIcon, UserPenIcon } from "lucide-react";
 
 import { Settings } from "@/constant/setting";
 import { useAuth } from "@/context/AuthProvider";
@@ -16,6 +16,9 @@ import GithubIcon from "@/components/icons/GithubIcon";
 
 import EditableUserAvatar from "./UserAvatar";
 import ProfileEditor from "./ProfileEditor";
+import toast from "react-hot-toast";
+import CustomToast from "../common/CustomToast";
+import QuizRunner from "../quiz/QuizRunner";
 
 type Props = {
   open?: boolean;
@@ -25,14 +28,26 @@ function ProfileDropdown({ open }: Props) {
   const router = useRouter();
   const { user, setUser, setIsLoggedIn } = useAuth();
   const [isOpen, setIsOpen] = useState(open || false);
-  const [editProfile, setEditProfile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // actions state
+  const [editProfile, setEditProfile] = useState(false);
   const [askForTestimonial, setAskForTestimonial] = useState(false);
+  const [startQuiz, setStartQuiz] = useState(false);
 
   const handleEditProfile = () => {
     setIsOpen(false);
     setEditProfile(true);
+  };
+
+  const handleQuizFinish = () => {
+    setStartQuiz(false);
+    toast.custom((t) => (
+      <CustomToast
+        t={t}
+        message="Quiz completed! Your profile has been updated."
+      />
+    ));
   };
 
   const handleLogout = async () => {
@@ -74,7 +89,8 @@ function ProfileDropdown({ open }: Props) {
         <div className="border-t border-surface/10 my-4" />
 
         {/* actions menu */}
-        <div className="w-full pt-4 flex flex-col gap-2 ">
+        <div className="w-full flex flex-col ">
+          {/* Edit Profile */}
           <button
             className="w-full p-2 rounded-lg hover:bg-surface/10 flex justify-between items-center  cursor-pointer transition-all duration-200 ease-in-out"
             onClick={handleEditProfile}
@@ -82,6 +98,20 @@ function ProfileDropdown({ open }: Props) {
             <div className="w-full h-full text-left">Edit Profile</div>
             <UserPenIcon className="size-4 text-surface" />
           </button>
+
+          {/* run quiz */}
+          <button
+            className="w-full p-2 rounded-lg hover:bg-surface/10 flex justify-between items-center cursor-pointer transition-all duration-200 ease-in-out"
+            onClick={() => {
+              setIsOpen(false);
+              setStartQuiz(true);
+            }}
+          >
+            <div className="w-full h-full text-left">Run Quiz</div>
+            <Code2Icon className="size-4 text-surface" />
+          </button>
+
+          {/* Logout */}
           <button
             className="w-full p-2 rounded-lg hover:bg-surface/10 flex justify-between items-center cursor-pointer transition-all duration-200 ease-in-out"
             onClick={handleLogout}
@@ -128,6 +158,14 @@ function ProfileDropdown({ open }: Props) {
             onClose={() => setAskForTestimonial(false)}
           />
         </div>
+      )}
+      {/* quiz modal */}
+      {startQuiz && (
+        <QuizRunner
+          onFinish={handleQuizFinish}
+          closeQuiz={() => setStartQuiz(false)}
+          startingFrom="languageSelector"
+        />
       )}
     </>
   );
