@@ -60,7 +60,9 @@ export const QuizSchema = z.object({
       type: z.enum(["singleChoice", "multipleChoice", "TOF"]),
       question: z.string(),
       options: z.array(z.string()).optional(),
-      answer: z.union([z.string(), z.array(z.string())]).optional(),
+      answer: z
+        .union([z.string(), z.array(z.string()), z.boolean()])
+        .optional(),
       userAnswer: z
         .union([z.string(), z.array(z.string()), z.boolean()])
         .optional(),
