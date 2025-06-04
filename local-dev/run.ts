@@ -1,3 +1,4 @@
+import { ID } from "node-appwrite";
 import { createAdminClient } from "../src/config/appwrite";
 import { Settings } from "../src/constant/setting";
 
@@ -44,7 +45,10 @@ async function run() {
     // create database
     console.log("🕛 Creating Appwrite application...");
     if (!Settings.databaseId) {
-      throw new Error("Database ID is not set in the environment variables.");
+      console.warn(
+        "⚠️ Database ID is not set in environment variables. Generating a unique ID.\n"
+      );
+      Settings.databaseId = ID.unique();
     }
     try {
       await databases.create(Settings.databaseId, Settings.databaseName, true);

@@ -1,4 +1,4 @@
-import { Databases, Permission, Role } from "node-appwrite";
+import { Databases, ID, Permission, Role } from "node-appwrite";
 
 import { Settings } from "../../src/constant/setting";
 import { Languages } from "../../src/models/types/indext";
@@ -30,14 +30,14 @@ export const createProblemSolutionsCollection = async (
 ) => {
   let collectionCreated = false;
 
-  if (!Settings.problemSolutionsCollectionId) {
-    throw new Error(
-      "Problem Solutions collection ID is not set in the environment variables."
-    );
-  }
-
   try {
     console.log("⌛ Creating Problem Solutions collection...");
+    if (!Settings.problemSolutionsCollectionId) {
+      console.warn(
+        "⚠️ Problem Solutions collection ID is not set in environment variables. Generating a unique ID.\n"
+      );
+      Settings.problemSolutionsCollectionId = ID.unique();
+    }
     await databases.createCollection(
       Settings.databaseId,
       Settings.problemSolutionsCollectionId,
@@ -65,7 +65,10 @@ export const createProblemSolutionsCollection = async (
 
     await Promise.all(attributesPromises);
     console.log("✅ Problem Solutions Collection created successfully");
-    // ../../srceslint-disable-next-line
+    console.log(
+      `📝 Collection ID: ${Settings.problemSolutionsCollectionId}, Name: Problem Solutions\n`
+    );
+    // @eslint-disable-next-line
   } catch (error: any) {
     if (error.code === 409) {
       console.warn(

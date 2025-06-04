@@ -1,4 +1,4 @@
-import { Databases, Permission, Role } from "node-appwrite";
+import { Databases, ID, Permission, Role } from "node-appwrite";
 
 import { Settings } from "../../src/constant/setting";
 import { CodingPatternDTO } from "../../src/models/dto/user-dto";
@@ -26,13 +26,14 @@ import { createAttribute } from "./utils/createAttributes";
 export const createCodingTechniquesCollection = async (database: Databases) => {
   let collectionCreated = false;
 
-  if (!Settings.codingTechniquesCollectionId) {
-    throw new Error(
-      "Coding Techniques collection ID is not set in the environment variables."
-    );
-  }
   try {
     console.log("⌛ Creating Coding Techniques collection...");
+    if (!Settings.codingTechniquesCollectionId) {
+      console.warn(
+        "⚠️ Coding Techniques collection ID is not set in environment variables. Generating a unique ID.\n"
+      );
+      Settings.codingTechniquesCollectionId = ID.unique();
+    }
     await database.createCollection(
       Settings.databaseId,
       Settings.codingTechniquesCollectionId,
@@ -58,7 +59,10 @@ export const createCodingTechniquesCollection = async (database: Databases) => {
     }
     await Promise.all(attributePromises);
     console.log("✅ Coding Techniques collection created successfully.");
-    // ../../srceslint-disable-next-line
+    console.log(
+      `📝 Collection ID: ${Settings.codingTechniquesCollectionId}, Name: Coding Techniques\n`
+    );
+    // @eslint-disable-next-line
   } catch (error: any) {
     if (error.code === 409) {
       console.warn(

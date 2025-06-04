@@ -1,4 +1,4 @@
-import { Databases } from "node-appwrite";
+import { Databases, ID } from "node-appwrite";
 
 import { Settings } from "../../src/constant/setting";
 import { TechnicalProblemDTO } from "../../src/models/dto/problem-dto";
@@ -28,13 +28,14 @@ import { createAttribute } from "./utils/createAttributes";
 export const createTechnicalProblemCollection = async (database: Databases) => {
   let collectionCreated = false;
 
-  if (!Settings.problemsCollectionId) {
-    throw new Error(
-      "Technical Problems collection ID is not set in the environment variables."
-    );
-  }
   try {
     console.log("⌛ Creating Technical Problems collection...");
+    if (!Settings.problemsCollectionId) {
+      console.warn(
+        "⚠️ Technical Problems collection ID is not set in environment variables. Generating a unique ID.\n"
+      );
+      Settings.problemsCollectionId = ID.unique();
+    }
     await database.createCollection(
       Settings.databaseId,
       Settings.problemsCollectionId,
@@ -61,7 +62,10 @@ export const createTechnicalProblemCollection = async (database: Databases) => {
     }
     await Promise.all(attributePromises);
     console.log("✅ Technical Problems collection created successfully.");
-    // ../../srceslint-disable-next-line
+    console.log(
+      `📝 Collection ID: ${Settings.problemsCollectionId}, Name: Technical Problems\n`
+    );
+    // @eslint-disable-next-line
   } catch (error: any) {
     if (error.code === 409) {
       console.warn(

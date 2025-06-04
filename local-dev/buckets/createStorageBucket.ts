@@ -1,4 +1,4 @@
-import { Storage, Compression } from "node-appwrite";
+import { Storage, Compression, ID } from "node-appwrite";
 import { Settings } from "@/constant/setting";
 
 /**
@@ -27,16 +27,16 @@ import { Settings } from "@/constant/setting";
 export const createStorageBucket = async (storage: Storage) => {
   let bucketCreated = false;
 
-  if (!Settings.storageBucketId) {
-    throw new Error(
-      "Storage bucket ID is not set in the environment variables."
-    );
-  }
-
   try {
     console.log("⌛ Creating storage bucket...");
+    if (!Settings.storageBucketId) {
+      console.warn(
+        "⚠️ Storage bucket ID is not set in environment variables. Generating a unique ID.\n"
+      );
+      Settings.storageBucketId = ID.unique();
+    }
     await storage.createBucket(
-      Settings.storageBucketId,
+      Settings.storageBucketId || ID.unique(),
       "Gritize Storage Bucket",
       undefined,
       true,
@@ -48,6 +48,9 @@ export const createStorageBucket = async (storage: Storage) => {
     );
     bucketCreated = true;
     console.log("✅ Storage Bucket created successfully");
+    console.log(
+      `📦 Bucket ID: ${Settings.storageBucketId}, Name: Gritize Storage Bucket`
+    );
   } catch (error: any) {
     if (error.code === 409) {
       console.warn("⚠️ Storage bucket already exists. Skipping creation.");

@@ -1,4 +1,4 @@
-import { Databases } from "node-appwrite";
+import { Databases, ID } from "node-appwrite";
 
 import { Settings } from "../../src/constant/setting";
 import { Languages } from "../../src/models/types/indext";
@@ -28,13 +28,14 @@ import { createAttribute } from "./utils/createAttributes";
 export const createQuizzesCollection = async (database: Databases) => {
   let collectionCreated = false;
 
-  if (!Settings.quizzesCollectionId) {
-    throw new Error(
-      "Quiz collection ID is not set in the environment variables."
-    );
-  }
   try {
     console.log("⌛ Creating Quiz collection...");
+    if (!Settings.quizzesCollectionId) {
+      console.warn(
+        "⚠️ Quizzes collection ID is not set in environment variables. Generating a unique ID.\n"
+      );
+      Settings.quizzesCollectionId = ID.unique();
+    }
     await database.createCollection(
       Settings.databaseId,
       Settings.quizzesCollectionId,
@@ -58,7 +59,10 @@ export const createQuizzesCollection = async (database: Databases) => {
     }
     await Promise.all(attributePromises);
     console.log("✅ Quiz collection created successfully.");
-    // ../../srceslint-disable-next-line
+    console.log(
+      `📝 Collection ID: ${Settings.quizzesCollectionId}, Name: Quiz\n`
+    );
+    // @eslint-disable-next-line
   } catch (error: any) {
     if (error.code === 409) {
       console.warn("⚠️ Quiz collection already exists. Skipping creation.");

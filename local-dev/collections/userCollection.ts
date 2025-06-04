@@ -1,4 +1,4 @@
-import { Databases, Permission, Role } from "node-appwrite";
+import { Databases, ID, Permission, Role } from "node-appwrite";
 
 import { Settings } from "../../src/constant/setting";
 import { UserDTO } from "../../src/models/dto/user-dto";
@@ -28,14 +28,15 @@ import { createAttribute } from "./utils/createAttributes";
  */
 export const createUsersCollection = async (database: Databases) => {
   let collectionCreated = false;
-  if (!Settings.usersCollectionId) {
-    throw new Error(
-      "Users collection ID is not set in the environment variables."
-    );
-  }
 
   try {
     console.log("⌛ Creating Users collection...");
+    if (!Settings.usersCollectionId) {
+      console.warn(
+        "⚠️ Users collection ID is not set in environment variables. Generating a unique ID.\n"
+      );
+      Settings.usersCollectionId = ID.unique();
+    }
     await database.createCollection(
       Settings.databaseId,
       Settings.usersCollectionId,
@@ -64,7 +65,10 @@ export const createUsersCollection = async (database: Databases) => {
     }
     await Promise.all(attributePromises);
     console.log("✅ Users collection created successfully.");
-    // ../../srceslint-disable-next-line
+    console.log(
+      `📝 Collection ID: ${Settings.usersCollectionId}, Name: Users\n`
+    );
+    // @eslint-disable-next-line
   } catch (error: any) {
     if (error.code === 409) {
       console.warn("⚠️ Users collection already exists. Skipping creation.");

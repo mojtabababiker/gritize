@@ -1,4 +1,4 @@
-import { Databases, Permission, Role } from "node-appwrite";
+import { Databases, ID, Permission, Role } from "node-appwrite";
 
 import { Settings } from "../../src/constant/setting";
 import { TestimonialDTO } from "../../src/models/dto/testimonial-dto";
@@ -25,13 +25,14 @@ import { createAttribute } from "./utils/createAttributes";
  */
 export const createTestimonialsCollection = async (database: Databases) => {
   let collectionCreated = false;
-  if (!Settings.testimonialsCollectionId) {
-    throw new Error(
-      "Testimonials collection ID is not set in the environment variables."
-    );
-  }
   try {
     console.log("⌛ Creating Testimonials collection...");
+    if (!Settings.testimonialsCollectionId) {
+      console.warn(
+        "⚠️ Testimonials collection ID is not set in environment variables. Generating a unique ID.\n"
+      );
+      Settings.testimonialsCollectionId = ID.unique();
+    }
 
     await database.createCollection(
       Settings.databaseId,
@@ -59,7 +60,10 @@ export const createTestimonialsCollection = async (database: Databases) => {
     }
     await Promise.all(attributePromises);
     console.log("✅ Testimonials collection created successfully.");
-    // ../../srceslint-disable-next-line
+    console.log(
+      `📝 Collection ID: ${Settings.testimonialsCollectionId}, Name: Testimonials\n`
+    );
+    // @eslint-disable-next-line
   } catch (error: any) {
     if (error.code === 409) {
       console.warn(
