@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "dev:dump": "export DUMP_DATA=true && next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
+    "appwrite:run": "tsx --env-file=.env.local local-dev/run.ts",
     "lint": "next lint",
-    "appwrite:run": "tsx --env-file=.env.local local-dev/run.ts"
+    "type-check": "tsc --noEmit",
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.14",
