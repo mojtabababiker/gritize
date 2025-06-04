@@ -485,6 +485,7 @@ const QuizInfo = ({
           skipQuiz();
         }}
         close={() => setShowSkipDialog(false)}
+        show={showSkipDialog}
       />
     </>
   );
@@ -566,11 +567,20 @@ const QuizRules = ({
           size="sm"
           className="text-bg/75 hover:text-bg"
           isSimple
-          onClick={skipQuiz}
+          onClick={() => setShowSkipDialog(true)}
         >
           continue without
         </Button>
       </div>
+      {/* skip confirmation dialog */}
+      <ConfirmSkipQuiz
+        skipQuiz={() => {
+          setShowSkipDialog(false);
+          skipQuiz();
+        }}
+        close={() => setShowSkipDialog(false)}
+        show={showSkipDialog}
+      />
     </>
   );
 };
@@ -578,18 +588,24 @@ const QuizRules = ({
 type ConfirmSkipQuizProps = {
   skipQuiz: () => void;
   close: () => void;
+  show: boolean;
 };
-const ConfirmSkipQuiz = ({ skipQuiz, close }: ConfirmSkipQuizProps) => (
-  <div className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-2 rounded-2xl backdrop-blur-sm bg-surface/10">
-    <div className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-surface px-3 py-4">
-      <Paragraph size="md" className="text-bg/95">
-        Are you sure you want to skip the quiz?
-      </Paragraph>
+const ConfirmSkipQuiz = ({ skipQuiz, close, show }: ConfirmSkipQuizProps) => (
+  <div
+    className={`absolute inset-0 z-50 flex flex-col items-center justify-center gap-2 rounded-2xl backdrop-blur-sm ${
+      show ? "bg-bg/10" : "hidden"
+    }`}
+  >
+    <div className="max-w-[420px] flex flex-col items-center justify-center gap-2 rounded-2xl bg-surface px-3 py-4">
+      <Heading size="lg" className="text-bg/95">
+        Sure you want to skip?
+      </Heading>
       <Paragraph size="sm" className="text-bg/75">
-        You will be assigned a mid-level skill level and you can always retake
-        the quiz later from your dashboard.
+        You will be assigned a <span className="font-semibold">mid-level</span>{" "}
+        skill level and you can always retake the quiz later from your
+        dashboard.
       </Paragraph>
-      <div className="flex gap-2">
+      <div className="w-full flex gap-2">
         <Button variant="primary" onClick={skipQuiz} isSimple>
           Yes, skip
         </Button>
@@ -597,6 +613,7 @@ const ConfirmSkipQuiz = ({ skipQuiz, close }: ConfirmSkipQuizProps) => (
           variant="ghost-2"
           className="text-bg/75 hover:text-bg"
           onClick={close}
+          isSimple
         >
           No, go back
         </Button>
