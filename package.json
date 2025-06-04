@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "dev:dump": "export DUMP_DATA=true && next dev --turbopack",
+    "appwrite:run": "tsx --env-file=.env.local local-dev/run.ts",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start"
   },
   "dependencies": {
     "@ai-sdk/google": "^1.2.14",
@@ -49,6 +51,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
     "tailwindcss": "^4",
+    "tsx": "^4.19.4",
     "typescript": "^5"
   }
 }

@@ -12,6 +12,7 @@ export const Settings = {
   // Appwrite Database Collections IDs
   // You can find these IDs in the Appwrite console under the database settings
   // Make sure to replace these with your actual collection IDs
+  databaseName: process.env.NEXT_APPWRITE_DATABASE_NAME || "Gritize",
   databaseId: process.env.NEXT_APPWRITE_DATABASE_ID || "",
   usersCollectionId: process.env.NEXT_APPWRITE_USERS_COLLECTION_ID || "",
   problemsCollectionId: process.env.NEXT_APPWRITE_PROBLEMS_COLLECTION_ID || "",

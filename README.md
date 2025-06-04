@@ -57,10 +57,13 @@ Gritize is a comprehensive technical interview preparation platform that leverag
 
 ### Prerequisites
 
-- Node.js 15.3 and pnpm
-- Appwrite instance (cloud or self-hosted)
-- Google AI API key
-- Email service credentials (for contact form)
+- **Node.js** 15.3+ and **pnpm**
+- **Docker** and **Docker Compose** (for local Appwrite setup)
+- **Google AI API key** (for AI features)
+- **Email service credentials** (for contact form)
+- **Git** for version control
+
+> **Note:** For local development, we provide automated scripts to set up Appwrite locally using Docker.
 
 ### Installation
 
@@ -77,7 +80,25 @@ Gritize is a comprehensive technical interview preparation platform that leverag
    pnpm install
    ```
 
-3. **Environment Setup**
+3. **Set up local Appwrite instance** (Recommended for development)
+
+   We provide automated scripts to set up Appwrite locally:
+
+   - _Docker installation is scripted for **Ubuntu** Linux only, for other OS please refer to [Docker](https://docs.docker.com/compose/install/) installation guid._
+   - For **Appwrite** installation refer to [self-hosting](https://appwrite.io/docs/advanced/self-hosting) guid.
+
+   ```bash
+   # Install Docker (Ubuntu/Debian - skip if already installed)
+   chmod +x local-dev/docker-engin-install.sh
+   sudo ./local-dev/docker-engin-install.sh
+
+   # Install and start Appwrite locally
+   chmod +x local-dev/install-appwrite.sh
+   sudo ./local-dev/install-appwrite.sh
+   # follow the instructions to setup Appwrite
+   ```
+
+4. **Environment Setup**
 
    Copy the content of [.env.example](.env.example) to `.env.local`
 
@@ -86,13 +107,20 @@ Gritize is a comprehensive technical interview preparation platform that leverag
    # Configure the environment variables with the required values
    ```
 
-4. **Run the development server**
+5. **Initialize Appwrite Database** (First time setup)
+
+   ```bash
+   # Set up databases, collections, and attributes
+   pnpm appwrite:run
+   ```
+
+6. **Run the development server**
 
    ```bash
    pnpm dev
    ```
 
-5. **Open your browser**
+7. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## 📁 Project Structure
@@ -117,6 +145,12 @@ gritize/
 │   ├── models/                   # Data models & schemas
 │   ├── utils/                    # Utility functions
 │   └── constant/                 # Application constants
+├── local-dev/                    # Local development setup
+│   ├── run.ts                    # Database initialization script
+│   ├── docker-engin-install.sh   # Docker installation script
+│   ├── install-appwrite.sh       # Appwrite setup script
+│   ├── collections/              # Database collection definitions
+│   └── buckets/                  # Storage bucket configurations
 ├── Data/                         # Problem Development datasets & patterns
 ├── public/                       # Static assets
 └── components.json               # Shadcn/ui configuration
@@ -168,12 +202,35 @@ gritize/
 ### Available Scripts
 
 ```bash
-pnpm dev          # Start development server
-pnpm build        # Build for production
-pnpm start        # Start production server
-pnpm lint         # Run ESLint
-pnpm type-check   # TypeScript type checking
+# Development
+pnpm dev              # Start development server
+pnpm build            # Build for production
+pnpm start            # Start production server
+pnpm lint             # Run ESLint
+pnpm type-check       # TypeScript type checking
+
+# Local Appwrite Setup
+pnpm appwrite:run     # Initialize/update Appwrite database and collections
+pnpm appwrite:dump    # Initialize with data dump (includes sample data)
 ```
+
+### Local Development Setup
+
+The project includes automated scripts for setting up Appwrite locally:
+
+- **`local-dev/docker-engin-install.sh`** - Installs Docker on Ubuntu/Debian systems
+- **`local-dev/install-appwrite.sh`** - Sets up and starts Appwrite using Docker
+- **`local-dev/run.ts`** - Initializes database collections, attributes, and storage buckets
+- **`local-dev/collections/`** - Database schema definitions for all collections
+- **`local-dev/buckets/`** - Storage bucket configurations
+
+### First-Time Setup Process
+
+1. **Install Docker** (if not already installed)
+2. **Run Appwrite installation script**
+3. **Configure environment variables** in `.env.local`
+4. **Initialize database** with `pnpm appwrite:run`
+5. **Start development server** with `pnpm dev`
 
 ### Code Quality
 

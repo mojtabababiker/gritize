@@ -1,9 +1,13 @@
-import { QUIZ_GENERATION } from "@/constant/assistant-ai";
-import { Settings } from "@/constant/setting";
-import { Quiz } from "@/utils/quiz-actions/types";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateObject } from "ai";
-import { saveQuiz } from "../appwrite/database-actions";
+
+import { Quiz } from "@/models/dto/quiz-dto";
+
+import { QUIZ_GENERATION } from "@/constant/assistant-ai";
+import { Settings } from "@/constant/setting";
+
+import { saveQuiz } from "@/utils/appwrite/database-actions";
+import { QuizSchema } from "@/models/schemas/";
 
 export const runtime = "edge";
 
@@ -58,10 +62,19 @@ export async function getQuiz(
     // console.log("Execution time:", Date.now() - startTime, "ms");
     // console.log("result from API", result.object);
     // saving the quiz to the database
-    const quiz = result.object as Quiz;
-    await saveQuiz(quiz);
+    const parsedResult = QuizSchema.safeParse(result.object);
+    if (!parsedResult.success) {
+      console.error("Validation error:", parsedResult.error);
+      return {
+        data: null,
+        error: "Failed to generate quiz, please try again",
+      };
+    }
 
-    return { data: result.object as Quiz, error: null };
+    const quiz = parsedResult.data;
+    await saveQuiz({ id: "", ...quiz });
+
+    return { data: { id: "", ...quiz }, error: null };
   } catch (error) {
     // console.log("Execution time:", Date.now() - startTime, "ms");
     console.error("Error in API:", error);
