@@ -135,6 +135,13 @@ const usersCollectionAttributes: UserCollection<keyof Omit<UserDTO, "id">> = {
     size: 20,
   },
   codingPatterns: { type: "string", required: false, array: true, size: 20 },
+  quizzes: {
+    type: "string",
+    required: false,
+    array: true,
+    size: 24,
+    default: [],
+  },
   mustReview: {
     type: "boolean",
     required: false,

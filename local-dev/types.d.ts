@@ -4,6 +4,7 @@ import {
   UserProblemDTO,
   CodingPatternDTO,
   ProblemSolutionDTO,
+  UserQuizDTO,
 } from "../src/models/dto/user-dto";
 import { TechnicalProblemDTO as ProblemDTO } from "../src/models/dto/problem-dto";
 import { Quiz as QuizDTO } from "../src/models/dto/quiz-dto";
@@ -52,3 +53,7 @@ export type TestimonialCollection<K extends keyof Omit<TestimonialDTO, "id">> =
 
 export type UserProblemCollection<K extends keyof Omit<UserProblemDTO, "id">> =
   CollectionAttributes<UserProblemDTO, K>;
+
+export type UserQuizzesCollection<
+  K extends keyof Omit<UserQuizDTO, "id" | "$createdAt">
+> = CollectionAttributes<UserQuizDTO, K>;

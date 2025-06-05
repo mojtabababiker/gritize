@@ -18,6 +18,7 @@ import { Question, Quiz } from "@/utils/quiz-actions";
 import QuestionTrueFalse from "./QuestionTrueFalse";
 import QuestionSC from "./QuestionSC";
 import QuestionMCs from "./QuestionMCs";
+import { UserQuizDTO } from "@/models/dto/user-dto";
 
 /**
  * A mapping of question types to their respective components.
@@ -175,6 +176,20 @@ export default function QuizRunner({
     }
 
     // TODO: update the user instance with the quiz result, and set its level and toggle the new attribute to false
+    const userQuiz: UserQuizDTO = {
+      userId: user.id || "",
+      score: result,
+      skillLevel: level,
+      ...quiz,
+    };
+    // save the quiz result to the database
+    const { error } = await user.saveQuiz(userQuiz);
+    if (error) {
+      // console.error("Error saving quiz result:", error);
+      setError(error);
+      setCurrentPage("languageSelector");
+      return;
+    }
     user.skillLevel = level;
     // user.isNewUser = false;
     user.onboarding = true;

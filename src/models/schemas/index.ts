@@ -23,6 +23,7 @@ export interface UserSchema {
   totalSolvedProblems?: number;
   generalAlgorithms?: Record<string, UserProblemSchema>;
   codingPatterns?: Record<string, CodingPatternSchema>;
+  quizzes: string[]; // Array of quiz IDs or QuizSchema objects
 
   mustReview?: boolean;
   hasReviewed?: boolean;

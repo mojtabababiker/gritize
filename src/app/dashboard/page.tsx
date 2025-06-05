@@ -15,6 +15,7 @@ function Page() {
   const router = useRouter();
   const { user } = useAuth();
 
+  console.log(user?.quizzes);
   useEffect(() => {
     if (!user) {
       return;

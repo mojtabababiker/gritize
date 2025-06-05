@@ -1,5 +1,6 @@
 export * from "./codingTechniquesCollection";
 export * from "./quizCollection";
+export * from "./userQuizzesCollection";
 export * from "./solutionsCollection";
 export * from "./technicalProblemCollection";
 export * from "./testimonialsCollection";

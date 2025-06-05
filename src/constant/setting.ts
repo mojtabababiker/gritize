@@ -21,6 +21,8 @@ export const Settings = {
   codingTechniquesCollectionId:
     process.env.NEXT_APPWRITE_CODING_TECHNIQUES_COLLECTION_ID || "",
   quizzesCollectionId: process.env.NEXT_APPWRITE_QUIZZES_COLLECTION_ID || "",
+  userQuizzesCollectionId:
+    process.env.NEXT_APPWRITE_USER_QUIZZES_COLLECTION_ID || "",
   problemSolutionsCollectionId:
     process.env.NEXT_APPWRITE_PROBLEM_SOLUTIONS_COLLECTION_ID || "",
 

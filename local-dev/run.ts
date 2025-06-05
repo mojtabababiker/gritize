@@ -10,6 +10,7 @@ import {
   createTechnicalProblemCollection,
   createTestimonialsCollection,
   createUserProblemsCollection,
+  createUserQuizzesCollection,
   createUsersCollection,
 } from "./collections";
 
@@ -77,6 +78,7 @@ async function run() {
       createUserProblemsCollection(databases),
       createCodingTechniquesCollection(databases),
       createQuizzesCollection(databases),
+      createUserQuizzesCollection(databases),
       createProblemSolutionsCollection(databases),
       createTestimonialsCollection(databases),
       // createStorageBucket(storage),
