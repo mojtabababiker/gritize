@@ -5,8 +5,8 @@ import Image from "next/image";
 
 import { useAuth } from "@/context/AuthProvider";
 
-import { FeaturedProblems } from "@/components/dashboard/FeaturedProblems";
 import StatisticalCard from "@/components/cards/StatisticalCard";
+import DashboardActions from "@/components/dashboard/DashboardActions";
 import Bounded from "@/components/common/Bounded";
 import Heading from "@/components/common/Heading";
 import Loading from "@/components/common/Loading";
@@ -89,17 +89,7 @@ function Page() {
           />
         </div>
 
-        {/* featured problems table */}
-        <div className="flex flex-col gap-6 overflow-auto">
-          {/* title */}
-          <Heading as="h2" size="md" className="text-fg">
-            Want Extra Practicing
-          </Heading>
-          {/* table */}
-          <div className="w-full flex flex-col gap-3 items-center justify-center">
-            <FeaturedProblems />
-          </div>
-        </div>
+        <DashboardActions />
       </article>
     </Bounded>
   );
