@@ -146,7 +146,11 @@ export const listUserQuizzes = async (
     const quizzes = await databases.listDocuments(
       Settings.databaseId,
       Settings.userQuizzesCollectionId,
-      [Query.equal("userId", userId)]
+      [
+        Query.equal("userId", userId),
+        Query.orderDesc("$createdAt"),
+        Query.limit(12),
+      ]
     );
     const quizData = quizzes.documents.map((doc) => {
       const data = stripAppwriteFields<UserQuizDTO>(doc);

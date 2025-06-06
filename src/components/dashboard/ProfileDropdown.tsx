@@ -3,22 +3,23 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import clsx from "clsx";
 import { Code2Icon, LogOutIcon, StarIcon, UserPenIcon } from "lucide-react";
+import toast from "react-hot-toast";
+import clsx from "clsx";
 
 import { Settings } from "@/constant/setting";
 import { useAuth } from "@/context/AuthProvider";
 
-import Loading from "@/components/common/Loading";
-import Heading from "@/components/common/Heading";
 import TestimonialProvider from "@/components/testimonials/TestmonialProvider";
 import GithubIcon from "@/components/icons/GithubIcon";
+import QuizRunner from "@/components/quiz/QuizRunner";
+
+import Loading from "@/components/common/Loading";
+import Heading from "@/components/common/Heading";
+import CustomToast from "@/components/common/CustomToast";
 
 import EditableUserAvatar from "./UserAvatar";
 import ProfileEditor from "./ProfileEditor";
-import toast from "react-hot-toast";
-import CustomToast from "../common/CustomToast";
-import QuizRunner from "../quiz/QuizRunner";
 
 type Props = {
   open?: boolean;
@@ -48,6 +49,7 @@ function ProfileDropdown({ open }: Props) {
         message="Quiz completed! Your profile has been updated."
       />
     ));
+    router.refresh();
   };
 
   const handleLogout = async () => {

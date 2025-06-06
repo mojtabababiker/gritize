@@ -1,7 +1,6 @@
-import clsx from "clsx";
 import { useState } from "react";
 
-import { useAuth } from "@/context/AuthProvider";
+import clsx from "clsx";
 
 import QuizzesContainer from "@/components/user-quizzes/QuizzesContainer";
 
@@ -21,12 +20,11 @@ const TABS: { name: string; value: "problems" | "quizzes" }[] = [
 ];
 
 function DashboardActions() {
-  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<"problems" | "quizzes">(
     "problems"
   );
   return (
-    <div className="w-full mt-6 flex flex-col gap-6 overflow-auto">
+    <div className="w-full mt-6 flex flex-col gap-6">
       {/* actions nav menu */}
       <nav className="w-full flex  py-3 border-b border-fg/20">
         <ul className="flex items-center gap-4">
@@ -66,14 +64,12 @@ function DashboardActions() {
         </div>
 
         {/* quizzes */}
-        <div
+        <QuizzesContainer
           className={clsx(
-            "w-full relative flex-col gap-6 overflow-auto",
-            activeTab === "quizzes" ? "flex animate-slide-from-right" : "hidden"
+            "w-full flex-wrap gap-6",
+            activeTab === "quizzes" ? "flex" : "hidden"
           )}
-        >
-          <QuizzesContainer />
-        </div>
+        />
       </div>
     </div>
   );

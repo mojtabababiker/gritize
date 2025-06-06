@@ -4,17 +4,23 @@ import clsx from "clsx";
 import { UserQuizDTO } from "@/models/dto/user-dto";
 
 import Heading from "@/components/common/Heading";
+import { useState } from "react";
+import QuizResult from "./QuizResult";
 
 type Props = {
   quiz: UserQuizDTO;
 };
 
 function QuizCard({ quiz }: Props) {
+  const [showResult, setShowResult] = useState(false);
   const date = new Date(quiz.$createdAt || "");
   const scoreRatio = quiz.score / quiz.questionsCount;
   return (
     <>
-      <div className="services-container w-full max-w-[420px] px-2 sm:px-3 py-2 sm:py-4 rounded-2xl flex flex-col gap-3 drop-shadow-2xl cursor-pointer hover:drop-shadow-lg hover:scale-95 transition-all duration-350 ease-in-out bg-bg/10 backdrop-blur-lg">
+      <div
+        className="services-container w-full max-w-[420px] min-h-[120px] px-2 sm:px-3 py-2 sm:py-4 rounded-2xl flex flex-col justify-center gap-3 drop-shadow-2xl cursor-pointer hover:drop-shadow-lg hover:scale-95 transition-all duration-350 ease-in-out bg-bg/10 backdrop-blur-lg"
+        onClick={() => setShowResult(true)}
+      >
         {/* score */}
 
         <div className="flex gap-2">
@@ -51,7 +57,7 @@ function QuizCard({ quiz }: Props) {
           </Heading>
           {/* taken date */}
           <h4 className="sm:text-xl text-fg">
-            {date.toLocaleDateString("en-US", {
+            {date.toLocaleDateString(undefined, {
               year: "numeric",
               month: "short",
               day: "numeric",
@@ -59,8 +65,17 @@ function QuizCard({ quiz }: Props) {
           </h4>
         </div>
       </div>
-
-      {/* quiz details */}
+      {/* quiz result */}
+      <div
+        className={clsx(
+          "z-50 items-center justify-center backdrop-blur-md px-3",
+          showResult
+            ? "flex fixed w-screen h-screen inset-0 bg-bg/20"
+            : "hidden"
+        )}
+      >
+        <QuizResult close={() => setShowResult(false)} quiz={quiz} />
+      </div>
     </>
   );
 }

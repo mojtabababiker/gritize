@@ -13,12 +13,12 @@ import Paragraph from "@/components/common/Paragraph";
 import Button from "@/components/common/Button";
 
 import { Languages, SkillLevel } from "@/models/types/indext";
+import { UserQuizDTO } from "@/models/dto/user-dto";
 import { Question, Quiz } from "@/utils/quiz-actions";
 
 import QuestionTrueFalse from "./QuestionTrueFalse";
 import QuestionSC from "./QuestionSC";
 import QuestionMCs from "./QuestionMCs";
-import { UserQuizDTO } from "@/models/dto/user-dto";
 
 /**
  * A mapping of question types to their respective components.
@@ -146,8 +146,8 @@ export default function QuizRunner({
       if (typeof userAnswer === typeof answer) {
         if (Array.isArray(answer) && Array.isArray(userAnswer)) {
           if (
-            userAnswer.every((ans) => answer.includes(ans)) &&
-            userAnswer.length === answer.length
+            userAnswer.length === answer.length &&
+            userAnswer.every((ans) => answer.includes(ans))
           ) {
             isCorrect = true;
           }
@@ -507,7 +507,7 @@ const QuizInfo = ({
         <Button
           variant="ghost-2"
           size="sm"
-          className="text-bg/75 hover:text-bg"
+          className="text-bg/75 hover:text-bg mt-1 underline"
           isSimple
           onClick={() => setShowSkipDialog(true)}
         >
