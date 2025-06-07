@@ -183,12 +183,17 @@ export default function QuizRunner({
       ...quiz,
     };
     // save the quiz result to the database
-    const { error } = await user.saveQuiz(userQuiz);
-    if (error) {
-      // console.error("Error saving quiz result:", error);
-      setError(error);
-      setCurrentPage("languageSelector");
-      return;
+    if (user.id) {
+      const { error } = await user.saveQuiz(userQuiz);
+      if (error) {
+        // console.error("Error saving quiz result:", error);
+        setError(error);
+        setCurrentPage("languageSelector");
+        return;
+      }
+    } else {
+      // save the quiz result to the local storage
+      window.localStorage.setItem("userQuiz", JSON.stringify(userQuiz));
     }
     user.skillLevel = level;
     // user.isNewUser = false;

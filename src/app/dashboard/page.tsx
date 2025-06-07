@@ -3,10 +3,13 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
+import toast from "react-hot-toast";
+
 import { useAuth } from "@/context/AuthProvider";
 
 import StatisticalCard from "@/components/cards/StatisticalCard";
 import DashboardActions from "@/components/dashboard/DashboardActions";
+import CustomToast from "@/components/common/CustomToast";
 import Bounded from "@/components/common/Bounded";
 import Heading from "@/components/common/Heading";
 import Loading from "@/components/common/Loading";
@@ -28,6 +31,31 @@ function Page() {
     // console.log("User data:", user);
   }, [user, router]);
 
+  // if user is logged in, check for quiz on local storage
+  useEffect(() => {
+    const checkQuiz = async () => {
+      if (user && user.id) {
+        const quiz = localStorage.getItem("userQuiz");
+        if (quiz) {
+          // remove quiz from local storage
+          localStorage.removeItem("userQuiz");
+          // save quiz to user data
+          const parsedQuiz = JSON.parse(quiz);
+          const { error } = await user.saveQuiz({
+            ...parsedQuiz,
+            userId: user.id,
+          });
+          if (error) {
+            // console.error("Failed to save quiz:", error);
+            toast.custom((t) => (
+              <CustomToast t={t} type="error" message={error} />
+            ));
+          }
+        }
+      }
+    };
+    checkQuiz();
+  }, [user]);
   if (!user || !user.id) {
     return <Loading />;
   }
