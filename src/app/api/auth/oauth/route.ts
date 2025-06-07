@@ -58,6 +58,7 @@ export const GET = async (request: Request) => {
         skillLevel: null,
         generalAlgorithms: [],
         codingPatterns: [],
+        quizzes: [],
         onboarding: false,
       };
       const { error, data } = await createUser(user);

@@ -13,6 +13,8 @@ import {
   listCodingPatternsById,
   listProblemSolutions,
   listUserProblemsById,
+  listUserQuizzes,
+  saveUserQuiz,
   updateCodingPattern,
   updateUser,
   updateUserProblem,
@@ -20,7 +22,12 @@ import {
 
 import { Languages, SkillLevel } from "./types/indext";
 import { CodingPatternSchema, UserProblemSchema, UserSchema } from "./schemas";
-import { CodingPatternDTO, ProblemSolutionDTO, UserDTO } from "./dto/user-dto";
+import {
+  CodingPatternDTO,
+  ProblemSolutionDTO,
+  UserDTO,
+  UserQuizDTO,
+} from "./dto/user-dto";
 import {
   deleteImage,
   uploadImage,
@@ -41,6 +48,7 @@ export class User {
   onboarding?: boolean;
   isNewUser?: boolean;
   totalSolvedProblems?: number;
+  quizzes: string[];
 
   mustReview?: boolean;
   hasReviewed?: boolean;
@@ -72,6 +80,7 @@ export class User {
     onboarding = false,
     isNewUser = true,
     totalSolvedProblems = 0,
+    quizzes = [],
 
     hasReviewed,
     mustReview,
@@ -86,6 +95,7 @@ export class User {
     this.onboarding = onboarding;
     this.isNewUser = isNewUser;
     this.totalSolvedProblems = totalSolvedProblems;
+    this.quizzes = quizzes;
 
     this.hasReviewed = hasReviewed;
     this.mustReview = mustReview;
@@ -146,6 +156,11 @@ export class User {
       this.totalSolvedProblems = 0;
       this.generalAlgorithms = {};
       this.codingPatterns = {};
+      this.quizzes = [];
+      this.isNewUser = true;
+      this.mustReview = undefined;
+      this.hasReviewed = undefined;
+      this.lastAskedReview = undefined;
     } catch (error) {
       // console.error("Logout failed", error);
       throw error;
@@ -229,6 +244,7 @@ export class User {
       preferredLanguage: data.preferredLanguage || undefined,
       onboarding: data.onboarding || false,
       totalSolvedProblems: data.totalSolvedProblems || 0,
+      quizzes: data.quizzes || [],
       isNewUser: data.isNewUser || false,
       mustReview: data.mustReview,
       hasReviewed: data.hasReviewed,
@@ -273,6 +289,7 @@ export class User {
       totalSolvedProblems: this.totalSolvedProblems,
       generalAlgorithms: Object.keys(this.generalAlgorithms),
       codingPatterns: Object.keys(this.codingPatterns),
+      quizzes: this.quizzes,
 
       mustReview: this.mustReview,
       hasReviewed: this.hasReviewed,
@@ -578,6 +595,64 @@ export class User {
       return null;
     }
     return solutions;
+  }
+
+  /**
+   * Saves a user quiz and adds it to the user's quiz collection.
+   *
+   * @param quiz - The quiz data to be saved
+   * @returns A promise that resolves to an object containing either an error message or the saved quiz ID
+   *
+   * @remarks
+   * - Requires the user to be logged in (user must have an ID)
+   * - On successful save, the quiz ID is automatically added to the user's quizzes array
+   *
+   * @example
+   * ```typescript
+   * const result = await user.saveQuiz(quizData);
+   * if (result.error) {
+   *   console.error(result.error);
+   * } else {
+   *   console.log('Quiz saved with ID:', result.data);
+   * }
+   * ```
+   */
+  async saveQuiz(
+    quiz: UserQuizDTO
+  ): Promise<{ error: string | null; data: string | null }> {
+    if (!this.id) {
+      // console.error("Login to save quiz");
+      return { error: "Login to save quiz", data: null };
+    }
+
+    const { error, data: quizId } = await saveUserQuiz(quiz);
+
+    if (error || !quizId) {
+      // console.error("Error saving quiz", error);
+      return { error, data: null };
+    }
+    // console.log("Quiz saved successfully", quizId);
+    this.quizzes.push(quizId);
+
+    return { error: null, data: quizId };
+  }
+
+  /**
+   * Retrieves all quizzes taken by the user.
+   * @returns A Promise that resolves to an array of UserQuizDTO objects representing the user's quizzes.
+   *          Returns an empty array if no quizzes are found or if the user is not logged in.
+   */
+  async getQuizzes(): Promise<UserQuizDTO[]> {
+    if (!this.id) {
+      // console.error("Login to get quizzes");
+      return [];
+    }
+    const { error, data: quizzes } = await listUserQuizzes(this.id);
+    if (error || !quizzes) {
+      // console.error("No quizzes found for user", this.id);
+      return [];
+    }
+    return quizzes;
   }
 
   /**

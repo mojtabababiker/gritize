@@ -1,4 +1,5 @@
 import { Languages, SkillLevel } from "../types/indext";
+import { Quiz } from "./quiz-dto";
 
 export interface UserDTO {
   id?: string;
@@ -12,6 +13,7 @@ export interface UserDTO {
   totalSolvedProblems?: number;
   generalAlgorithms: string[];
   codingPatterns: string[];
+  quizzes: string[];
 
   mustReview?: boolean;
   hasReviewed?: boolean;
@@ -44,5 +46,12 @@ export interface ProblemSolutionDTO {
   score: number;
   language: Languages;
   time: number;
+  $createdAt?: string;
+}
+
+export interface UserQuizDTO extends Quiz {
+  userId: string;
+  score: number;
+  skillLevel: SkillLevel;
   $createdAt?: string;
 }

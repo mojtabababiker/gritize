@@ -13,6 +13,7 @@ import Paragraph from "@/components/common/Paragraph";
 import Button from "@/components/common/Button";
 
 import { Languages, SkillLevel } from "@/models/types/indext";
+import { UserQuizDTO } from "@/models/dto/user-dto";
 import { Question, Quiz } from "@/utils/quiz-actions";
 
 import QuestionTrueFalse from "./QuestionTrueFalse";
@@ -40,7 +41,7 @@ const Q_COMPONENTS: Record<Question["type"], React.FC<Q_COMPONENTS_Props>> = {
 
 // popup container div tailwind classes for abstraction
 const CONTAINER_CLS =
-  "fixed z-50 inset-0 backdrop-blur-2xl flex items-center justify-center overflow-hidden px-3";
+  "fixed z-50 inset-0 h-screen w-screen backdrop-blur-2xl flex items-center justify-center overflow-hidden px-3";
 // popup div tailwind classes for abstraction
 const CLASS_NAME =
   "quiz-popup relative w-full max-w-[640px] flex flex-col items-center justify-between px-3 py-5 rounded-xl animate-slide-up";
@@ -48,13 +49,18 @@ const CLASS_NAME =
 type QuizRunnerProps = {
   onFinish: () => void;
   closeQuiz: () => void;
+  startingFrom?: "languageSelector" | "rule";
 };
 
-export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
+export default function QuizRunner({
+  onFinish,
+  closeQuiz,
+  startingFrom,
+}: QuizRunnerProps) {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentPage, setCurrentPage] = useState<
     "languageSelector" | "info" | "rule" | "submitting"
-  >("info");
+  >(startingFrom || "info");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<
     number | null
   >(null);
@@ -135,16 +141,18 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
 
     for (const question of quiz.questions) {
       let isCorrect = false;
-      if (typeof question.userAnswer === typeof question.answer) {
-        if (Array.isArray(question.userAnswer)) {
+      const answer = question.answer;
+      const userAnswer = question.userAnswer;
+      if (typeof userAnswer === typeof answer) {
+        if (Array.isArray(answer) && Array.isArray(userAnswer)) {
           if (
-            question.userAnswer.length === question.answer?.length &&
-            question.userAnswer.every((ans) => question.answer?.includes(ans))
+            userAnswer.length === answer.length &&
+            userAnswer.every((ans) => answer.includes(ans))
           ) {
             isCorrect = true;
           }
         } else {
-          isCorrect = question.userAnswer === question.answer;
+          isCorrect = userAnswer === answer;
         }
       }
       if (isCorrect) {
@@ -168,6 +176,25 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
     }
 
     // TODO: update the user instance with the quiz result, and set its level and toggle the new attribute to false
+    const userQuiz: UserQuizDTO = {
+      userId: user.id || "",
+      score: result,
+      skillLevel: level,
+      ...quiz,
+    };
+    // save the quiz result to the database
+    if (user.id) {
+      const { error } = await user.saveQuiz(userQuiz);
+      if (error) {
+        // console.error("Error saving quiz result:", error);
+        setError(error);
+        setCurrentPage("languageSelector");
+        return;
+      }
+    } else {
+      // save the quiz result to the local storage
+      window.localStorage.setItem("userQuiz", JSON.stringify(userQuiz));
+    }
     user.skillLevel = level;
     // user.isNewUser = false;
     user.onboarding = true;
@@ -181,6 +208,21 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
     // give the user time seeing submitting page before calling
     setTimeout(onFinish, 2500);
     return;
+  };
+
+  const skipQuiz = async (): Promise<void> => {
+    if (!user) return;
+
+    user.skillLevel = "mid-level";
+    user.preferredLanguage = "javascript";
+    user.onboarding = true;
+    user.isNewUser = true;
+
+    if (user.id) {
+      await user.save();
+    }
+    setUser(user);
+    onFinish();
   };
 
   if (!user) return null;
@@ -259,6 +301,7 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
           <QuizInfo
             closeQuiz={closeQuiz}
             action={() => setCurrentPage("rule")}
+            skipQuiz={skipQuiz}
             parentRef={containerRef}
           />
         )}
@@ -266,11 +309,12 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
           <QuizRules
             closeQuiz={closeQuiz}
             action={() => setCurrentPage("languageSelector")}
+            skipQuiz={skipQuiz}
             parentRef={containerRef}
           />
         )}
         {currentPage === "languageSelector" && (
-          <div className="w-full flex-1 flex flex-col items-center justify-center my-10">
+          <div className="w-full flex-1 flex flex-col items-center justify-center my-5">
             <Paragraph size="md" className="text-center text-bg/85">
               Please select the language you want to be quizzed on:
             </Paragraph>
@@ -291,6 +335,21 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
                 />
               ))}
             </div>
+
+            {startingFrom ? (
+              <Button
+                variant="ghost"
+                className="text-bg/75 hover:text-surface hover:bg-primary justify-center mt-10 min-w-[120px]"
+                isSimple
+                onClick={() => {
+                  setQuizLanguage(null);
+                  setCurrentQuestionIndex(null);
+                  closeQuiz();
+                }}
+              >
+                Cancel
+              </Button>
+            ) : null}
           </div>
         )}
         {currentPage === "submitting" && (
@@ -373,6 +432,7 @@ export default function QuizRunner({ onFinish, closeQuiz }: QuizRunnerProps) {
 
 type QuizInfoProps = {
   action: () => void;
+  skipQuiz: () => void;
   closeQuiz: () => void;
   parentRef: React.RefObject<HTMLDivElement | null>;
 };
@@ -391,7 +451,13 @@ type QuizInfoProps = {
  * <QuizInfo action={() => handleQuizStart()} />
  * ```
  */
-const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
+const QuizInfo = ({
+  action,
+  skipQuiz,
+  closeQuiz,
+  parentRef,
+}: QuizInfoProps) => {
+  const [showSkipDialog, setShowSkipDialog] = useState<boolean>(false);
   useEffect(() => {
     const parent = parentRef.current;
     const handleKeydown = (e: KeyboardEvent) => {
@@ -417,7 +483,7 @@ const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
         <XIcon className="size-6 sm:size-8 text-bg/65" onClick={closeQuiz} />
       </div>
       {/* description */}
-      <div className="w-full flex-1 flex items-center justify-center my-4 sm:my-10">
+      <div className="relative w-full flex-1 flex items-center justify-center my-4 sm:my-10">
         <Paragraph size="md" className="sm:text-center text-bg/85 px-4">
           in order To make the experience more effective and tailored for your
           skills, we need to run a quick quiz to determine your current level in
@@ -435,7 +501,7 @@ const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
       </div>
 
       {/* start button */}
-      <div className="w-full flex items-center justify-center py-1">
+      <div className="w-full flex flex-col items-center justify-center py-1">
         <Button
           variant="ghost"
           className="bg-surface min-w-[120px] justify-center"
@@ -443,18 +509,44 @@ const QuizInfo = ({ action, closeQuiz, parentRef }: QuizInfoProps) => {
         >
           I understand
         </Button>
+        <Button
+          variant="ghost-2"
+          size="sm"
+          className="text-bg/75 hover:text-bg mt-1 underline"
+          isSimple
+          onClick={() => setShowSkipDialog(true)}
+        >
+          continue without
+        </Button>
       </div>
+
+      {/* skip confirmation dialog */}
+      <ConfirmSkipQuiz
+        skipQuiz={() => {
+          setShowSkipDialog(false);
+          skipQuiz();
+        }}
+        close={() => setShowSkipDialog(false)}
+        show={showSkipDialog}
+      />
     </>
   );
 };
 
 type QuizRulesProps = {
   action: () => void;
+  skipQuiz: () => void;
   closeQuiz: () => void;
   parentRef: React.RefObject<HTMLDivElement | null>;
 };
 
-const QuizRules = ({ action, closeQuiz, parentRef }: QuizRulesProps) => {
+const QuizRules = ({
+  action,
+  skipQuiz,
+  closeQuiz,
+  parentRef,
+}: QuizRulesProps) => {
+  const [showSkipDialog, setShowSkipDialog] = useState<boolean>(false);
   useEffect(() => {
     const parent = parentRef.current;
     const handleKeydown = (e: KeyboardEvent) => {
@@ -504,7 +596,7 @@ const QuizRules = ({ action, closeQuiz, parentRef }: QuizRulesProps) => {
       </div>
 
       {/* start button */}
-      <div className="w-full flex items-center justify-center py-1">
+      <div className="w-full flex flex-col items-center justify-center py-1">
         <Button
           variant="ghost"
           className="bg-surface min-w-[120px] justify-center"
@@ -512,7 +604,62 @@ const QuizRules = ({ action, closeQuiz, parentRef }: QuizRulesProps) => {
         >
           Start
         </Button>
+        <Button
+          variant="ghost-2"
+          size="sm"
+          className="text-bg/75 hover:text-bg"
+          isSimple
+          onClick={() => setShowSkipDialog(true)}
+        >
+          continue without
+        </Button>
       </div>
+      {/* skip confirmation dialog */}
+      <ConfirmSkipQuiz
+        skipQuiz={() => {
+          setShowSkipDialog(false);
+          skipQuiz();
+        }}
+        close={() => setShowSkipDialog(false)}
+        show={showSkipDialog}
+      />
     </>
   );
 };
+
+type ConfirmSkipQuizProps = {
+  skipQuiz: () => void;
+  close: () => void;
+  show: boolean;
+};
+const ConfirmSkipQuiz = ({ skipQuiz, close, show }: ConfirmSkipQuizProps) => (
+  <div
+    className={`absolute inset-0 z-50 flex flex-col items-center justify-center gap-2 rounded-2xl backdrop-blur-sm ${
+      show ? "bg-bg/10" : "hidden"
+    }`}
+  >
+    <div className="max-w-[420px] flex flex-col items-center justify-center gap-2 rounded-2xl bg-surface px-3 py-4">
+      <Heading size="lg" className="text-bg/95">
+        Sure you want to skip?
+      </Heading>
+      <Paragraph size="sm" className="text-bg/75">
+        You will be assigned a <span className="font-semibold">mid-level</span>{" "}
+        skill level and you can always retake the quiz later from your
+        dashboard.
+      </Paragraph>
+      <div className="w-full flex gap-2">
+        <Button variant="primary" onClick={skipQuiz} isSimple>
+          Yes, skip
+        </Button>
+        <Button
+          variant="ghost-2"
+          className="text-bg/75 hover:text-bg"
+          onClick={close}
+          isSimple
+        >
+          No, go back
+        </Button>
+      </div>
+    </div>
+  </div>
+);

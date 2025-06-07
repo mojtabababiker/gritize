@@ -18,6 +18,7 @@ const anonymousUser = new User({
   onboarding: false,
   isNewUser: false,
   totalSolvedProblems: 0,
+  quizzes: [],
 });
 
 type AuthContextType = {

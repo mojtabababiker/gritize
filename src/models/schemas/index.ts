@@ -23,6 +23,7 @@ export interface UserSchema {
   totalSolvedProblems?: number;
   generalAlgorithms?: Record<string, UserProblemSchema>;
   codingPatterns?: Record<string, CodingPatternSchema>;
+  quizzes: string[]; // Array of quiz IDs or QuizSchema objects
 
   mustReview?: boolean;
   hasReviewed?: boolean;
@@ -60,7 +61,9 @@ export const QuizSchema = z.object({
       type: z.enum(["singleChoice", "multipleChoice", "TOF"]),
       question: z.string(),
       options: z.array(z.string()).optional(),
-      answer: z.union([z.string(), z.array(z.string())]).optional(),
+      answer: z
+        .union([z.string(), z.array(z.string()), z.boolean()])
+        .optional(),
       userAnswer: z
         .union([z.string(), z.array(z.string()), z.boolean()])
         .optional(),

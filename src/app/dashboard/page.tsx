@@ -3,10 +3,13 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
+import toast from "react-hot-toast";
+
 import { useAuth } from "@/context/AuthProvider";
 
-import { FeaturedProblems } from "@/components/dashboard/FeaturedProblems";
 import StatisticalCard from "@/components/cards/StatisticalCard";
+import DashboardActions from "@/components/dashboard/DashboardActions";
+import CustomToast from "@/components/common/CustomToast";
 import Bounded from "@/components/common/Bounded";
 import Heading from "@/components/common/Heading";
 import Loading from "@/components/common/Loading";
@@ -15,6 +18,7 @@ function Page() {
   const router = useRouter();
   const { user } = useAuth();
 
+  console.log(user?.quizzes);
   useEffect(() => {
     if (!user) {
       return;
@@ -27,6 +31,31 @@ function Page() {
     // console.log("User data:", user);
   }, [user, router]);
 
+  // if user is logged in, check for quiz on local storage
+  useEffect(() => {
+    const checkQuiz = async () => {
+      if (user && user.id) {
+        const quiz = localStorage.getItem("userQuiz");
+        if (quiz) {
+          // remove quiz from local storage
+          localStorage.removeItem("userQuiz");
+          // save quiz to user data
+          const parsedQuiz = JSON.parse(quiz);
+          const { error } = await user.saveQuiz({
+            ...parsedQuiz,
+            userId: user.id,
+          });
+          if (error) {
+            // console.error("Failed to save quiz:", error);
+            toast.custom((t) => (
+              <CustomToast t={t} type="error" message={error} />
+            ));
+          }
+        }
+      }
+    };
+    checkQuiz();
+  }, [user]);
   if (!user || !user.id) {
     return <Loading />;
   }
@@ -42,7 +71,7 @@ function Page() {
         className="fixed inset-0 -z-10 w-full h-auto origin-top object-top blur-md opacity-25"
       />
       {/* body */}
-      <article className="relative w-full flex flex-col justify-between overflow-hidden">
+      <article className="w-full flex flex-col justify-between overflow-hidden">
         {/* welcoming */}
         <div className="flex flex-col mt-14">
           <Heading as="h4" size="sm" className="text-surface">
@@ -87,18 +116,7 @@ function Page() {
             className="flex-1"
           />
         </div>
-
-        {/* featured problems table */}
-        <div className="flex flex-col gap-6 overflow-auto">
-          {/* title */}
-          <Heading as="h2" size="md" className="text-fg">
-            Want Extra Practicing
-          </Heading>
-          {/* table */}
-          <div className="w-full flex flex-col gap-3 items-center justify-center">
-            <FeaturedProblems />
-          </div>
-        </div>
+        <DashboardActions />
       </article>
     </Bounded>
   );
